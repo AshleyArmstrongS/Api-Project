@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/OptiFarm/optiFarmAPI#readme",
   "dependencies": {
-    "graphql-yoga": "^1.18.3"
+    "graphql-yoga": "^1.18.3",
+    "mongoose": "^5.10.15"
   }
 }
