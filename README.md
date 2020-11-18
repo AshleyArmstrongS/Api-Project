@@ -8,7 +8,11 @@ mkdir src <br  />
 touch src/index.js <br  />
 npm install graphql-yoga <br  />
 touch src/schema.graphql <br  />
- npm install mongoose <br />
+npm install mongoose <br />
+touch src/mongoose_schema.js <br />
+mkdir src/resolvers <br />
+touch src/resolvers/Query.js <br />
+touch src/resolvers/Mutation.js <br />
 <p>
   
   <p>

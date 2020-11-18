@@ -1,10 +1,11 @@
 const { GraphQLServer } = require('graphql-yoga')
 require('./atlas_client');
+const Query = require('./resolvers/Query');
+const Mutation = require('./resolvers/Mutation');
 
 const resolvers = {
-    Query: {
-      info: () => `Hello this is the OptiFarm API.`
-    }
+    Query,
+    //Mutation
 }
 
 const server = new GraphQLServer({
