@@ -9,20 +9,6 @@ var mongoose = require('mongoose');
 // Define schema
 var Schema = mongoose.Schema;
 
-var counters = new Schema({
-  "_id":"farmer_id",
-	"sequence_value": 0
-})
-
-function getNextSequenceValue(sequenceName){
-  var sequenceDocument = db.counters.findAndModify({
-     query:{_id: sequenceName },
-     update: {$inc:{sequence_value:1}},
-     new:true
-  });
-  return sequenceDocument.sequence_value;
-}
-
 var FarmerSchema = new Schema({ // need to figure out the auto increment and referencing
   // _id: {
   //   type: Number,
@@ -39,11 +25,11 @@ var FarmerSchema = new Schema({ // need to figure out the auto increment and ref
     validate: /\S+/
   },
   email: {
-    type: String,
-    trim: true,
-    lowercase: true,
-    unique: true,
-    required: 'Email address is required' //put in validation here
+    type: String
+    //trim: true,
+    //lowercase: true,
+    //unique: true,
+    //required: 'Email address is required' //put in validation here
   },
   password: {
     type: String,
@@ -63,7 +49,7 @@ var FarmerSchema = new Schema({ // need to figure out the auto increment and ref
   herd_number : {
     type: String,
     required: true,
-    unique: true
+    //unique: true
   } // might need validation here
 })
 
@@ -76,8 +62,8 @@ var AnimalSchema = new Schema({
   },
   herd_number : {
     type: String,
-    required: true,
-    unique: true
+    required: true
+    //unique: true
   }, // might need validation here
   sire_number: {
     type: Number,
@@ -109,25 +95,34 @@ var AnimalSchema = new Schema({
   descrition: {
     type: String,
     default: ''
-  }//, 
-  // farmer_id: {
-  //   type: Number,
-  //   required: true
-  // } 
+  }, 
+  farmer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Farmer'
+  } 
 })
 
 const Farmer = mongoose.model('Farmer', FarmerSchema);
 const Animal = mongoose.model('Animal', AnimalSchema);
 
-// Farmer.create({ first_name: 'Con', second_name: 'Clarke', email: 'con@con.con', password: '1234', farm_type: 'Beef', farm_address: 'asdf', herd_number: 'IE 123456' }, function (err, small) {
-//   if (err) return handleError(err);
-//   // saved!
-// });
+//var farmer = new Farmer({ first_name: 'Con', second_name: 'Clarke', email: 'con@con.con', password: '1234', farm_type: 'Beef', farm_address: 'asdf', herd_number: 'IE 123456' });
 
-Aniimal.create({ tag_number: 12345, herd_number: 'IE 12345', sire_number: 12323, mother_number: 12343, male_female: 'M', breed_type: 'LMN', date_of_birth: '1997-08-27',
-  animal_name: 'Con', descrition: 'asdf', farmer_id: 1 }, function (err, small) {
-  if (err) return handleError(err);
-  // saved!
+const farmer = Farmer.find({name: 'Con'});
+
+var animal = new Animal({ tag_number: 129945, herd_number: 'IE 12345', sire_number: 12323, mother_number: 12343, male_female: 'M', breed_type: 'LMN', date_of_birth: '1997-08-27',
+  animal_name: 'Con', descrition: 'asdf', farmer_id: farmer._id });
+
+//farmer.save();
+animal.save();
+
+animal.save(function(error) {
+  if (!error) {
+      Animal.find({})
+          .populate('farmer_id')
+          .exec(function(error, animal) {
+              console.log(JSON.stringify(animal, null, "\t"))
+          })
+  }
 });
 
 const resolvers = {
