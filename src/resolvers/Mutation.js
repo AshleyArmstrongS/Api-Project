@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
-const Schemas = require('../mongoose_schema');
+var Animal = require("../models/animals");
 
 async function createAnimal(parent, args){
-    const newAnimal = new animals({
+    const newAnimal = new Animal({
         tag_number: args.tag_number,
         herd_number: args.herd_number,
         sire_number: args.sire_number,
@@ -19,4 +18,8 @@ async function createAnimal(parent, args){
 
     if(error) return error
     return newAnimal
+}
+
+module.exports = {
+    createAnimal
 }

@@ -1,16 +1,13 @@
-const mongoose = require('mongoose');
-const Schemas = require('../mongoose_schema');
-const animals = mongoose.model('AnimalSchema', Schemas);
-
+var Animal = require("../models/animals");
 
 function info(){
     return "Hi this is the OptiFarm API."
 }
 function animal(){
-   return animals.find({})
+   return Animal.find({})
 }
+
 module.exports = {
     info,
     animal,
 }
-
