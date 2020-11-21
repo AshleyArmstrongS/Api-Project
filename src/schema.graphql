@@ -1,3 +1,27 @@
 type Query {
-  info: String!
+  info:             String!
+    herd:           [Animal!]!
+  animal(id: ID!):  Animal!
+}
+type Animal {
+    tag_number:     Int
+    herd_number:    String
+    sire_number:    Int
+    mother_number:  Int
+    male_female:    MF
+    breed_type:     String
+    date_of_birth:  String
+    pure_breed:     Boolean
+    animal_name:    String
+    description:    String
+    farmer_id:      Int
+}
+
+enum MF {
+  M
+  F
+}
+type Mutation {
+  createAnimal(tag_number:Int!, herd_number: String!,sire_number: Int!, mother_number: Int!, male_female: MF!, breed_type: String!,
+  date_of_birth: String!, pure_breed: Boolean!, animal_name: String!, description: String!, farmer_id: Int!) : Animal
 }
