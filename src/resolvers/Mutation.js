@@ -1,6 +1,7 @@
 var Animal = require("../models/animals");
 
 async function createAnimal(parent, args){
+    console.log(args)
     const newAnimal = new Animal({
         tag_number: args.tag_number,
         herd_number: args.herd_number,
