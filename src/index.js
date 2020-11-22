@@ -102,28 +102,80 @@ var AnimalSchema = new Schema({
   } 
 })
 
+var BatchSchema = new Schema({
+  // batch_id: {
+
+  // },
+  batch_name: {
+    type: String,
+    required: true
+  },
+  batch_description: {
+    type: String,
+    default: ''
+  }, 
+  animal_tag_number: {
+    type: Number,
+    ref: "Animal"
+  }
+}, {timestamps: true})
+
 const Farmer = mongoose.model('Farmer', FarmerSchema);
 const Animal = mongoose.model('Animal', AnimalSchema);
+const Group = mongoose.model('Group', BatchSchema);
 
 //var farmer = new Farmer({ first_name: 'Con', second_name: 'Clarke', email: 'con@con.con', password: '1234', farm_type: 'Beef', farm_address: 'asdf', herd_number: 'IE 123456' });
 
-const farmer = Farmer.find({name: 'Con'});
+//const farmer = Farmer.find({name: 'Con'});
 
-var animal = new Animal({ tag_number: 129945, herd_number: 'IE 12345', sire_number: 12323, mother_number: 12343, male_female: 'M', breed_type: 'LMN', date_of_birth: '1997-08-27',
-  animal_name: 'Con', descrition: 'asdf', farmer_id: farmer._id });
+// var animal = new Animal({ tag_number: 129945, herd_number: 'IE 12345', sire_number: 12323, mother_number: 12343, male_female: 'M', breed_type: 'LMN', date_of_birth: '1997-08-27',
+//   pure_breed: 'true', animal_name: 'Con', descrition: 'asdf', farmer_id: farmer._id });
 
+// var animal1 =  Animal.find({tag_number: 12345});
+// var animal2 =  Animal.find({tag_number: 129945});
+
+// var group = new Group({batch_name: 'Conor Test', batch_description: 'testing', animal_tag_number: animal1._id})
+// var group1 = new Group({batch_name: 'Conor Test', batch_description: 'testing', animal_tag_number: animal2._id})
+// group.save()
+// group1.save()
 //farmer.save();
-animal.save();
+// animal.save();
 
-animal.save(function(error) {
-  if (!error) {
-      Animal.find({})
-          .populate('farmer_id')
-          .exec(function(error, animal) {
-              console.log(JSON.stringify(animal, null, "\t"))
-          })
-  }
-});
+// animal.save(function(error) {
+//   if (!error) {
+//       Animal.find({})
+//           .populate('farmer_id')
+//           .exec(function(error, animal) {
+//               console.log(JSON.stringify(animal, null, "\t"))
+//           })
+//   }
+// });
+
+// group.save(function(error) {
+//   if (!error) {
+//       Group.find({})
+//           .populate('animal_tag_number')
+//           .exec(function(error, group) {
+//               console.log(JSON.stringify(group, null, "\t"))
+//           })
+//   }
+// });
+
+// group1.save(function(error) {
+//   if (!error) {
+//       Group.find({})
+//           .populate('animal_tag_number')
+//           .exec(function(error, group1) {
+//               console.log(JSON.stringify(group1, null, "\t"))
+//           })
+//   }
+// });
+
+// var grp = Group.findOne({batch_name: 'Conor Test'});
+
+// grp.batch_description = 'test2';
+
+// grp.save()
 
 const resolvers = {
     Query
