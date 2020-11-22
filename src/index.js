@@ -120,9 +120,65 @@ var BatchSchema = new Schema({
   }
 }, {timestamps: true})
 
+var MedicalAdministrationSchema = new Schema({ // verify quantity in API as there are three diff quantities
+  // remedy_id: {
+
+  // },
+  date_of_use: {
+    type: Date,
+    default: Date.now
+  },
+  medication_name: {
+    type: String,
+    required: true
+  },
+  quantity_used_ml: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  quantity_used_mg: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  quantity_used_int: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  administered_by: {
+    type: String,
+    required: true
+  },
+  reason_for:{
+    type: String
+  },
+  animal_tag_number: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Animal"
+  }
+})
+
+const MedAdmin = mongoose.model('MedAdmin', MedicalAdministrationSchema);
 const Farmer = mongoose.model('Farmer', FarmerSchema);
 const Animal = mongoose.model('Animal', AnimalSchema);
 const Group = mongoose.model('Group', BatchSchema);
+
+
+const medAnimal = Animal.find({tag_number: 12345}, callback());
+console.log(medAnimal.tag_number)
+
+//var medAdmin = new MedAdmin({medication_name: 'Arnica', quantity_used_int: 1, administered_by: 'Conor', reason_for: 'sore foot', animal_tag_number: aml.tag_number})
+//medAdmin.save()
+
+// user.save(function(err, user){
+//   if(err) return console.error(err);
+//   log.d("user saved", user);
+// });
+
+
+
 
 //var farmer = new Farmer({ first_name: 'Con', second_name: 'Clarke', email: 'con@con.con', password: '1234', farm_type: 'Beef', farm_address: 'asdf', herd_number: 'IE 123456' });
 
