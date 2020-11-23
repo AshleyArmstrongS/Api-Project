@@ -28,7 +28,6 @@ type Farmer {
   second_name:  String!
   farm_type:    FT!
   farm_address: String!
-  password:     String!
   email:        String!
   herd_number:  String!
 }
