@@ -27,7 +27,8 @@ var Farmer = new Schema({ // might be worth to check out autoincrement for _id
     required: true
   },
   farm_type: {
-    enum : ['Beef', 'Dairy'],
+    type: String,
+    enum : ['Beef', 'Dairy', "Suckler", "Other"],
     default: ''
   },
   farm_address: {
