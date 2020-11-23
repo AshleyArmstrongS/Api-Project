@@ -2,6 +2,7 @@ type Query {
   info:             String!
   herd:             [Animal!]!
   animal(id: ID!):  Animal!
+  farmer:  Farmer!
 }
 type Animal {
   id:             ID!
@@ -16,11 +17,22 @@ type Animal {
   description:    String!
   farmer_id:      Int!
 }
-
-enum MF {
-  M
-  F
+type AuthPayload {
+  token: String!
+  farmer: Farmer!
 }
+
+type Farmer {
+  id:           ID!
+  first_name:   String!
+  second_name:  String!
+  farm_type:    FT!
+  farm_address: String!
+  password:     String!
+  email:        String!
+  herd_number:  String!
+}
+
 type Mutation {
   createAnimal(
     tag_number:     Int!,
@@ -34,4 +46,30 @@ type Mutation {
     description:    String!,
     farmer_id:      Int!,
   ) : Animal
+
+  signup(
+    email: String!,
+    password: String!,
+    first_name: String!,
+    second_name: String!,
+    farm_type: FT!,
+    farm_address: String!,
+    password: String!,
+    email: String!
+    herd_number: String!
+    ): AuthPayload
+
+  login(email: String!, password: String!): AuthPayload
+}
+
+enum MF {
+  M
+  F
+}
+
+enum FT {
+  Dairy
+  Beef
+  Sucker
+  Other
 }
