@@ -14,6 +14,7 @@ mkdir src/resolvers <br />
 touch src/resolvers/Query.js <br />
 touch src/resolvers/Mutation.js <br />
 npm install --save graphql-scalars <br />
+  npm install jsonwebtoken bcryptjs <br />
 <p>
   
   <p>
