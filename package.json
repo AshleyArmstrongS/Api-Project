@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/OptiFarm/optiFarmAPI#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "graphql-scalars": "^1.5.0",
     "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.15"
   }
 }

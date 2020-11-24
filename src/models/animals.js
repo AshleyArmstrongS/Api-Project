@@ -23,7 +23,8 @@ var Animal = new Schema({
     required: true
   },
   male_female: {
-    enum: ['M', 'F']
+    type: String,
+    enum: ["M", "F"]
   },
   breed_type: {
     type: String,
