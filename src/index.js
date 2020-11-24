@@ -165,12 +165,22 @@ const Farmer = mongoose.model('Farmer', FarmerSchema);
 const Animal = mongoose.model('Animal', AnimalSchema);
 const Group = mongoose.model('Group', BatchSchema);
 
+const aml = Animal.findById({_id: "5fb7f93672e9014d94087d63"})
 
-const medAnimal = Animal.find({tag_number: 12345}, callback());
-console.log(medAnimal.tag_number)
+//console.log(tag_number)
 
-//var medAdmin = new MedAdmin({medication_name: 'Arnica', quantity_used_int: 1, administered_by: 'Conor', reason_for: 'sore foot', animal_tag_number: aml.tag_number})
-//medAdmin.save()
+var medAdmin = new MedAdmin({medication_name: 'Arnica', quantity_used_int: 1, administered_by: 'Conor', reason_for: 'sore foot', animal_tag_number: aml.tag_number})
+medAdmin.save()
+
+medAdmin.save(function(error) {
+  if (!error) {
+    MedAdmin.find({})
+          .populate('animal_tag_number')
+          .exec(function(error, medAdmin) {
+              console.log(JSON.stringify(medAdmin, null, "\t"))
+          })
+  }
+});
 
 // user.save(function(err, user){
 //   if(err) return console.error(err);
