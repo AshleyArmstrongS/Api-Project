@@ -1,38 +1,38 @@
 type Query {
-  info:             String!
-  herd:             [Animal!]!
-  animal(id: ID!):  Animal!
-  farmer:  Farmer!
-}
-type Animal {
-  id:             ID!
-  tag_number:     Int!
-  herd_number:    String!
-  sire_number:    Int!
-  mother_number:  Int!
-  male_female:    MF!
-  breed_type:     String!
-  pure_breed:     Boolean!
-  animal_name:    String!
-  description:    String!
-  farmer_id:      Int!
-}
-type AuthPayload {
-  token: String!
-  farmer: Farmer!
-}
-
-type Farmer {
-  id:           ID!
-  first_name:   String!
-  second_name:  String!
-  farm_type:    FT!
-  farm_address: String!
-  email:        String!
-  herd_number:  String!
+#API info
+  info:   String
+#Users Info
+  farmer: Farmer
+#Animal Queries
+  animal(id: ID!): Animal
+  animalTag(tag_number: Int!): Animal
+#Animals Queries
+  herd:  [Animal]!
+  progenyM(mother_number: Int!):  [Animal]!
+  progenyS(sire_number: Int!):    [Animal]!
+  animalSex(male_female: MF!):    [Animal]!
+  animalBreed(breed_type: String!):     [Animal]!
+  animalPureBreed(pure_breed: Boolean): [Animal]!
 }
 
 type Mutation {
+#SignUp/Login
+  signUp(
+    email:          String!,
+    password:       String!,
+    first_name:     String!,
+    second_name:    String!,
+    farm_type:      FT!,
+    farm_address:   String,
+    password:       String!,
+    email:          String!
+    herd_number:    String!
+    ):              AuthPayload!
+  login(
+    email:          String!,
+    password:       String!
+    ):              AuthPayload!
+#Animal
   createAnimal(
     tag_number:     Int!,
     herd_number:    String!,
@@ -41,24 +41,46 @@ type Mutation {
     male_female:    MF!,
     breed_type:     String!,
     pure_breed:     Boolean!,
-    animal_name:    String!,
-    description:    String!,
+    animal_name:    String,
+    description:    String,
     farmer_id:      Int!,
-  ) : Animal
+    date_of_birth:  Date!,
+  ) :               Animal!
+  deleteAnimal(id: ID) : Animal!
+}
 
-  signup(
-    email: String!,
-    password: String!,
-    first_name: String!,
-    second_name: String!,
-    farm_type: FT!,
-    farm_address: String!,
-    password: String!,
-    email: String!
-    herd_number: String!
-    ): AuthPayload
+type Animal {
+  id:               ID
+  tag_number:       Int
+  herd_number:      String
+  sire_number:      Int
+  mother_number:    Int
+  male_female:      MF
+  breed_type:       String
+  pure_breed:       Boolean
+  animal_name:      String
+  description:      String
+  date_of_birth:    Date
+  }
 
-  login(email: String!, password: String!): AuthPayload
+  type AuthPayload {
+    token:          String!
+    farmer:         Farmer!
+  }
+
+  type Farmer {
+  id:               ID
+  first_name:       String
+  second_name:      String
+  farm_type:        FT
+  farm_address:     String
+  email:            String
+  herd_number:      String
+}
+
+scalar Date
+type MyType {
+   created: Date
 }
 
 enum MF {

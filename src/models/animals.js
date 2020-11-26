@@ -30,10 +30,10 @@ var Animal = new Schema({
     type: String,
     required: true
   },
-  //date_of_birth: {
-  //  type: Date,
-  //  required: true
-  //},
+  date_of_birth: {
+    type: Date,
+    required: true
+  },
   pure_breed: {
     type: Boolean,
     default: false
