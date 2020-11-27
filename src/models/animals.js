@@ -2,56 +2,57 @@ const mongoose = require('mongoose');
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
-var Animal = new Schema({
-  tag_number: { // need some clarification on this
+const AnimalSchema = new Schema({
+  tag_number: { 
     type: Number,
-    required: true
-    // unique: true,
-    // integer: true
+    required: true,
+    integer: true
   },
   herd_number : {
     type: String,
-    required: true,
-    //unique: true
-  }, // might need validation here
+    required: true
+  },
   sire_number: {
     type: Number,
     required: true
-  },
+  }, 
   mother_number: {
     type: Number,
     required: true
-  },
+  }, 
   male_female: {
     type: String,
     enum: ["M", "F"]
-  },
+  }, 
   breed_type: {
-    type: String,
-    required: true
-  },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Breed"
+  }, 
   date_of_birth: {
     type: Date,
     required: true
-  },
+  }, 
   pure_breed: {
     type: Boolean,
     default: false
   },
+  cross_breed: {
+    type: Boolean
+  },
   animal_name: {
     type: String,
     default: ''
-  },
-  description: {
+  }, 
+  descrition: {
     type: String,
     default: ''
-  },
+  }, 
   farmer_id: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer",
     required: true
-  }
-})
+  } 
+}, {collection: 'animals'})
 
 
-
-  module.exports = mongoose.model('Animal', Animal);
+module.exports = mongoose.model('Animal', AnimalSchema);
