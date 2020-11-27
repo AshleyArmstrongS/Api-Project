@@ -4,9 +4,13 @@ var mongoose = require('mongoose');
 // Define schema
 var Schema = mongoose.Schema;
 
+// Email validation
+var validateEmail = function(email) {
+  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email)
+}; // Returns a Boolean value that indicates whether or not a pattern exists
 
-var FarmerSchema = new Schema({ // need to figure out the auto increment and referencing
-  // farmer_id: {type: number required: true}
+var FarmerSchema = new Schema({ // might be worth to check out autoincrementing for _id
   first_name: {
     type: String,
     required: true,
@@ -22,65 +26,64 @@ var FarmerSchema = new Schema({ // need to figure out the auto increment and ref
     trim: true,
     lowercase: true,
     unique: true,
-    required: 'Email address is required' //put in validation here
+    required: 'Email address is required', //put in validation here
+    validate: [validateEmail, 'Please fill a valid email address'],
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
   },
   password: {
     type: String,
     required: true
   },
   farm_type: {
-    enum : ['Beef', 'Dairy'],
-    default: ''
+    type: String,
+    enum : ["Beef", "Dairy", "Suckler", "Other"],
+    default: "Other"
   },
   farm_address: {
     type: String,
     required: true
   },
-  vet: {
-    type: String
+  medication_administrators: { // normally the farmer but can be the vet
+    type: [String]
   },
   herd_number : {
     type: String,
     required: true,
     unique: true
   } // might need validation here
-})
+}, {collection: 'farmers'})
 
-/*
-  validation of email:
-    var validateEmail = function(email) {
-      var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-      return re.test(email)
-    };
-
-  Put this in email above: 
-    validate: [validateEmail, 'Please fill a valid email address'],
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
-*/
-
-// const Vet = { // might not use this in schema
-//   vet_name: {
+// const VetSchema = { // might not use this in schema
+//   administered_by: {
 //     type: String,
 //     required: true
+//   },
+//   veterinary_clinic: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "VeterinaryClinic"
+//   }
+//  }
+
+// const VeterinaryClinic = { //possibly can add this in if using Vet
+//   name: {
+//     type: String,
+//     required: true
+//   }, 
+//   address: {
+//     type: String
 //   }
 // }
 
-// const VeterinaryClinic = { possibly can add this in
-
-// }
-
 var AnimalSchema = new Schema({
-  tag_number: { // need some clarification on this
+  tag_number: { 
     type: Number,
-    required: true
-    // unique: true,
-    // integer: true
+    required: true,
+    integer: true
   },
   herd_number : {
     type: String,
-    required: true,
-    unique: true
-  }, // might need validation here
+    required: true
+  },
   sire_number: {
     type: Number,
     required: true
@@ -90,11 +93,12 @@ var AnimalSchema = new Schema({
     required: true
   }, 
   male_female: {
-    enum: ['M', 'F']
+    type: String,
+    enum: ["M", "F"]
   }, 
   breed_type: {
-    type: String,
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Breed"
   }, 
   date_of_birth: {
     type: Date,
@@ -103,7 +107,10 @@ var AnimalSchema = new Schema({
   pure_breed: {
     type: Boolean,
     default: false
-  }, 
+  },
+  cross_breed: {
+    type: Boolean
+  },
   animal_name: {
     type: String,
     default: ''
@@ -113,23 +120,41 @@ var AnimalSchema = new Schema({
     default: ''
   }, 
   farmer_id: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer",
     required: true
   } 
-})
+}, {collection: 'animals'})
 
-var BatchSchema = new Schema({
-  // batch_id: {
-
-  // },
-  batch_name: {
+const BreedSchema = new Schema({
+  breed_name: {
     type: String,
     required: true
   },
-  batch_description: {
+  breed_code: {
+    type: String,
+    required: true
+  }
+})
+
+var GroupSchema = new Schema({
+  // group_id: {
+
+  // },
+  group_name: {
+    type: String,
+    required: true
+  },
+  group_description: {
     type: String,
     default: ''
   }, 
+  animal_tag_number: {
+    type: Number,
+    ref: "Animal"
+  }
+}, {timestamps: true}, {collection: 'groups'})
+// leave this out as timestamps does same thing
   // date_created: {
   //   type: Date,
   //   default: Date.now
@@ -137,10 +162,10 @@ var BatchSchema = new Schema({
   // date_last_edited: {
   //   type: Date,
   //   timestamps: true
-  // } 
-}, {timestamps: true})
+  // }
 
-var RemedyUsageSchema = new Schema({ // verify quantity in API as there are three diff quantities
+
+var MedicalAdministrationSchema = new Schema({ // verify quantity in API as there are three diff quantities
   // remedy_id: {
 
   // },
@@ -173,8 +198,12 @@ var RemedyUsageSchema = new Schema({ // verify quantity in API as there are thre
   },
   reason_for:{
     type: String
+  },
+  animal_tag_number: {
+    type: Number,
+    ref: "Animal"
   }
-})
+}, {collection: 'MedAdmins'})
 
 var MedicationSchema = new Schema({// verify quantity in API as there are three diff quantities
   // medication_id: {
@@ -234,5 +263,9 @@ var MedicationSchema = new Schema({// verify quantity in API as there are three 
   comments: {
     type: String,
     default: ''
+  },
+  medication_used: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "MedicalAdministration"
   }
-})
+}, {collection: 'medication'})
