@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
-var Farmer = new Schema({ // might be worth to check out autoincrement for _id
+const FarmerSchema = new Schema({ 
   first_name: {
     type: String,
     required: true,
@@ -18,9 +18,7 @@ var Farmer = new Schema({ // might be worth to check out autoincrement for _id
     trim: true,
     lowercase: true,
     unique: true,
-    required: 'Email address is required', //put in validation here
-    //validate: [validateEmail, 'Please fill a valid email address'],
-    //match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+    required: 'Email address is required' //put in validation here
   },
   password: {
     type: String,
@@ -28,16 +26,16 @@ var Farmer = new Schema({ // might be worth to check out autoincrement for _id
   },
   farm_type: {
     type: String,
-    enum : ['Beef', 'Dairy', "Suckler", "Other"],
-    default: ''
+    enum : ["Beef", "Dairy", "Suckler", "Other"],
+    default: "Other"
   },
   farm_address: {
     type: String,
     required: true
   },
-  //vet: {
-  //  type: String
-  //},
+  medication_administrators: { // normally the farmer but can be the vet
+    type: [String]
+  },
   herd_number : {
     type: String,
     required: true,
@@ -45,4 +43,4 @@ var Farmer = new Schema({ // might be worth to check out autoincrement for _id
   } // might need validation here
 }, {collection: 'farmers'})
 
-  module.exports = mongoose.model('Farmer', Farmer);
+module.exports = mongoose.model('Farmer', FarmerSchema);
