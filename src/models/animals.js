@@ -46,10 +46,10 @@ var Animal = new Schema({
     type: String,
     default: ''
   },
-  farmer_id: {
-    type: Number,
-    required: true
-  }
+// farmer_id: {
+ //   type: Number,
+ //   required: true
+ // }
 })
 
 
