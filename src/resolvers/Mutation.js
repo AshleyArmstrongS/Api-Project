@@ -5,7 +5,7 @@ const {farmerHerdNo} = require('./Query')
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 
-    async function signUp(parent, args, context, info) {
+    async function signUp(parent, args) {
         const password = await bcrypt.hash(args.password, 10)
         const newFarmer = await new Farmer({
             first_name: args.first_name,
@@ -20,11 +20,11 @@ const Farmer = require("../models/farmer")
         if (!valid) {
             throw new Error('Could not save user')
           }
-        var userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET)
-        var AuthPayLoad = {token: userToken, farmer: newFarmer}
+        const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET)
+        const AuthPayLoad = {token: userToken, farmer: newFarmer}
         return AuthPayLoad
       }
-      async function login(parent, args, context, info) {
+      async function login(parent, args) {
         const loggingInFarmer = await Farmer.findOne({email: args.email})
         if (!loggingInFarmer) {
           throw new Error('No such user found')
@@ -34,7 +34,7 @@ const Farmer = require("../models/farmer")
           throw new Error('Invalid password')
         }
         const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET)
-        var AuthPayLoad = {token: userToken, farmer: loggingInFarmer}
+        const AuthPayLoad = {token: userToken, farmer: loggingInFarmer}
         return AuthPayLoad
       }
 
