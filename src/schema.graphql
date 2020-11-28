@@ -35,7 +35,6 @@ type Mutation {
 #Animal
   createAnimal(
     tag_number:     Int!,
-    herd_number:    String!,
     sire_number:    Int!,
     mother_number:  Int!,
     male_female:    MF!,
@@ -43,10 +42,9 @@ type Mutation {
     pure_breed:     Boolean!,
     animal_name:    String,
     description:    String,
-    farmer_id:      Int!,
     date_of_birth:  Date!,
   ) :               Animal!
-  deleteAnimal(id: ID) : Animal!
+  deleteAnimal(tag_number: Int!) : Animal!
 }
 
 type Animal {
@@ -65,7 +63,7 @@ type Animal {
 
   type AuthPayload {
     token:          String!
-    farmer:         Farmer!
+    farmer:         Farmer
   }
 
   type Farmer {

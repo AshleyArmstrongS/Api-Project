@@ -47,12 +47,13 @@ const AnimalSchema = new Schema({
     type: String,
     default: ''
   }, 
-  farmer_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Farmer",
-    required: true
-  } 
+ // farmer_id: {
+ //   type: mongoose.Schema.Types.ObjectId,
+ //   ref: "Farmer",
+ //   required: true
+ // } 
 }, {collection: 'animals'})
+
 
 
 module.exports = mongoose.model('Animal', AnimalSchema);
