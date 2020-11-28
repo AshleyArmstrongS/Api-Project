@@ -9,6 +9,10 @@ const resolvers = {
     Mutation,
 }
 
+const options = {
+  port: 4000,
+  endpoint: '/optiFarm',
+}
 const server = new GraphQLServer({
     typeDefs: 'src/schema.graphql',
     resolvers,
@@ -18,4 +22,4 @@ const server = new GraphQLServer({
       }
     },
   })
-server.start(() => console.log(`Server is running on http://localhost:4000`))
+server.start(options,({port,}) => console.log(`Server is running on http://localhost:${port}`))

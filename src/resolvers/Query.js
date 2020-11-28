@@ -19,13 +19,14 @@ function farmerHerdNo(parent, args, context){
 function animal(parent, args){
    return Animal.findById(args.id)
 }
-function animalTag(parent, args){
-    return Animal.findOne({"tag_number": args.tag_number})
+async function animalTag(parent, args, context){
+    const herd_number = await farmerHerdNo(parent, args, context)
+    return await Animal.findOne({"tag_number": args.tag_number, "herd_number": herd_number.herd_number})
 }
 //Animals
 async function herd(parent, args, context){
-    const user = await farmer(parent, args, context)
-    return await Animal.find({"herd_number": user.herd_number})
+    const herd_number = await farmerHerdNo(parent, args, context)
+    return await Animal.find({"herd_number": herd_number.herd_number})
 }
 async function animalBreed(parent, args, context) {
     const herd_number = await farmerHerdNo(parent, args, context)
@@ -53,4 +54,5 @@ module.exports = {
     animalSex,
     animalBreed,
     animalPureBreed,
+    //internalUse
 }
