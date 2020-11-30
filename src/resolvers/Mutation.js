@@ -1,9 +1,10 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
-const {farmerHerdNo} = require('./Query')
+const {farmerHerdNo, animalTag} = require('./Query')
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
+const Group = require("../models/group")
 
 async function signUp(parent, args) {
   const password = await bcrypt.hash(args.password, 10)
@@ -67,9 +68,20 @@ async function deleteAnimal(parent, args, context){
   return await Animal.findByIdAndDelete(animalId.id)
 }
 
+async function createGroup(parent, args, context) {
+  const newGroup = new Group({
+    group_name: args.group_name,
+    group_description: args.group_description
+  })
+  const error = await newGroup.save()
+  if(error) return error
+  return newGroup
+}
+
 module.exports = {
     createAnimal,
     signUp,
     login,
     deleteAnimal,
+    createGroup,
 }
