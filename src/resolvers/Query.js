@@ -1,5 +1,6 @@
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
+const Medication = require("../models/medication")
 const {getUserId } = require('../utils')
 //API info
 function info(){
@@ -40,7 +41,15 @@ async function animalSex(parent, args, context) {
     const herd_number = await farmerHerdNo(parent, args, context)
     return await Animal.find({"male_female": args.male_female, "herd_number": herd_number.herd_number })
 }
-
+//Medication
+function medication(parent, args, context) {
+    return Medication.findById(args.id)
+}
+//Medications
+async function medications(parent, args, context) {
+    const id = await getUserId(context)
+    return Medication.find({"farmer_id" : id})
+}
 module.exports = {
     //API info
     info,
@@ -54,5 +63,8 @@ module.exports = {
     animalSex,
     animalBreed,
     animalPureBreed,
-    //internalUse
+    //Medication
+    medication,
+    //Medications
+    medications,
 }

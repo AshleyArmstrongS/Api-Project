@@ -16,6 +16,7 @@ type Query {
   #Medication
   medication(id: ID!): Medication
   #Medications
+  medications:  [Medication]!
 
 }
 
