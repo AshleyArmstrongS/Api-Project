@@ -11,46 +11,42 @@ var MedicationSchema = new Schema({// verify quantity in API as there are three 
     type: String,
     required: true
   },
-  quantity_ml: {
+  quantity: {
     type: Number,
     required: true,
     default: 0
   },
-  quantity_int: {
-    type: Number,
-    required: true,
-    default: 0
-  }, 
-  quantity_mg: {
-    type: Number,
-    required: true,
-    default: 0
-  }, 
   withdrawal_days_meat: {
     type: Number,
     required: true
-  }, 
+  },
   withdrawal_days_dairy: {
     type: Number,
     required: true
   },
-  remaining_quantity_ml: {
-    type: Number,
-    required: true
-  }, 
-  remaining_quantity_int: {
-    type: Number,
-    required: true
-  }, 
-  remaining_quantity_mg: {
-    type: Number,
-    required: true
-  }, 
-  batch_number: {
+  quantity_type: {
+    type: String,
+    enum : ["Ml", "Mg", "Count", "Unassigned"],
+    default : "Unassigned"
+  },
+  farm_type: {
+    type: String,
+    enum : ["Beef", "Dairy", "Suckler", "Other"],
+    default: "Other"
+  },
+  remaining_quantity: {
     type: Number,
     required: true
   },
+  batch_number: {
+    type: String,
+    required: true
+  },
   expiry_date: {
+    type: Date,
+    required: true
+  },
+  purchase_date: {
     type: Date,
     required: true
   },
@@ -58,9 +54,9 @@ var MedicationSchema = new Schema({// verify quantity in API as there are three 
     type: String,
     default: ''
   },
-  medication_used: {
+  farmer_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "MedicalAdministration"
+    ref: "Farmer"
   }
 }, {collection: 'medication'})
 

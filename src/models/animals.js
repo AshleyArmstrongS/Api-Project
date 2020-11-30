@@ -3,7 +3,7 @@ mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
 const AnimalSchema = new Schema({
-  tag_number: { 
+  tag_number: {
     type: Number,
     required: true,
     integer: true
@@ -15,23 +15,24 @@ const AnimalSchema = new Schema({
   sire_number: {
     type: Number,
     required: true
-  }, 
+  },
   mother_number: {
     type: Number,
     required: true
-  }, 
+  },
   male_female: {
     type: String,
     enum: ["M", "F"]
-  }, 
+  },
   breed_type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Breed"
-  }, 
+    //type: mongoose.Schema.Types.ObjectId,
+    //ref: "Breed"
+    type: String
+  },
   date_of_birth: {
     type: Date,
     required: true
-  }, 
+  },
   pure_breed: {
     type: Boolean,
     default: false
@@ -42,16 +43,16 @@ const AnimalSchema = new Schema({
   animal_name: {
     type: String,
     default: ''
-  }, 
-  descrition: {
+  },
+  description: {
     type: String,
     default: ''
-  }, 
- // farmer_id: {
- //   type: mongoose.Schema.Types.ObjectId,
- //   ref: "Farmer",
- //   required: true
- // } 
+  },
+  farmer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer",
+    required: true
+  }
 }, {collection: 'animals'})
 
 

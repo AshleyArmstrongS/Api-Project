@@ -17,7 +17,3 @@ const { Kind } = require('graphql/language');
       return null;
     },
   })
-
-module.exports = {
-    Date,
-  }
