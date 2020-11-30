@@ -45,6 +45,11 @@ type Mutation {
     date_of_birth:  Date!,
   ) :               Animal!
   deleteAnimal(tag_number: Int!) : Animal!
+  #Group
+  createGroup(
+    group_name:         String!,
+    group_description:  String
+  ) :                   Group
 }
 
 type Animal {
@@ -74,6 +79,12 @@ type Animal {
   farm_address:     String
   email:            String
   herd_number:      String
+}
+
+type Group{
+  id:                 ID!
+  group_name:         String
+  group_description:  String
 }
 
 scalar Date
