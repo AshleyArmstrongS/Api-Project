@@ -25,8 +25,9 @@ const AnimalSchema = new Schema({
     enum: ["M", "F"]
   },
   breed_type: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Breed"
+    //type: mongoose.Schema.Types.ObjectId,
+    //ref: "Breed"
+    type: String,
   },
   date_of_birth: {
     type: Date,

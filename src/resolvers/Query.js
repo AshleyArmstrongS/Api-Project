@@ -11,35 +11,30 @@ function farmer(parent, args, context){
     const id = getUserId(context)
     return Farmer.findById(id)
 }
-function farmerHerdNo(parent, args, context){
-    const id = getUserId(context)
-    const herd_number = Farmer.findById(id).select({'herd_number': 1, "_id": 0})
-    return herd_number
-}
 //Animal
 function animal(parent, args){
    return Animal.findById(args.id)
 }
 async function animalTag(parent, args, context){
-    const herd_number = await farmerHerdNo(parent, args, context)
-    return await Animal.findOne({"tag_number": args.tag_number, "herd_number": herd_number.herd_number})
+    const id = await getUserId(context)
+    return await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id})
 }
 //Animals
 async function herd(parent, args, context){
-    const herd_number = await farmerHerdNo(parent, args, context)
-    return await Animal.find({"herd_number": herd_number.herd_number})
+    const id = getUserId(context)
+    return await Animal.find({"farmer_id": id })
 }
 async function animalBreed(parent, args, context) {
-    const herd_number = await farmerHerdNo(parent, args, context)
-    return await Animal.find({"breed_type": args.breed_type, "herd_number": herd_number.herd_number})
+    const id = getUserId(context)
+    return await Animal.find({"breed_type": args.breed_type, "farmer_id": id })
 }
 async function animalPureBreed(parent, args, context) {
-    const herd_number = await farmerHerdNo(parent, args, context)
-    return await Animal.find({"pure_breed": args.pure_breed, "herd_number": herd_number.herd_number})
+    const id = getUserId(context)
+    return await Animal.find({"pure_breed": args.pure_breed, "farmer_id": id })
 }
 async function animalSex(parent, args, context) {
-    const herd_number = await farmerHerdNo(parent, args, context)
-    return await Animal.find({"male_female": args.male_female, "herd_number": herd_number.herd_number })
+    const id = getUserId(context)
+    return await Animal.find({"male_female": args.male_female, "farmer_id": id })
 }
 //Medication
 function medication(parent, args, context) {

@@ -1,20 +1,14 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
-const {farmerHerdNo} = require('./Query')
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 const Medication = require("../models/medication")
+const Breed = require("../models/breed")
 
 //Internal functions
-function farmerHerdNoMut(context){
-  const id = getUserId(context)
-  const herd_number = Farmer.findById(id).select({'herd_number': 1, "_id": 0})
-  return herd_number
-}
-function farmerMut(context){
-  const id = getUserId(context)
-  return Farmer.findById(id)
+function farmerHerdNo(id){
+  return Farmer.findById(id).select({'herd_number': 1, "_id": 0})
 }
 //Login/SignUp
 async function signUp(parent, args) {
@@ -51,7 +45,8 @@ async function login(parent, args) {
 }
 //Animal Mutations
 async function createAnimal(parent, args, context){
-  const herd_number = await farmerHerdNoMut(context)
+  const id = getUserId(context)
+  const herd_number = await farmerHerdNo(id)
   const newAnimal = new Animal({
       tag_number:     args.tag_number,
       herd_number:    herd_number.herd_number,
@@ -63,14 +58,15 @@ async function createAnimal(parent, args, context){
       pure_breed:     args.pure_breed,
       animal_name:    args.animal_name,
       description:    args.description,
+      farmer_id:     id
   })
   const error = await newAnimal.save()
   if(error) return error
   return newAnimal
 }
 async function deleteAnimal(parent, args, context){
-  const herd_number = await farmerHerdNoMut(context)
-  const animalId = await Animal.findOne({"tag_number": args.tag_number, "herd_number": herd_number.herd_number})
+  const id = await getUserId(context)
+  const animalId = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
   return await Animal.findByIdAndDelete(animalId.id)
 }
 
