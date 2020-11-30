@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://AshleyArmstrong:simple@cluster0.ikcii.mongodb.net/OptiFarmTestDb?retryWrites=true&w=majority";
+const uri = "mongodb+srv://optiOne:oneOpti@cluster0.ikcii.mongodb.net/OptiFarmTestDb?retryWrites=true&w=majority";
 
 const options = {
   useNewUrlParser: true,
