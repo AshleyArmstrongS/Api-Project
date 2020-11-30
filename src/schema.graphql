@@ -112,7 +112,7 @@ type Farmer {
 }
 
 scalar Date
-type MyType {
+type date {
   created: Date
 }
 
@@ -134,3 +134,8 @@ enum FT {
   Sucker
   Other
 }
+
+#scalar Breeds
+#type breeds {
+#  created : Breeds
+#}

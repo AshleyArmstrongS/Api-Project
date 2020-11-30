@@ -58,7 +58,7 @@ async function createAnimal(parent, args, context){
       pure_breed:     args.pure_breed,
       animal_name:    args.animal_name,
       description:    args.description,
-      farmer_id:     id
+      farmer_id:      id
   })
   const error = await newAnimal.save()
   if(error) return error
@@ -69,23 +69,22 @@ async function deleteAnimal(parent, args, context){
   const animalId = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
   return await Animal.findByIdAndDelete(animalId.id)
 }
-
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
 const newMedication = new Medication({
-  medication_name: args.medication_name,
-  supplied_by: args.supplied_by,
-  quantity: args.quantity,
-  quantity_type: args.quantity_type,
-  remaining_quantity: args.quantity,
-  withdrawal_days_meat: args.withdrawal_days_meat,
-  withdrawal_days_dairy: args. withdrawal_days_dairy,
-  batch_number: args.batch_number,
-  expiry_date: args.expiry_date,
-  purchase_date: args.purchase_date,
-  comments: args.comments,
-  farmer_id: id,
+  medication_name:        args.medication_name,
+  supplied_by:            args.supplied_by,
+  quantity:               args.quantity,
+  quantity_type:          args.quantity_type,
+  remaining_quantity:     args.quantity,
+  withdrawal_days_meat:   args.withdrawal_days_meat,
+  withdrawal_days_dairy:  args. withdrawal_days_dairy,
+  batch_number:           args.batch_number,
+  expiry_date:            args.expiry_date,
+  purchase_date:          args.purchase_date,
+  comments:               args.comments,
+  farmer_id:              id,
 })
 const error = await newMedication.save()
 if(error) return error

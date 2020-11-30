@@ -27,7 +27,7 @@ const AnimalSchema = new Schema({
   breed_type: {
     //type: mongoose.Schema.Types.ObjectId,
     //ref: "Breed"
-    type: String,
+    type: String
   },
   date_of_birth: {
     type: Date,
