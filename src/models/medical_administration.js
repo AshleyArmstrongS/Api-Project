@@ -34,8 +34,16 @@ var MedicalAdministrationSchema = new Schema({ // verify quantity in API as ther
     type: String
   },
   animal_tag_number: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Animal"
+  },
+  medication_used: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Medication"
+  },
+  farmer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer"
   }
 }, {collection: 'MedAdmins'})
 

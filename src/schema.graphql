@@ -4,15 +4,19 @@ type Query {
 #Users Info
   farmer: Farmer
 #Animal Queries
-  animal(id: ID!): Animal
-  animalTag(tag_number: Int!): Animal
+  animal(id: ID!):              Animal
+  animalTag(tag_number: Int!):  Animal
 #Animals Queries
-  herd:  [Animal]!
-  progenyM(mother_number: Int!):  [Animal]!
-  progenyS(sire_number: Int!):    [Animal]!
-  animalSex(male_female: MF!):    [Animal]!
+  herd:                                 [Animal]!
+  #progenyM(mother_number: Int!):        [Animal]!
+  #progenyS(sire_number: Int!):          [Animal]!
+  animalSex(male_female: MF!):          [Animal]!
   animalBreed(breed_type: String!):     [Animal]!
-  animalPureBreed(pure_breed: Boolean): [Animal]!
+  animalPureBreed(pure_breed: Boolean!):[Animal]!
+  #Medication
+  medication(id: ID!): Medication
+  #Medications
+
 }
 
 type Mutation {
@@ -44,46 +48,85 @@ type Mutation {
     description:    String,
     date_of_birth:  Date!,
   ) :               Animal!
-  deleteAnimal(tag_number: Int!) : Animal!
+  deleteAnimal(
+    tag_number: Int!
+    ) :         Animal!
+
+  createMedication(
+    medication_name:        String!,
+    supplied_by:            String!,
+    quantity:               Int!,
+    quantity_type:          QT,
+    remaining_quantity:     Int,
+    withdrawal_days_meat:   Int,
+    withdrawal_days__dairy: Int,
+    batch_number:           String!,
+    expiry_date:            Date!,
+    purchase_date:          Date!,
+    comments:               String,
+  ) :                       Medication!
 }
 
 type Animal {
-  id:               ID
-  tag_number:       Int
-  herd_number:      String
-  sire_number:      Int
-  mother_number:    Int
-  male_female:      MF
-  breed_type:       String
-  pure_breed:       Boolean
-  animal_name:      String
-  description:      String
-  date_of_birth:    Date
+  id:             ID
+  tag_number:     Int
+  herd_number:    String
+  sire_number:    Int
+  mother_number:  Int
+  male_female:    MF
+  breed_type:     String
+  pure_breed:     Boolean
+  animal_name:    String
+  description:    String
+  date_of_birth:  Date
   }
 
-  type AuthPayload {
-    token:          String!
-    farmer:         Farmer
-  }
+type Medication {
+  id:                     ID
+  medication_name:        String
+  supplied_by:            String
+  quantity_ml:            Int
+  quantity_int:           Int
+  quantity_mg:            Int
+  withdrawal_days_meat:   Int
+  withdrawal_days__dairy: Int
+  remaining_quantity_ml:  Int
+  batch_number:           String
+  expiry_date:            Date
+  purchase_date:          Date
+  comments:               String
+}
 
-  type Farmer {
-  id:               ID
-  first_name:       String
-  second_name:      String
-  farm_type:        FT
-  farm_address:     String
-  email:            String
-  herd_number:      String
+type AuthPayload {
+  token:  String!
+  farmer: Farmer
+}
+
+type Farmer {
+  id:           ID
+  first_name:   String
+  second_name:  String
+  farm_type:    FT
+  farm_address: String
+  email:        String
+  herd_number:  String
 }
 
 scalar Date
 type MyType {
-   created: Date
+  created: Date
 }
 
 enum MF {
   M
   F
+}
+
+enum QT {
+  Ml
+  Mg
+  Count
+  Unassigned
 }
 
 enum FT {
