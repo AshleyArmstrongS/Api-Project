@@ -57,9 +57,8 @@ type Mutation {
     supplied_by:            String!,
     quantity:               Int!,
     quantity_type:          QT,
-    remaining_quantity:     Int,
     withdrawal_days_meat:   Int,
-    withdrawal_days__dairy: Int,
+    withdrawal_days_dairy:  Int,
     batch_number:           String!,
     expiry_date:            Date!,
     purchase_date:          Date!,
@@ -85,12 +84,11 @@ type Medication {
   id:                     ID
   medication_name:        String
   supplied_by:            String
-  quantity_ml:            Int
-  quantity_int:           Int
-  quantity_mg:            Int
+  quantity:               Int
+  quantity_type:          QT
   withdrawal_days_meat:   Int
   withdrawal_days__dairy: Int
-  remaining_quantity_ml:  Int
+  remaining_quantity:     Int
   batch_number:           String
   expiry_date:            Date
   purchase_date:          Date
