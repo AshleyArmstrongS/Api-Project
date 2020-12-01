@@ -42,7 +42,6 @@ type Mutation {
     ):              AuthPayload!
 #Animal
   createAnimal(
-    id:             ID!,
     tag_number:     Int!,
     sire_number:    Int!,
     mother_number:  Int!,
@@ -76,6 +75,13 @@ type Mutation {
     description:    String,
     date_of_birth:  Date,
   ): Animal!
+
+    #Group
+  createGroup(
+    group_name:         String!,
+    group_description:  String
+  ) :                   Group
+
 #Medication
   createMedication(
     medication_name:        String!,
@@ -120,11 +126,6 @@ type Medication {
   comments:               String
 }
 
-type AuthPayload {
-  token:  String!
-  farmer: Farmer
-}
-
 type Farmer {
   id:           ID
   first_name:   String
@@ -139,6 +140,11 @@ type Group{
   id:                 ID!
   group_name:         String
   group_description:  String
+}
+
+type AuthPayload {
+  token:  String!
+  farmer: Farmer
 }
 
 scalar Date
@@ -164,8 +170,3 @@ enum FT {
   Sucker
   Other
 }
-
-#scalar Breeds
-#type breeds {
-#  created : Breeds
-#}

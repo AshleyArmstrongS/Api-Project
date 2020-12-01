@@ -69,9 +69,7 @@ async function createAnimal(parent, args, context){
 }
 
 async function editAnimal(parent, args, context){
-  const id = await getUserId(context)
-  .select({"_id": 0})
-  const editedAnimal = await Animal.findByIdAndUpdate({"_id" : args.id},
+  const valid = await Animal.findByIdAndUpdate({"_id" : args.id},
     {
       sire_number:    args.sire_number,
       mother_number:  args.mother_number,
@@ -82,9 +80,10 @@ async function editAnimal(parent, args, context){
       animal_name:    args.animal_name,
       description:    args.description,
     })
-    const error = await editedAnimal.save()
-    if(error) return error
-    return editedAnimal
+    if (!valid) {
+      throw new Error('Could not edit animal')
+    }
+    return Animal.findOne({"_id" : args.id})
 }
 
 async function deleteAnimal(parent, args, context){
