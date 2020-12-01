@@ -66,11 +66,32 @@ async function createAnimal(parent, args, context){
   if(error) return error
   return newAnimal
 }
+
+async function editAnimal(parent, args, context){
+  const id = await getUserId(context)
+  .select({"_id": 0})
+  const editedAnimal = await Animal.findByIdAndUpdate({"_id" : args.id},
+    {
+      sire_number:    args.sire_number,
+      mother_number:  args.mother_number,
+      male_female:    args.male_female,
+      breed_type:     args.breed_type,
+      date_of_birth:  args.date_of_birth,
+      pure_breed:     args.pure_breed,
+      animal_name:    args.animal_name,
+      description:    args.description,
+    })
+    const error = await editedAnimal.save()
+    if(error) return error
+    return editedAnimal
+}
+
 async function deleteAnimal(parent, args, context){
   const id = await getUserId(context)
   const animalId = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
   return await Animal.findByIdAndDelete(animalId.id)
 }
+
 
 async function createGroup(parent, args, context) {
   const newGroup = new Group({
@@ -110,4 +131,5 @@ module.exports = {
     deleteAnimal,
     createGroup,
     createMedication,
+    editAnimal,
 }

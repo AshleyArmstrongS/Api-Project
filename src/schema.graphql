@@ -3,16 +3,15 @@ type Query {
   info:   String
 #Users Info
   farmer: Farmer
-#Animal Queries
+#Animal
   animal(id: ID!):              Animal
   animalTag(tag_number: Int!):  Animal
-#Animals Queries
-  herd:                                 [Animal]!
-  #progenyM(mother_number: Int!):        [Animal]!
-  #progenyS(sire_number: Int!):          [Animal]!
-  animalSex(male_female: MF!):          [Animal]!
-  animalBreed(breed_type: String!):     [Animal]!
-  animalPureBreed(pure_breed: Boolean!):[Animal]!
+#Animals
+  herd:                                       [Animal]!
+  progeny(tag_number: Int!, male_female: MF): [Animal]!
+  animalSex(male_female: MF!):                [Animal]!
+  animalBreed(breed_type: String!):           [Animal]!
+  animalPureBreed(pure_breed: Boolean!):      [Animal]!
   #Medication
   medication(id: ID!): Medication
   #Medications
@@ -39,6 +38,7 @@ type Mutation {
     ):              AuthPayload!
 #Animal
   createAnimal(
+    id:             ID!,
     tag_number:     Int!,
     sire_number:    Int!,
     mother_number:  Int!,
@@ -49,6 +49,7 @@ type Mutation {
     description:    String,
     date_of_birth:  Date!,
   ) :               Animal!
+
   deleteAnimal(
     tag_number: Int!
   ) :         Animal!
@@ -60,6 +61,18 @@ type Mutation {
   ) :                   Group
 
 
+  editAnimal(
+    id:             ID!,
+    sire_number:    Int,
+    mother_number:  Int,
+    male_female:    MF,
+    breed_type:     String,
+    pure_breed:     Boolean,
+    animal_name:    String,
+    description:    String,
+    date_of_birth:  Date,
+  ): Animal!
+#Medication
   createMedication(
     medication_name:        String!,
     supplied_by:            String!,
