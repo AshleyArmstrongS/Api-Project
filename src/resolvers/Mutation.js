@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
+
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 const Medication = require("../models/medication")
@@ -43,6 +44,7 @@ async function login(parent, args) {
   const AuthPayLoad = {token: userToken, farmer: loggingInFarmer}
   return AuthPayLoad
 }
+
 //Animal Mutations
 async function createAnimal(parent, args, context){
   const id = getUserId(context)
@@ -69,6 +71,16 @@ async function deleteAnimal(parent, args, context){
   const animalId = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
   return await Animal.findByIdAndDelete(animalId.id)
 }
+
+async function createGroup(parent, args, context) {
+  const newGroup = new Group({
+    group_name: args.group_name,
+    group_description: args.group_description
+  })
+  const error = await newGroup.save()
+  if(error) return error
+  return newGroup
+
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
@@ -96,5 +108,6 @@ module.exports = {
     signUp,
     login,
     deleteAnimal,
+    createGroup,
     createMedication,
 }
