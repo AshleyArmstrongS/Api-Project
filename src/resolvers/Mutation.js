@@ -94,14 +94,16 @@ async function deleteAnimal(parent, args, context){
 
 
 async function createGroup(parent, args, context) {
+  const id = getUserId(context)
   const newGroup = new Group({
     group_name: args.group_name,
-    group_description: args.group_description
+    group_description: args.group_description,
+    farmer_id: id
   })
   const error = await newGroup.save()
   if(error) return error
   return newGroup
-
+}
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
