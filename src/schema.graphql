@@ -52,7 +52,14 @@ type Mutation {
 
   deleteAnimal(
     tag_number: Int!
-    ) :         Animal!
+  ) :         Animal!
+
+  #Group
+  createGroup(
+    group_name:         String!,
+    group_description:  String
+  ) :                   Group
+
 
   editAnimal(
     id:             ID!,
@@ -122,6 +129,12 @@ type Farmer {
   farm_address: String
   email:        String
   herd_number:  String
+}
+
+type Group{
+  id:                 ID!
+  group_name:         String
+  group_description:  String
 }
 
 scalar Date
