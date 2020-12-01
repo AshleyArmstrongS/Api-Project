@@ -10,12 +10,11 @@ const GroupSchema = new Schema({
   group_description: {
     type: String,
     default: ''
-  }, 
+  },
   animal_tag_number: {
     type: Number,
     ref: "Animal"
   }
 }, {timestamps: true}, {collection: 'groups'})
-
 
 module.exports = mongoose.model('Group', GroupSchema);
