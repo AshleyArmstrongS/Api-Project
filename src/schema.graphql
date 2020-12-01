@@ -52,13 +52,6 @@ type Mutation {
   deleteAnimal(
     tag_number: Int!
   ) :         Animal!
-
-  #Group
-  createGroup(
-    group_name:         String!,
-    group_description:  String
-  ) :                   Group
-
   editAnimal(
     id:             ID!,
     sire_number:    Int,
@@ -70,6 +63,13 @@ type Mutation {
     description:    String,
     date_of_birth:  Date,
   ): Animal!
+
+    #Group
+  createGroup(
+    group_name:         String!,
+    group_description:  String
+  ) :                   Group
+
 #Medication
   createMedication(
     medication_name:        String!,
