@@ -53,21 +53,15 @@ function medications(parent, args, context) {
     return Medication.find({"farmer_id" : id})
 }
 module.exports = {
-    //API info
     info,
-    //User
     farmer,
-    //Animal
     animal,
     animalTag,
-    //Animals
     herd,
     animalSex,
     animalBreed,
     animalPureBreed,
     progeny,
-    //Medication
     medication,
-    //Medications
     medications,
 }
