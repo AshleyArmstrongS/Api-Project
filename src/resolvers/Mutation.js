@@ -68,8 +68,6 @@ async function createAnimal(parent, args, context){
 }
 
 async function editAnimal(parent, args, context){
-  const id = await getUserId(context)
-  .select({"_id": 0})
   const editedAnimal = await Animal.findByIdAndUpdate({"_id" : args.id},
     {
       sire_number:    args.sire_number,
@@ -101,7 +99,7 @@ async function createGroup(parent, args, context) {
   const error = await newGroup.save()
   if(error) return error
   return newGroup
-
+}
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
