@@ -49,6 +49,7 @@ function progeny(parent, args, context){
 function group(parent, args){
   return Group.findById(args.id)
 }
+// might need to put group_name as unique
 function groupName(parent, args, context){
   const id = getUserId(context)
   return Group.find({"group_name": args.group_name, "farmer_id": id})
