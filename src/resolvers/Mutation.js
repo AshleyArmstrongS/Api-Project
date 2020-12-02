@@ -6,6 +6,7 @@ const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 const Medication = require("../models/medication")
 const Breed = require("../models/breed")
+const Group = require("../models/group")
 
 //Internal functions
 function farmerHerdNo(id){
@@ -91,16 +92,31 @@ async function deleteAnimal(parent, args, context){
   return await Animal.findByIdAndDelete(animalId.id)
 }
 
-
+// Group Mutations
 async function createGroup(parent, args, context) {
+  const id = getUserId(context)
   const newGroup = new Group({
     group_name: args.group_name,
-    group_description: args.group_description
+    group_description: args.group_description,
+    farmer_id: id
   })
   const error = await newGroup.save()
   if(error) return error
   return newGroup
 }
+// untested editGroup function
+// async function editGroup(parent, args, context){
+//   const id = await getUserId(context)
+//   const editedGroup = await Group.findByIdAndUpdate({"_id" : args.id},
+//     {
+//       group_name: args.group_name,
+//       group_description: args.group_description
+//     })
+//     const error = await editedGroup.save()
+//     if(error) return error
+//     return editedGroup
+// }
+
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)

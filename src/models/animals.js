@@ -52,7 +52,11 @@ const AnimalSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Farmer",
     required: true
-  }
+  },
+  // groups: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Group"
+  // }
 }, {collection: 'animals'})
 
 

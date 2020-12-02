@@ -11,9 +11,10 @@ const GroupSchema = new Schema({
     type: String,
     default: ''
   },
-  animal_tag_number: {
-    type: Number,
-    ref: "Animal"
+  farmer_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer",
+    required: true
   }
 }, {timestamps: true}, {collection: 'groups'})
 

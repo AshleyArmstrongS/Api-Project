@@ -12,9 +12,13 @@ type Query {
   animalSex(male_female: MF!):                [Animal]!
   animalBreed(breed_type: String!):           [Animal]!
   animalPureBreed(pure_breed: Boolean!):      [Animal]!
-  #Medication
+#Group
+  group:                   Group           
+  groupName:              [Group]!
+  groupDescription:       [Group]!
+#Medication
   medication(id: ID!): Medication
-  #Medications
+#Medications
   medications:  [Medication]!
 
 }
@@ -52,6 +56,14 @@ type Mutation {
   deleteAnimal(
     tag_number: Int!
   ) :         Animal!
+
+  #Group
+  createGroup(
+    group_name:         String!,
+    group_description:  String,
+  ) :                   Group
+
+
   editAnimal(
     id:             ID!,
     sire_number:    Int,
