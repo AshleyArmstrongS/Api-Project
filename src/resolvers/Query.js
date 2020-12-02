@@ -5,7 +5,7 @@ const Medication = require("../models/medication")
 const {getUserId } = require('../utils')
 //API info
 function info(){
-    return "Hi this is the OptiFarm API."
+    return "This is the OptiFarm API"
 }
 //User
 function farmer(parent, args, context){
