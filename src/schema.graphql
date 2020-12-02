@@ -13,9 +13,9 @@ type Query {
   animalBreed(breed_type: String!):           [Animal]!
   animalPureBreed(pure_breed: Boolean!):      [Animal]!
 #Group
-  group:                   Group           
-  groupName:              [Group]!
-  groupDescription:       [Group]!
+  group(id: ID!):                              Group           
+  groupName(group_name: String!):               [Group]!
+  groupDescription(group_description: String!): [Group]!
 #Medication
   medication(id: ID!): Medication
 #Medications
@@ -57,13 +57,6 @@ type Mutation {
     tag_number: Int!
   ) :         Animal!
 
-  #Group
-  createGroup(
-    group_name:         String!,
-    group_description:  String,
-  ) :                   Group
-
-
   editAnimal(
     id:             ID!,
     sire_number:    Int,
@@ -79,8 +72,8 @@ type Mutation {
     #Group
   createGroup(
     group_name:         String!,
-    group_description:  String
-  ) :                   Group
+    group_description:  String,
+  ) :                   Group!
 
 #Medication
   createMedication(
@@ -137,7 +130,7 @@ type Farmer {
 }
 
 type Group{
-  id:                 ID!
+  id:                 ID
   group_name:         String
   group_description:  String
 }
