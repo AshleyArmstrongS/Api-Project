@@ -7,19 +7,24 @@ type Query {
   animal(id: ID!):              Animal
   animalTag(tag_number: Int!):  Animal
 #Animals
-  herd:                                       [Animal]!
-  progeny(tag_number: Int!, male_female: MF): [Animal]!
-  animalSex(male_female: MF!):                [Animal]!
-  animalBreed(breed_type: String!):           [Animal]!
-  animalPureBreed(pure_breed: Boolean!):      [Animal]!
+  herd:                                           [Animal]!
+  progeny(tag_number: Int!, male_female: MF):     [Animal]!
+  animalSex(male_female: MF!):                    [Animal]!
+  animalBreed(breed_type: String!):               [Animal]!
+  animalPureBreed(pure_breed: Boolean!):          [Animal]!
+  #animalsBornAfter(date_of_birth: Date!):         [Animal]!
+  #animalsBornBefore(date_of_birth: Date!):        [Animal]!
+  #animalsBornBetween(after: Date!, before :Date): [Animal]!
 #Group
-  group(id: ID!):                              Group           
+  group(id: ID!):                              Group
   groupName(group_name: String!):               [Group]!
   groupDescription(group_description: String!): [Group]!
 #Medication
   medication(id: ID!): Medication
 #Medications
   medications:  [Medication]!
+  #medicationsByName: [Medication]!
+  #medicationsExpired: [Medication]!
 
 }
 
