@@ -2,31 +2,30 @@ type Query {
 #API info
   info:   String
 #Users Info
-  getFarmer: Farmer
+  farmer: Farmer
 #Animal
-  getAnimal(id: ID!):              Animal
-  getAnimalByTag(tag_number: Int!):  Animal
+  animal(id: ID!):                Animal
+  animalByTag(tag_number: Int!):  Animal
 #Animals
-  getHerd:                                           [Animal]!
-  getProgeny(tag_number: Int!, male_female: MF):     [Animal]!
-  getAnimalBySex(male_female: MF!):                    [Animal]!
-  getAnimalByBreed(breed_type: String!):               [Animal]!
-  getAnimalByPureBreed(pure_breed: Boolean!):          [Animal]!
-  
-  getAnimalsByDateOfBirth(date_of_birth: Date!):          [Animal]!
-  getAnimalsByDateBornAfter(date_of_birth: Date!):           [Animal]!
-  getAnimalsByDateBornBefore(date_of_birth: Date!):          [Animal]!
-  getAnimalsByDatesBornBetween(after: Date!, before: Date!):  [Animal]!
+  herd:                                             [Animal]!
+  progeny(tag_number: Int!, male_female: MF):       [Animal]!
+  animalBySex(male_female: MF!):                    [Animal]!
+  animalByBreed(breed_type: String!):               [Animal]!
+  animalByPureBreed(pure_breed: Boolean!):          [Animal]!
+  animalsBornOn(date_of_birth: Date!):              [Animal]!
+  animalsBornAfter(date_of_birth: Date!):           [Animal]!
+  animalsBornBefore(date_of_birth: Date!):          [Animal]!
+  animalsBornBetween(after: Date!, before: Date!):  [Animal]!
 
 #Group
-  getGroup(id: ID!):                              Group
-  getGroupByName(group_name: String!):               [Group]!
-  getGroupByDescription(group_description: String!): [Group]!
+  group(id: ID!):                                  Group
+  groupByName(group_name: String!):               [Group]!
+  groupByDescription(group_description: String!): [Group]!
 #Medication
-  getMedication(id: ID!): Medication
+  medication(id: ID!): Medication
 #Medications
-  getMedications:  [Medication]!
-  #medicationsByName: [Medication]!
+  medications:         [Medication]!
+  #medicationsByName:  [Medication]!
   #medicationsExpired: [Medication]!
 
 }
@@ -62,8 +61,8 @@ type Mutation {
   ) :               Animal!
 
   deleteAnimal(
-    tag_number: Int!
-  ) :         Animal!
+    tag_number:     Int!
+  ) :               Animal!
 
   editAnimal(
     id:             ID!,
