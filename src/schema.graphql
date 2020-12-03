@@ -2,30 +2,30 @@ type Query {
 #API info
   info:   String
 #Users Info
-  farmer: Farmer
+  getFarmer: Farmer
 #Animal
-  animal(id: ID!):              Animal
-  animalTag(tag_number: Int!):  Animal
+  getAnimal(id: ID!):              Animal
+  getAnimalByTag(tag_number: Int!):  Animal
 #Animals
-  herd:                                           [Animal]!
-  progeny(tag_number: Int!, male_female: MF):     [Animal]!
-  animalSex(male_female: MF!):                    [Animal]!
-  animalBreed(breed_type: String!):               [Animal]!
-  animalPureBreed(pure_breed: Boolean!):          [Animal]!
+  getHerd:                                           [Animal]!
+  getProgeny(tag_number: Int!, male_female: MF):     [Animal]!
+  getAnimalBySex(male_female: MF!):                    [Animal]!
+  getAnimalByBreed(breed_type: String!):               [Animal]!
+  getAnimalByPureBreed(pure_breed: Boolean!):          [Animal]!
   
-  animalDateOfBirth(date_of_birth: Date!):          [Animal]!
-  animalsBornAfter(date_of_birth: Date!):           [Animal]!
-  animalsBornBefore(date_of_birth: Date!):          [Animal]!
-  animalsBornBetween(after: Date!, before: Date!):  [Animal]!
+  getAnimalsByDateOfBirth(date_of_birth: Date!):          [Animal]!
+  getAnimalsByDateBornAfter(date_of_birth: Date!):           [Animal]!
+  getAnimalsByDateBornBefore(date_of_birth: Date!):          [Animal]!
+  getAnimalsByDatesBornBetween(after: Date!, before: Date!):  [Animal]!
 
 #Group
-  group(id: ID!):                              Group
-  groupName(group_name: String!):               [Group]!
-  groupDescription(group_description: String!): [Group]!
+  getGroup(id: ID!):                              Group
+  getGroupByName(group_name: String!):               [Group]!
+  getGroupByDescription(group_description: String!): [Group]!
 #Medication
-  medication(id: ID!): Medication
+  getMedication(id: ID!): Medication
 #Medications
-  medications:  [Medication]!
+  getMedications:  [Medication]!
   #medicationsByName: [Medication]!
   #medicationsExpired: [Medication]!
 
