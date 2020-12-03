@@ -18,6 +18,20 @@ type Query {
   getAnimalsByDateBornBefore(date_of_birth: Date!):          [Animal]!
   getAnimalsByDatesBornBetween(after: Date!, before: Date!):  [Animal]!
 
+# Potential Queries
+# search for cross_breeds
+# search for animal by name
+# getBreedCode
+# getBreedName
+# farmer info
+# farm medical administrators
+# medication name
+# quantity/quantity type
+# administer by
+# animal that was medicated
+
+# medication queries
+
 #Group
   getGroup(id: ID!):                              Group
   getGroupByName(group_name: String!):               [Group]!
