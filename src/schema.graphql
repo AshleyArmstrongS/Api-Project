@@ -163,10 +163,16 @@ type AnimalMutationResponse{
   animal:   Animal
 }
 type MedicationMutationResponse{
+  code:         String!
+  success:      Boolean!
+  message:      String!
+  medication:   Medication!
+}
+type GroupMutationResponse{
   code:     String!
   success:  Boolean!
   message:  String!
-  medication:   Medication!
+  group:    Group!
 }
 
 #ENUMS

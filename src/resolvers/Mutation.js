@@ -63,14 +63,13 @@ async function createAnimal(parent, args, context){
   })
   const valid = await newAnimal.save()
   if (!valid) {
-    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not added"}
+    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not created"}
     return AnimalMutationResponse
   }
    const AnimalMutationResponse =
-        {code: 200, success: true, message: "Animal added successful", animal: newAnimal}
+        {code: 200, success: true, message: "Animal created successful", animal: newAnimal}
   return AnimalMutationResponse
 }
-
 async function updateAnimal(parent, args){
   const valid = await Animal.findByIdAndUpdate({"_id" : args.id},
   {
@@ -84,12 +83,12 @@ async function updateAnimal(parent, args){
     description:    args.description,
   })
   if (!valid) {
-    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not edited"}
+    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not updated"}
     return AnimalMutationResponse
   }
   const editedAnimal = Animal.findOne({"_id" : args.id})
   const AnimalMutationResponse =
-      {code: 200, success: true, message: "Animal edited successful", animal: editedAnimal}
+      {code: 200, success: true, message: "Animal updated successful", animal: editedAnimal}
   return AnimalMutationResponse
 }
 
@@ -97,13 +96,12 @@ async function deleteAnimal(parent, args, context){
   const id = await getUserId(context)
   const animalToDelete = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
   const valid =  Animal.findByIdAndDelete(animalId.id)
-  if(!valid)
-  {
+  if(!valid) {
     const AnimalMutationResponse = {code: 400, success: false, message: "Animal not deleted"}
     return AnimalMutationResponse
   }
   const AnimalMutationResponse =
-      {code: 200, success: true, message: "Animal edited successful", animal: animalToDelete}
+      {code: 200, success: true, message: "Animal deleted successful", animal: animalToDelete}
   return AnimalMutationResponse
 }
 
@@ -115,23 +113,31 @@ async function createGroup(parent, args, context) {
     group_description: args.group_description,
     farmer_id: id,
   })
-  const error = await newGroup.save()
-  if(error) return error
-  return newGroup
+  const valid = await newGroup.save()
+  if(!valid) {
+    const GroupMutationResponse = {code: 400, success: false, message: "Group not created"}
+    return GroupMutationResponse
+  }
+  const GroupMutationResponse =
+  {code: 200, success: true, message: "Group created successful", group: newGroup}
+  return GroupMutationResponse
 }
-// untested editGroup function
-// async function updateGroup(parent, args, context){
-//   const id = await getUserId(context)
-//   const editedGroup = await Group.findByIdAndUpdate({"_id" : args.id},
-//     {
-//       group_name: args.group_name,
-//       group_description: args.group_description
-//     })
-//     const error = await editedGroup.save()
-//     if(error) return error
-//     return editedGroup
-// }
-
+ async function updateGroup(parent, args, context){
+   const id = await getUserId(context)
+   const valid = await Group.findByIdAndUpdate({"_id" : args.id},
+     {
+       group_name: args.group_name,
+       group_description: args.group_description
+     })
+     if(!valid) {
+      const GroupMutationResponse = {code: 400, success: false, message: "Group not updated"}
+      return GroupMutationResponse
+    }
+    const editedGroup = Group.findOne({"_id" : args.id})
+    const GroupMutationResponse =
+    {code: 200, success: true, message: "Animal updated successful", group: editedGroup}
+    return GroupMutationResponse
+}
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
@@ -152,11 +158,11 @@ const newMedication = new Medication({
 const valid = await newMedication.save()
 if (!valid) {
   const MedicationMutationResponse =
-      {code: 400, success: false, message: "Medication not added"}
+      {code: 400, success: false, message: "Medication not created"}
   return MedicationMutationResponse
 }
 const MedicationMutationResponse =
-    {code: 200, success: true, message: "Animal edited successful", medication: newMedication}
+    {code: 200, success: true, message: "Medication created successful", medication: newMedication}
     return MedicationMutationResponse
 }
 async function updateMedication(parent, args){
@@ -181,7 +187,7 @@ async function updateMedication(parent, args){
   }
   const updatedMedication = await Medication.findOne({"_id" : args.id})
   const MedicationMutationResponse =
-    {code: 200, success: true, message: "Animal edited successful", medication: updatedMedication}
+    {code: 200, success: true, message: "Animal updated successful", medication: updatedMedication}
   return MedicationMutationResponse
 }
 
@@ -191,6 +197,7 @@ module.exports = {
     login,
     deleteAnimal,
     createGroup,
+    updateGroup,
     createMedication,
     updateAnimal,
     updateMedication,
