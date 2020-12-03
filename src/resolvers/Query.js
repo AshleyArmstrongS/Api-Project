@@ -45,34 +45,27 @@ function progeny(parent, args, context){
     }
     return Animal.find({ "mother_number" : args.tag_number, "farmer_id" : id })
 }
-
-// Search Queries
-
+// Animal
 function animalsBornOn(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": new Date(args.date_of_birth), "farmer_id": id })
 }
-
 function animalsBornAfter(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$gte : new Date(args.date_of_birth)} , "farmer_id": id })
 }
-
 function animalsBornBefore(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$lte : new Date(args.date_of_birth)} , "farmer_id": id })
 }
-
 function animalsBornBetween(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$gte : new Date(args.after), $lte : new Date(args.before)} , "farmer_id": id })
 }
-
 //Group
 function group(parent, args){
   return Group.findById(args.id)
 }
-// might need to put group_name as unique
 function groupByName(parent, args, context){
   const id = getUserId(context)
   return Group.find({"group_name": args.group_name, "farmer_id": id})
@@ -81,7 +74,6 @@ function groupByDescription(parent, args, context){
   const id = getUserId(context)
   return Group.find({"group_description": args.group_description, "farmer_id": id})
 }
-
 //Medication
 function medication(parent, args, context) {
     return Medication.findById(args.id)
