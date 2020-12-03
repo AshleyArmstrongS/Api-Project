@@ -12,9 +12,12 @@ type Query {
   animalSex(male_female: MF!):                    [Animal]!
   animalBreed(breed_type: String!):               [Animal]!
   animalPureBreed(pure_breed: Boolean!):          [Animal]!
-  #animalsBornAfter(date_of_birth: Date!):         [Animal]!
-  #animalsBornBefore(date_of_birth: Date!):        [Animal]!
-  #animalsBornBetween(after: Date!, before :Date): [Animal]!
+  
+  animalDateOfBirth(date_of_birth: Date!):          [Animal]!
+  animalsBornAfter(date_of_birth: Date!):           [Animal]!
+  animalsBornBefore(date_of_birth: Date!):          [Animal]!
+  animalsBornBetween(after: Date!, before: Date!):  [Animal]!
+
 #Group
   group(id: ID!):                              Group
   groupName(group_name: String!):               [Group]!
