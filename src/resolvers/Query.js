@@ -8,36 +8,36 @@ function info(){
     return "This is the OptiFarm API"
 }
 //User
-function farmer(parent, args, context){
+function getFarmer(parent, args, context){
     const id = getUserId(context)
     return Farmer.findById(id)
 }
 //Animal
-function animal(parent, args){
+function getAnimal(parent, args){
    return Animal.findById(args.id)
 }
-function animalTag(parent, args, context){
+function getAnimalByTag(parent, args, context){
     const id = getUserId(context)
     return Animal.findOne({"tag_number": args.tag_number, "farmer_id": id})
 }
 //Animals
-function herd(parent, args, context){
+function getHerd(parent, args, context){
     const id = getUserId(context)
     return Animal.find({"farmer_id": id })
 }
-function animalBreed(parent, args, context) {
+function getAnimalByBreed(parent, args, context) {
     const id = getUserId(context)
     return Animal.find({"breed_type": args.breed_type, "farmer_id": id })
 }
-function animalPureBreed(parent, args, context) {
+function getAnimalByPureBreed(parent, args, context) {
     const id = getUserId(context)
     return Animal.find({"pure_breed": args.pure_breed, "farmer_id": id })
 }
-function animalSex(parent, args, context) {
+function getAnimalBySex(parent, args, context) {
     const id = getUserId(context)
     return Animal.find({"male_female": args.male_female, "farmer_id": id })
 }
-function progeny(parent, args, context){
+function getProgeny(parent, args, context){
     const id = getUserId(context)
     if(args.male_female == "M"){
         return Animal.find({ "sire_number" : args.tag_number, "farmer_id" : id })
@@ -47,75 +47,72 @@ function progeny(parent, args, context){
 
 // Search Queries
 
-function animalDateOfBirth(parent, args, context) {
+function getAnimalsByDateOfBirth(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": new Date(args.date_of_birth), "farmer_id": id })
 }
 
-function animalsBornAfter(parent, args, context) {
+function getAnimalsByDateBornAfter(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$gte : new Date(args.date_of_birth)} , "farmer_id": id })
 }
 
-function animalsBornBefore(parent, args, context) {
+function getAnimalsByDateBornBefore(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$lte : new Date(args.date_of_birth)} , "farmer_id": id })
 }
 
-function animalsBornBetween(parent, args, context) {
+function getAnimalsByDatesBornBetween(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$gte : new Date(args.after), $lte : new Date(args.before)} , "farmer_id": id })
 }
 
 //Group
-function group(parent, args){
+function getGroup(parent, args){
   return Group.findById(args.id)
 }
 // might need to put group_name as unique
-function groupName(parent, args, context){
+function getGroupByName(parent, args, context){
   const id = getUserId(context)
   return Group.find({"group_name": args.group_name, "farmer_id": id})
 }
-function groupDescription(parent, args, context){
+function getGroupByDescription(parent, args, context){
   const id = getUserId(context)
   return Group.find({"group_description": args.group_description, "farmer_id": id})
 }
 
 //Medication
-function medication(parent, args, context) {
+function getMedication(parent, args, context) {
     return Medication.findById(args.id)
 }
 //Medications
-function medications(parent, args, context) {
+function getMedications(parent, args, context) {
     const id = getUserId(context)
     return Medication.find({"farmer_id" : id})
 }
 module.exports = {
     info,
-    farmer,
-    animal,
-    animalTag,
-    herd,
-    animalSex,
-    animalBreed,
-    animalPureBreed,
-    progeny,
+    getFarmer,
 
-    //Group
-    group,
-    groupName,
-    groupDescription,
+    // Animal
+    getAnimal,
+    getAnimalByTag,
+    getHerd,
+    getAnimalByBreed,
+    getAnimalByPureBreed,
+    getAnimalBySex,
+    getProgeny,
+    getAnimalsByDateOfBirth,
+    getAnimalsByDateBornAfter,
+    getAnimalsByDateBornBefore,
+    getAnimalsByDatesBornBetween,
 
-    // Search Queries
-    animalDateOfBirth,
-    animalsBornAfter,
-    animalsBornBefore,
-    animalsBornBetween,
+    // Group
+    getGroup,
+    getGroupByName,
+    getGroupByDescription,
 
-
-    
-    //Medication
-
-    medication,
-    medications,
+    // Medication
+    getMedication,
+    getMedications,
 }
