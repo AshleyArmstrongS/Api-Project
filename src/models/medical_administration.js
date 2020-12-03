@@ -7,24 +7,19 @@ var MedicalAdministrationSchema = new Schema({ // verify quantity in API as ther
     type: Date,
     default: Date.now
   },
-  medication_name: {
+  // medication_name: {  might not need as medication is referenced
+  //   type: String,
+  //   required: true
+  // },
+  quantity_used: {
+    type: Number,
+    required: true,
+    default: 0
+  },
+  quantity_type: {
     type: String,
-    required: true
-  },
-  quantity_used_ml: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  quantity_used_mg: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  quantity_used_int: {
-    type: Number,
-    required: true,
-    default: 0
+    enum : ["Ml", "Mg", "Count", "Unassigned"],
+    default : "Unassigned"
   },
   administered_by: {
     type: String,
