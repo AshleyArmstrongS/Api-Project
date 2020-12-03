@@ -2,21 +2,20 @@ type Query {
 #API info
   info:   String
 #Users Info
-  getFarmer: Farmer
+  farmer: Farmer
 #Animal
-  getAnimal(id: ID!):              Animal
-  getAnimalByTag(tag_number: Int!):  Animal
+  animal(id: ID!):                Animal
+  animalByTag(tag_number: Int!):  Animal
 #Animals
-  getHerd:                                           [Animal]!
-  getProgeny(tag_number: Int!, male_female: MF):     [Animal]!
-  getAnimalBySex(male_female: MF!):                    [Animal]!
-  getAnimalByBreed(breed_type: String!):               [Animal]!
-  getAnimalByPureBreed(pure_breed: Boolean!):          [Animal]!
-  
-  getAnimalsByDateOfBirth(date_of_birth: Date!):          [Animal]!
-  getAnimalsByDateBornAfter(date_of_birth: Date!):           [Animal]!
-  getAnimalsByDateBornBefore(date_of_birth: Date!):          [Animal]!
-  getAnimalsByDatesBornBetween(after: Date!, before: Date!):  [Animal]!
+  herd:                                             [Animal]!
+  progeny(tag_number: Int!, male_female: MF):       [Animal]!
+  animalBySex(male_female: MF!):                    [Animal]!
+  animalByBreed(breed_type: String!):               [Animal]!
+  animalByPureBreed(pure_breed: Boolean!):          [Animal]!
+  animalsBornOnDate(date_of_birth: Date!):              [Animal]!
+  animalsBornAfterDate(date_of_birth: Date!):           [Animal]!
+  animalsBornBeforeDate(date_of_birth: Date!):          [Animal]!
+  animalsBornBetweenDates(after: Date!, before: Date!):  [Animal]!
 
 # Potential Queries
 # search for cross_breeds
@@ -33,14 +32,14 @@ type Query {
 # medication queries
 
 #Group
-  getGroup(id: ID!):                              Group
-  getGroupByName(group_name: String!):               [Group]!
-  getGroupByDescription(group_description: String!): [Group]!
+  group(id: ID!):                                  Group
+  groupByName(group_name: String!):               [Group]!
+  groupByDescription(group_description: String!): [Group]!
 #Medication
-  getMedication(id: ID!): Medication
+  medication(id: ID!): Medication
 #Medications
-  getMedications:  [Medication]!
-  #medicationsByName: [Medication]!
+  medications:         [Medication]!
+  #medicationsByName:  [Medication]!
   #medicationsExpired: [Medication]!
 
 }
@@ -73,13 +72,9 @@ type Mutation {
     animal_name:    String,
     description:    String,
     date_of_birth:  Date!,
-  ) :               Animal!
+  ) :               AnimalMutationResponse!
 
-  deleteAnimal(
-    tag_number: Int!
-  ) :         Animal!
-
-  editAnimal(
+  updateAnimal(
     id:             ID!,
     sire_number:    Int,
     mother_number:  Int,
@@ -89,9 +84,10 @@ type Mutation {
     animal_name:    String,
     description:    String,
     date_of_birth:  Date,
-  ): Animal!
+  ):                AnimalMutationResponse!
 
-    #Group
+    deleteAnimal(id: ID!): AnimalMutationResponse!
+  #Group
   createGroup(
     group_name:         String!,
     group_description:  String,
@@ -109,8 +105,8 @@ type Mutation {
     expiry_date:            Date!,
     purchase_date:          Date!,
     comments:               String,
-  ) :                       Medication!
-  editMedication(
+  ) :                       MedicationMutationResponse!
+  updateMedication(
     id:                     ID!,
     medication_name:        String,
     supplied_by:            String,
@@ -124,9 +120,10 @@ type Mutation {
     purchase_date:          Date,
     batch_number:           String,
     comments:               String,
-  ) :                       Medication!
+  ) :                       MedicationMutationResponse!
 }
 
+#OBJECT_TYPES
 type Animal {
   id:             ID
   tag_number:     Int
@@ -140,7 +137,6 @@ type Animal {
   description:    String
   date_of_birth:  Date
   }
-
 type Medication {
   id:                     ID
   medication_name:        String
@@ -155,7 +151,6 @@ type Medication {
   purchase_date:          Date
   comments:               String
 }
-
 type Farmer {
   id:           ID
   first_name:   String
@@ -165,38 +160,54 @@ type Farmer {
   email:        String
   herd_number:  String
 }
-
 type Group{
   id:                 ID
   group_name:         String
   group_description:  String
 }
-
+#RESPONSE_TYPES
 type AuthPayload {
   token:  String!
   farmer: Farmer
 }
-
-scalar Date
-type date {
-  created: Date
+type AnimalMutationResponse{
+  code:     String!
+  success:  Boolean!
+  message:  String!
+  animal:   Animal
+}
+type MedicationMutationResponse{
+  code:         String!
+  success:      Boolean!
+  message:      String!
+  medication:   Medication!
+}
+type GroupMutationResponse{
+  code:     String!
+  success:  Boolean!
+  message:  String!
+  group:    Group!
 }
 
+#ENUMS
 enum MF {
   M
   F
 }
-
 enum QT {
   Ml
   Mg
   Count
   Unassigned
 }
-
 enum FT {
   Dairy
   Beef
   Sucker
   Other
+}
+#CUSTOM_SCALARS
+scalar Date
+type date {
+  created: Date
 }

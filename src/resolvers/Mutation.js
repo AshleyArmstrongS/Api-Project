@@ -44,7 +44,6 @@ async function login(parent, args) {
   const AuthPayLoad = {token: userToken, farmer: loggingInFarmer}
   return AuthPayLoad
 }
-
 //Animal Mutations
 async function createAnimal(parent, args, context){
   const id = getUserId(context)
@@ -62,33 +61,48 @@ async function createAnimal(parent, args, context){
       description:    args.description,
       farmer_id:      id,
   })
-  const error = await newAnimal.save()
-  if(error) return error
-  return newAnimal
+  const valid = await newAnimal.save()
+  if (!valid) {
+    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not created"}
+    return AnimalMutationResponse
+  }
+   const AnimalMutationResponse =
+        {code: 200, success: true, message: "Animal created successful", animal: newAnimal}
+  return AnimalMutationResponse
 }
-
-async function editAnimal(parent, args){
+async function updateAnimal(parent, args){
   const valid = await Animal.findByIdAndUpdate({"_id" : args.id},
-    {
-      sire_number:    args.sire_number,
-      mother_number:  args.mother_number,
-      male_female:    args.male_female,
-      breed_type:     args.breed_type,
-      date_of_birth:  args.date_of_birth,
-      pure_breed:     args.pure_breed,
-      animal_name:    args.animal_name,
-      description:    args.description,
-    })
-    if (!valid) {
-      throw new Error('Could not edit animal')
-    }
-    return Animal.findOne({"_id" : args.id})
+  {
+    sire_number:    args.sire_number,
+    mother_number:  args.mother_number,
+    male_female:    args.male_female,
+    breed_type:     args.breed_type,
+    date_of_birth:  args.date_of_birth,
+    pure_breed:     args.pure_breed,
+    animal_name:    args.animal_name,
+    description:    args.description,
+  })
+  if (!valid) {
+    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not updated"}
+    return AnimalMutationResponse
+  }
+  const editedAnimal = Animal.findOne({"_id" : args.id})
+  const AnimalMutationResponse =
+      {code: 200, success: true, message: "Animal updated successful", animal: editedAnimal}
+  return AnimalMutationResponse
 }
 
 async function deleteAnimal(parent, args, context){
   const id = await getUserId(context)
-  const animalId = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
-  return await Animal.findByIdAndDelete(animalId.id)
+  const animalToDelete = await Animal.findOne({"tag_number": args.tag_number, "farmer_id": id })
+  const valid =  Animal.findByIdAndDelete(animalId.id)
+  if(!valid) {
+    const AnimalMutationResponse = {code: 400, success: false, message: "Animal not deleted"}
+    return AnimalMutationResponse
+  }
+  const AnimalMutationResponse =
+      {code: 200, success: true, message: "Animal deleted successful", animal: animalToDelete}
+  return AnimalMutationResponse
 }
 
 // Group Mutations
@@ -99,23 +113,31 @@ async function createGroup(parent, args, context) {
     group_description: args.group_description,
     farmer_id: id,
   })
-  const error = await newGroup.save()
-  if(error) return error
-  return newGroup
+  const valid = await newGroup.save()
+  if(!valid) {
+    const GroupMutationResponse = {code: 400, success: false, message: "Group not created"}
+    return GroupMutationResponse
+  }
+  const GroupMutationResponse =
+  {code: 200, success: true, message: "Group created successful", group: newGroup}
+  return GroupMutationResponse
 }
-// untested editGroup function
-// async function editGroup(parent, args, context){
-//   const id = await getUserId(context)
-//   const editedGroup = await Group.findByIdAndUpdate({"_id" : args.id},
-//     {
-//       group_name: args.group_name,
-//       group_description: args.group_description
-//     })
-//     const error = await editedGroup.save()
-//     if(error) return error
-//     return editedGroup
-// }
-
+ async function updateGroup(parent, args, context){
+   const id = await getUserId(context)
+   const valid = await Group.findByIdAndUpdate({"_id" : args.id},
+     {
+       group_name: args.group_name,
+       group_description: args.group_description
+     })
+     if(!valid) {
+      const GroupMutationResponse = {code: 400, success: false, message: "Group not updated"}
+      return GroupMutationResponse
+    }
+    const editedGroup = Group.findOne({"_id" : args.id})
+    const GroupMutationResponse =
+    {code: 200, success: true, message: "Animal updated successful", group: editedGroup}
+    return GroupMutationResponse
+}
 //Medication Queries
 async function createMedication(parent, args, context){
   const id = getUserId(context)
@@ -133,31 +155,41 @@ const newMedication = new Medication({
   comments:               args.comments,
   farmer_id:              id,
 })
-const error = await newMedication.save()
-if(error) return error
-return newMedication
+const valid = await newMedication.save()
+if (!valid) {
+  const MedicationMutationResponse =
+      {code: 400, success: false, message: "Medication not created"}
+  return MedicationMutationResponse
 }
-
-  async function editMedication(parent, args){
+const MedicationMutationResponse =
+    {code: 200, success: true, message: "Medication created successful", medication: newMedication}
+    return MedicationMutationResponse
+}
+async function updateMedication(parent, args){
     const valid = await Medication.findByIdAndUpdate({"_id" : args.id},
-    {
-      medication_name: args.medication_name,
-      supplied_by: args.supplied_by,
-      quantity: args.quantity,
-      quantity_type: args.quantity_type,
-      withdrawal_days_dairy: args.withdrawal_days_dairy,
-      withdrawal_days_meat: args.withdrawal_days_meat,
-      remaining_quantity: args.remaining_quantity,
-      batch_number: args.batch_number,
-      expiry_date: args.expiry_date,
-      purchase_date: args.purchase_date,
-      comments: args.comments,
+  {
+    medication_name: args.medication_name,
+    supplied_by: args.supplied_by,
+    quantity: args.quantity,
+    quantity_type: args.quantity_type,
+    withdrawal_days_dairy: args.withdrawal_days_dairy,
+    withdrawal_days_meat: args.withdrawal_days_meat,
+    remaining_quantity: args.remaining_quantity,
+    batch_number: args.batch_number,
+    expiry_date: args.expiry_date,
+    purchase_date: args.purchase_date,
+    comments: args.comments,
   })
   if (!valid) {
-    throw new Error('Could not edit Medication')
+    const MedicationMutationResponse =
+      {code: 400, success: false, message: "Medication not updated"}
+    return MedicationMutationResponse
   }
-  return Medication.findOne({"_id" : args.id})
-  }
+  const updatedMedication = await Medication.findOne({"_id" : args.id})
+  const MedicationMutationResponse =
+    {code: 200, success: true, message: "Animal updated successful", medication: updatedMedication}
+  return MedicationMutationResponse
+}
 
 module.exports = {
     createAnimal,
@@ -165,7 +197,8 @@ module.exports = {
     login,
     deleteAnimal,
     createGroup,
+    updateGroup,
     createMedication,
-    editAnimal,
-    editMedication,
+    updateAnimal,
+    updateMedication,
 }
