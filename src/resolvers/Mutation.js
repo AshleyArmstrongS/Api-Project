@@ -5,7 +5,6 @@ const { APP_SECRET, getUserId } = require('../utils')
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 const Medication = require("../models/medication")
-const Breed = require("../models/breed")
 const Group = require("../models/group")
 
 //Internal functions
@@ -61,14 +60,14 @@ async function createAnimal(parent, args, context){
       pure_breed:     args.pure_breed,
       animal_name:    args.animal_name,
       description:    args.description,
-      farmer_id:      id
+      farmer_id:      id,
   })
   const error = await newAnimal.save()
   if(error) return error
   return newAnimal
 }
 
-async function editAnimal(parent, args, context){
+async function editAnimal(parent, args){
   const valid = await Animal.findByIdAndUpdate({"_id" : args.id},
     {
       sire_number:    args.sire_number,
@@ -98,7 +97,7 @@ async function createGroup(parent, args, context) {
   const newGroup = new Group({
     group_name: args.group_name,
     group_description: args.group_description,
-    farmer_id: id
+    farmer_id: id,
   })
   const error = await newGroup.save()
   if(error) return error
@@ -139,6 +138,27 @@ if(error) return error
 return newMedication
 }
 
+  async function editMedication(parent, args){
+    const valid = await Medication.findByIdAndUpdate({"_id" : args.id},
+    {
+      medication_name: args.medication_name,
+      supplied_by: args.supplied_by,
+      quantity: args.quantity,
+      quantity_type: args.quantity_type,
+      withdrawal_days_dairy: args.withdrawal_days_dairy,
+      withdrawal_days_meat: args.withdrawal_days_meat,
+      remaining_quantity: args.remaining_quantity,
+      batch_number: args.batch_number,
+      expiry_date: args.expiry_date,
+      purchase_date: args.purchase_date,
+      comments: args.comments,
+  })
+  if (!valid) {
+    throw new Error('Could not edit Medication')
+  }
+  return Medication.findOne({"_id" : args.id})
+  }
+
 module.exports = {
     createAnimal,
     signUp,
@@ -147,4 +167,5 @@ module.exports = {
     createGroup,
     createMedication,
     editAnimal,
+    editMedication,
 }
