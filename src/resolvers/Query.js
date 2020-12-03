@@ -45,6 +45,28 @@ function progeny(parent, args, context){
     return Animal.find({ "mother_number" : args.tag_number, "farmer_id" : id })
 }
 
+// Search Queries
+
+function animalDateOfBirth(parent, args, context) {
+  const id = getUserId(context)
+  return Animal.find({"date_of_birth": new Date(args.date_of_birth), "farmer_id": id })
+}
+
+function animalsBornAfter(parent, args, context) {
+  const id = getUserId(context)
+  return Animal.find({"date_of_birth": {$gte : new Date(args.date_of_birth)} , "farmer_id": id })
+}
+
+function animalsBornBefore(parent, args, context) {
+  const id = getUserId(context)
+  return Animal.find({"date_of_birth": {$lte : new Date(args.date_of_birth)} , "farmer_id": id })
+}
+
+function animalsBornBetween(parent, args, context) {
+  const id = getUserId(context)
+  return Animal.find({"date_of_birth": {$gte : new Date(args.after), $lte : new Date(args.before)} , "farmer_id": id })
+}
+
 //Group
 function group(parent, args){
   return Group.findById(args.id)
@@ -78,10 +100,20 @@ module.exports = {
     animalBreed,
     animalPureBreed,
     progeny,
+
     //Group
     group,
     groupName,
     groupDescription,
+
+    // Search Queries
+    animalDateOfBirth,
+    animalsBornAfter,
+    animalsBornBefore,
+    animalsBornBetween,
+
+
+    
     //Medication
 
     medication,
