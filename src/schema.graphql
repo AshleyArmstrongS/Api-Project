@@ -8,8 +8,8 @@ type Query {
   animalByTag(tag_number: Int!):  Animal
 #Animals
   herd:                                             [Animal]!
-  progeny(tag_number: Int!, male_female: MF):       [Animal]!
-  animalBySex(male_female: MF!):                    [Animal]!
+  progeny(tag_number: Int!, male_female: Sex!):     [Animal]!
+  animalBySex(male_female: Sex!):                   [Animal]!
   animalByBreed(breed_type: String!):               [Animal]!
   animalByPureBreed(pure_breed: Boolean!):          [Animal]!
   animalsBornOnDate(date_of_birth: Date!):              [Animal]!
@@ -51,7 +51,7 @@ type Mutation {
     password:       String!,
     first_name:     String!,
     second_name:    String!,
-    farm_type:      FT!,
+    farm_type:      FarmType!,
     farm_address:   String,
     password:       String!,
     email:          String!
@@ -66,7 +66,7 @@ type Mutation {
     tag_number:     Int!,
     sire_number:    Int!,
     mother_number:  Int!,
-    male_female:    MF!,
+    male_female:    Sex!,
     breed_type:     String!,
     pure_breed:     Boolean!,
     animal_name:    String,
@@ -78,7 +78,7 @@ type Mutation {
     id:             ID!,
     sire_number:    Int,
     mother_number:  Int,
-    male_female:    MF,
+    male_female:    Sex,
     breed_type:     String,
     pure_breed:     Boolean,
     animal_name:    String,
@@ -98,7 +98,7 @@ type Mutation {
     medication_name:        String!,
     supplied_by:            String!,
     quantity:               Int!,
-    quantity_type:          QT!,
+    quantity_type:          QuantityType!,
     withdrawal_days_meat:   Int,
     withdrawal_days_dairy:  Int,
     batch_number:           String!,
@@ -111,7 +111,7 @@ type Mutation {
     medication_name:        String,
     supplied_by:            String,
     quantity:               Int,
-    quantity_type:          QT,
+    quantity_type:          QuantityType,
     withdrawal_days_meat:   Int,
     withdrawal_days_dairy:  Int,
     batch_number:           String,
@@ -130,7 +130,7 @@ type Animal {
   herd_number:    String
   sire_number:    Int
   mother_number:  Int
-  male_female:    MF
+  male_female:    Sex
   breed_type:     String
   pure_breed:     Boolean
   animal_name:    String
@@ -142,7 +142,7 @@ type Medication {
   medication_name:        String
   supplied_by:            String
   quantity:               Int
-  quantity_type:          QT
+  quantity_type:          QuantityType
   withdrawal_days_meat:   Int
   withdrawal_days__dairy: Int
   remaining_quantity:     Int
@@ -155,7 +155,7 @@ type Farmer {
   id:           ID
   first_name:   String
   second_name:  String
-  farm_type:    FT
+  farm_type:    FarmType
   farm_address: String
   email:        String
   herd_number:  String
@@ -190,21 +190,21 @@ type GroupMutationResponse{
 }
 
 #ENUMS
-enum MF {
+enum Sex {
   M
   F
 }
-enum QT {
-  Ml
-  Mg
-  Count
-  Unassigned
+enum QuantityType {
+  ML
+  MG
+  COUNT
+  UNASSIGNED
 }
-enum FT {
-  Dairy
-  Beef
-  Sucker
-  Other
+enum FarmType {
+  DAIRY
+  BEEF
+  SUCKLER
+  OTHER
 }
 #CUSTOM_SCALARS
 scalar Date

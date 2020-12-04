@@ -26,13 +26,8 @@ var MedicationSchema = new Schema({// verify quantity in API as there are three 
   },
   quantity_type: {
     type: String,
-    enum : ["Ml", "Mg", "Count", "Unassigned"],
-    default : "Unassigned"
-  },
-  farm_type: {
-    type: String,
-    enum : ["Beef", "Dairy", "Suckler", "Other"],
-    default: "Other"
+    enum : ["ML", "MG", "COUNT", "UNASSIGNED"],
+    default : "UNASSIGNED"
   },
   remaining_quantity: {
     type: Number,
