@@ -3,6 +3,7 @@ type Query {
   info:   String
 #Users Info
   farmer: Farmer
+  farmMedicationAdministrators:                     [String]!
 #Animal
   animal(id: ID!):                Animal
   animalByTag(tag_number: Int!):  Animal
@@ -17,15 +18,19 @@ type Query {
   animalsBornBefore(date_of_birth: Date!):      [Animal]!
   animalsBornBetween(after: Date!, before: Date!):  [Animal]!
   animalsByCrossBreed(cross_breeds: String!):       [Animal]!
+  animalsByName(animal_name: String!):              [Animal]!
 
-# Potential Queries
-# search for cross_breeds
-# search for animal by name
-# getBreedCode
-# getBreedName
-# farmer info
-# farm medical administrators
-# medication name
+#Breed
+  breedName(breed_name: String!):                   [Breed]!
+  breedCode(breed_code: String!):                   [Breed]!
+
+#Medication
+  medication(id: ID!):  Medication
+#Medications
+  medications:          [Medication]!
+  medicationsByName:    [Medication]!
+  medicationsExpired:   [Medication]!
+
 # quantity/quantity type
 # administer by
 # animal that was medicated
@@ -36,12 +41,7 @@ type Query {
   group(id: ID!):                                  Group
   groupByName(group_name: String!):               [Group]!
   groupByDescription(group_description: String!): [Group]!
-#Medication
-  medication(id: ID!): Medication
-#Medications
-  medications:         [Medication]!
-  #medicationsByName:  [Medication]!
-  #medicationsExpired: [Medication]!
+
 
 }
 
