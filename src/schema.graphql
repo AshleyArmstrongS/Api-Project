@@ -12,10 +12,11 @@ type Query {
   animalBySex(male_female: MF!):                    [Animal]!
   animalByBreed(breed_type: String!):               [Animal]!
   animalByPureBreed(pure_breed: Boolean!):          [Animal]!
-  animalsBornOnDate(date_of_birth: Date!):              [Animal]!
-  animalsBornAfterDate(date_of_birth: Date!):           [Animal]!
-  animalsBornBeforeDate(date_of_birth: Date!):          [Animal]!
-  animalsBornBetweenDates(after: Date!, before: Date!):  [Animal]!
+  animalsBornOn(date_of_birth: Date!):              [Animal]!
+  animalsBornAfter(date_of_birth: Date!):       [Animal]!
+  animalsBornBefore(date_of_birth: Date!):      [Animal]!
+  animalsBornBetween(after: Date!, before: Date!):  [Animal]!
+  animalsByCrossBreed(cross_breeds: String!):       [Animal]!
 
 # Potential Queries
 # search for cross_breeds
@@ -89,6 +90,11 @@ type Mutation {
     deleteAnimal(id: ID!): AnimalMutationResponse!
   #Group
   createGroup(
+    group_name:         String!,
+    group_description:  String,
+  ) :                   Group!
+
+  updateGroup(
     group_name:         String!,
     group_description:  String,
   ) :                   Group!
