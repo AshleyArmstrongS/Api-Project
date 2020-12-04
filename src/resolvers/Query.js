@@ -134,4 +134,7 @@ module.exports = {
     // Medication
     medication,
     medications,
+    medicationsByName,
+    medicationsExpired,
+    medicationsReasonsFor,
 }
