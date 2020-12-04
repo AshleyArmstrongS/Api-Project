@@ -26,7 +26,7 @@ const FarmerSchema = new Schema({
   },
   farm_type: {
     type: String,
-    enum : ["Beef", "Dairy", "Suckler", "Other"],
+    enum : ["BEEF", "DAIRY", "SUCKLER", "OTHER"],
     default: "Other"
   },
   farm_address: {

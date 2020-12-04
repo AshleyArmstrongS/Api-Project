@@ -181,16 +181,16 @@ enum MF {
   F
 }
 enum QT {
-  Ml
-  Mg
-  Count
-  Unassigned
+  ML
+  MG
+  COUNT
+  UNASSIGNED
 }
 enum FT {
-  Dairy
-  Beef
-  Sucker
-  Other
+  DAIRY
+  BEEF
+  SUCKLER
+  OTHER
 }
 #CUSTOM_SCALARS
 scalar Date
