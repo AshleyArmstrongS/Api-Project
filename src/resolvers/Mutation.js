@@ -12,6 +12,7 @@ function farmerHerdNo(id){
   return Farmer.findById(id).select({'herd_number': 1, "_id": 0})
 }
 //Login/SignUp
+
 async function signUp(parent, args) {
   const password = await bcrypt.hash(args.password, 10)
   const newFarmer = await new Farmer({
@@ -25,23 +26,26 @@ async function signUp(parent, args) {
   })
   const valid = await newFarmer.save()
   if (!valid) {
-    throw new Error('Could not save user')
+    const AuthPayLoad = {code: 400, success: false, message: "Sign Up failed."}
+    return AuthPayLoad
   }
   const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET)
-  const AuthPayLoad = {token: userToken, farmer: newFarmer}
+  const AuthPayLoad = {code: 200, success: true, message: "Signed Up successfully.", token: userToken, farmer: newFarmer}
   return AuthPayLoad
 }
 async function login(parent, args) {
   const loggingInFarmer = await Farmer.findOne({email: args.email})
   if (!loggingInFarmer) {
-    throw new Error('No such user found')
+    const AuthPayLoad = {code: 400, success: false, message: "Email doesn't exist."}
+    return AuthPayLoad
   }
   const valid = await bcrypt.compare(args.password, loggingInFarmer.password)
   if (!valid) {
-    throw new Error('Invalid password')
+    const AuthPayLoad = {code: 400, success: false, message: "Password Incorrect."}
+    return AuthPayLoad
   }
   const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET)
-  const AuthPayLoad = {token: userToken, farmer: loggingInFarmer}
+  const AuthPayLoad = {code: 200, success: true, message: "Logged in successfully.", token: userToken, farmer: loggingInFarmer}
   return AuthPayLoad
 }
 //Animal Mutations
