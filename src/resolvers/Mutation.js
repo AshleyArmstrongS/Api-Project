@@ -30,7 +30,7 @@ async function signUp(parent, args) {
     return AuthPayLoad
   }
   const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET)
-  const AuthPayLoad = {code: 200, success: true, message: "Signed Up successfully.", token: userToken, farmer: newFarmer}
+  const AuthPayLoad = {code: 201, success: true, message: "Signed Up successfully.", token: userToken, farmer: newFarmer}
   return AuthPayLoad
 }
 async function login(parent, args) {
@@ -71,7 +71,7 @@ async function createAnimal(parent, args, context){
     return AnimalMutationResponse
   }
    const AnimalMutationResponse =
-        {code: 200, success: true, message: "Animal created successful", animal: newAnimal}
+        {code: 201, success: true, message: "Animal created successful", animal: newAnimal}
   return AnimalMutationResponse
 }
 async function updateAnimal(parent, args){
@@ -123,7 +123,7 @@ async function createGroup(parent, args, context) {
     return GroupMutationResponse
   }
   const GroupMutationResponse =
-  {code: 200, success: true, message: "Group created successful", group: newGroup}
+  {code: 201, success: true, message: "Group created successful", group: newGroup}
   return GroupMutationResponse
 }
  async function updateGroup(parent, args, context){
@@ -166,7 +166,7 @@ if (!valid) {
   return MedicationMutationResponse
 }
 const MedicationMutationResponse =
-    {code: 200, success: true, message: "Medication created successful", medication: newMedication}
+    {code: 201, success: true, message: "Medication created successful", medication: newMedication}
     return MedicationMutationResponse
 }
 async function updateMedication(parent, args){
