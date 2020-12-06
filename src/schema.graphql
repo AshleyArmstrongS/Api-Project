@@ -173,7 +173,10 @@ type Group{
 }
 #RESPONSE_TYPES
 type AuthPayload {
-  token:  String!
+  code:     String!
+  success:  Boolean!
+  message:  String!
+  token:  String
   farmer: Farmer
 }
 type AnimalMutationResponse{
