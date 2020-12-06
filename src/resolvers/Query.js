@@ -1,7 +1,9 @@
 const Animal = require("../models/animals")
+const breed = require("../models/breed")
 const Farmer = require("../models/farmer")
 const Group = require("../models/group")
 const Medication = require("../models/medication")
+const Breed = require("../models/breed")
 const {getUserId } = require('../utils')
 //API info
 function info(){
@@ -14,7 +16,7 @@ function farmer(parent, args, context){
 }
 function farmMedicationAdministrators(parent, args, context) {
   const id = getUserId(context)
-  return Farmer.find({"medication_administrators": args.medication_administrators, farmer_id: id})
+  return Farmer.distinct({"medication_administrators": args.medication_administrators, farmer_id: id})
 }
 //Animal
 function animal(parent, args){
@@ -105,6 +107,13 @@ function medicationsReasonsFor(parent, args, context) {
   const id = getUserId(context)
   return Medication.find({"reason_for": {$regex : args.reason_for}, "farmer_id" : id})
 }
+// Breeds
+function breedName(parent, args, context) {
+  return Breed.find({"breed_name": args.breed_name})
+}
+function breedCode(parent, args, context) {
+  return Breed.find({"breed_code": args.breed_code})
+}
 
 module.exports = {
     info,
@@ -137,4 +146,8 @@ module.exports = {
     medicationsByName,
     medicationsExpired,
     medicationsReasonsFor,
+
+    // Breed
+    breedName,
+    breedCode,
 }
