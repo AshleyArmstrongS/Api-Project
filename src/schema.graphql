@@ -27,10 +27,10 @@ type Query {
 #Medication
   medication(id: ID!):  Medication
 #Medications
-  medications:          [Medication]!
-  medicationsByName:    [Medication]!
-  medicationsExpired:   [Medication]!
-
+  medications:            [Medication]!
+  medicationsByName:      [Medication]!
+  medicationsExpired:     [Medication]!
+  medicationsReasonsFor:  [Medication]!
 # quantity/quantity type
 # administer by
 # animal that was medicated
@@ -170,6 +170,11 @@ type Group{
   id:                 ID
   group_name:         String
   group_description:  String
+}
+type Breed{
+  id: ID
+  breed_name: String
+  breed_code: String
 }
 #RESPONSE_TYPES
 type AuthPayload {
