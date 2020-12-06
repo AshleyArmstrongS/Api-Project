@@ -14,10 +14,6 @@ function farmer(parent, args, context){
     const id = getUserId(context)
     return Farmer.findById(id)
 }
-function farmMedicationAdministrators(parent, args, context) {
-  const id = getUserId(context)
-  return Farmer.distinct({"medication_administrators": args.medication_administrators, farmer_id: id})
-}
 //Animal
 function animal(parent, args){
   const id = getUserId(context)
