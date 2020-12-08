@@ -1,16 +1,16 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
 const BreedSchema = new Schema({
   breed_name: {
     type: String,
-    required: true
+    required: true,
   },
   breed_code: {
     type: String,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-module.exports = mongoose.model('Breed', BreedSchema);
+module.exports = mongoose.model("Breed", BreedSchema);
