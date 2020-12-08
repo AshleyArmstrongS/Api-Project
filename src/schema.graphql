@@ -3,7 +3,6 @@ type Query {
   info: String
   #Users Info
   farmer: Farmer
-  farmMedicationAdministrators:                     [String]!
 #Animal
   animal(id: ID!):                Animal
   animalByTag(tag_number: Int!):  Animal
@@ -31,6 +30,7 @@ type Query {
   medicationsByName:      [Medication]!
   medicationsExpired:     [Medication]!
   medicationsReasonsFor:  [Medication]!
+  searchForMedicationByName(args: String!): [Medication]!
 # quantity/quantity type
 # administer by
 # animal that was medicated
