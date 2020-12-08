@@ -1,7 +1,9 @@
 const Animal = require("../models/animals")
+const breed = require("../models/breed")
 const Farmer = require("../models/farmer")
 const Group = require("../models/group")
 const Medication = require("../models/medication")
+const Breed = require("../models/breed")
 const {getUserId } = require('../utils')
 //API info
 function info(){
@@ -62,6 +64,10 @@ function animalsBornBetween(parent, args, context) {
   const id = getUserId(context)
   return Animal.find({"date_of_birth": {$gte : new Date(args.after), $lte : new Date(args.before)} , "farmer_id": id })
 }
+function animalsByCrossBreed(parent, args, context) {
+  const id = getUserId(context)
+  return Animal.find({"cross_breed": args.cross_breed, farmer_id: id})
+}
 //Group
 function group(parent, args){
   return Group.findById(args.id)
@@ -83,9 +89,32 @@ function medications(parent, args, context) {
     const id = getUserId(context)
     return Medication.find({"farmer_id" : id})
 }
+
+function medicationsByName(parent, args, context) {
+  const id = getUserId(context)
+  return Medication.find({"medication_name": args.medication_name, "farmer_id" : id})
+}
+function medicationsExpired(parent, args, context) {
+  const id = getUserId(context)
+  return Medication.find({"expiry_date": {$lt : Date.now}, "farmer_id" : id})
+}
+
+function medicationsReasonsFor(parent, args, context) {
+  const id = getUserId(context)
+  return Medication.find({"reason_for": {$regex : args.reason_for}, "farmer_id" : id})
+}
+// Breeds
+function breedName(parent, args, context) {
+  return Breed.find({"breed_name": args.breed_name})
+}
+function breedCode(parent, args, context) {
+  return Breed.find({"breed_code": args.breed_code})
+}
+
 module.exports = {
     info,
     farmer,
+    farmMedicationAdministrators,
 
     // Animal
     animal,
@@ -99,6 +128,8 @@ module.exports = {
     animalsBornAfter,
     animalsBornBefore,
     animalsBornBetween,
+    animalsByCrossBreed,
+    
 
     // Group
     group,
@@ -108,4 +139,11 @@ module.exports = {
     // Medication
     medication,
     medications,
+    medicationsByName,
+    medicationsExpired,
+    medicationsReasonsFor,
+
+    // Breed
+    breedName,
+    breedCode,
 }
