@@ -105,7 +105,6 @@ function medications(parent, args, context) {
   const id = getUserId(context);
   return Medication.find({ farmer_id: id });
 }
-
 function medicationsByName(parent, args, context) {
   const id = getUserId(context)
   return Medication.find({"medication_name": args.medication_name, "farmer_id" : id})
@@ -114,10 +113,16 @@ function medicationsExpired(parent, args, context) {
   const id = getUserId(context)
   return Medication.find({"expiry_date": {$lt : Date.now}, "farmer_id" : id})
 }
+function searchForMedicationByName(parent, args, context) {
+  const id = getUserId(context)
+  var str = args.medication_name
+  return Medication.find({"medication_name": {$regex: /test$/, $options: 'i'}, farmer_id: id})
+}
 
+// Medical_Administration
 function medicationsReasonsFor(parent, args, context) {
   const id = getUserId(context)
-  return Medication.find({"reason_for": {$regex : args.reason_for}, "farmer_id" : id})
+  return Medication.find({"reason_for": args.reason_for, "farmer_id" : id})
 }
 // Breeds
 function breedName(parent, args, context) {
@@ -131,7 +136,6 @@ module.exports = {
 
     info,
     farmer,
-    farmMedicationAdministrators,
 
     // Animal
     animal,
@@ -159,6 +163,7 @@ module.exports = {
     medicationsByName,
     medicationsExpired,
     medicationsReasonsFor,
+    searchForMedicationByName,
 
     // Breed
     breedName,
