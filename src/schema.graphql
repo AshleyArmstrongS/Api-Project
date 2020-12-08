@@ -92,12 +92,12 @@ type Mutation {
   createGroup(
     group_name:         String!,
     group_description:  String,
-  ) :                   Group!
+  ) :                   GroupMutationResponse!
 
   updateGroup(
     group_name:         String!,
     group_description:  String,
-  ) :                   Group!
+  ) :                   GroupMutationResponse!
 
 #Medication
   createMedication(
@@ -185,18 +185,19 @@ type AnimalMutationResponse{
   message:  String!
   animal:   Animal
 }
-type MedicationMutationResponse{
-  code:         String!
-  success:      Boolean!
-  message:      String!
-  medication:   Medication!
-}
 type GroupMutationResponse{
   code:     String!
   success:  Boolean!
   message:  String!
-  group:    Group!
+  group:    Group
 }
+type MedicationMutationResponse{
+  code:         String!
+  success:      Boolean!
+  message:      String!
+  medication:   Medication
+}
+
 
 #ENUMS
 enum Sex {

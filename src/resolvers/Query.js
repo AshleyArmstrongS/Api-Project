@@ -15,7 +15,7 @@ function farmer(parent, args, context){
 //Animal
 function animal(parent, args){
   const id = getUserId(context)
-   return Animal.findOne({ "id" :args.id, "farmer_id": id})
+   return Animal.findOne({ "_id" :args.id, "farmer_id": id})
 }
 function animal(parent, args, context){
     const id = getUserId(context)
