@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
 
+const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
@@ -14,6 +15,17 @@ function farmerHerdNo(id) {
 //Login/SignUp
 
 async function signUp(parent, args) {
+  const alreadyExists = await Farmer.findOne({ email: args.email });
+  if (alreadyExists) {
+    return {
+      code: 400,
+      success: false,
+      message:
+        "Sign Up failed, email " +
+        alreadyExists.email +
+        " already has an account.",
+    };
+  }
   const password = await bcrypt.hash(args.password, 10);
   const newFarmer = await new Farmer({
     first_name: args.first_name,
@@ -67,29 +79,33 @@ async function createAnimal(parent, args, context) {
     return FAILED_AUTHENTICATION;
   }
   const herd_number = await farmerHerdNo(id);
-  const newAnimal = new Animal({
-    tag_number: args.tag_number,
-    herd_number: herd_number.herd_number,
-    sire_number: args.sire_number,
-    mother_number: args.mother_number,
-    male_female: args.male_female,
-    breed_type: args.breed_type,
-    date_of_birth: args.date_of_birth,
-    pure_breed: args.pure_breed,
-    animal_name: args.animal_name,
-    description: args.description,
-    farmer_id: id,
-  });
-  const valid = await newAnimal.save();
-  if (!valid) {
-    return { code: 400, success: false, message: "Animal not created" };
+  const alreadyExists = await animalByTag(parent, args, context);
+  if (!alreadyExists) {
+    const newAnimal = new Animal({
+      tag_number: args.tag_number,
+      herd_number: herd_number.herd_number,
+      sire_number: args.sire_number,
+      mother_number: args.mother_number,
+      male_female: args.male_female,
+      breed_type: args.breed_type,
+      date_of_birth: args.date_of_birth,
+      pure_breed: args.pure_breed,
+      animal_name: args.animal_name,
+      description: args.description,
+      farmer_id: id,
+    });
+    const valid = await newAnimal.save();
+    if (!valid) {
+      return { code: 400, success: false, message: "Animal not created" };
+    }
+    return {
+      code: 201,
+      success: true,
+      message: "Animal created successful",
+      animal: newAnimal,
+    };
   }
-  return {
-    code: 201,
-    success: true,
-    message: "Animal created successful",
-    animal: newAnimal,
-  };
+  return { code: 400, success: false, message: "Animal already exists" };
 }
 async function updateAnimal(parent, args) {
   const id = getUserId(context);
@@ -120,14 +136,12 @@ async function updateAnimal(parent, args) {
     animal: editedAnimal,
   };
 }
-
 async function deleteAnimal(parent, args, context) {
   const id = await getUserId(context);
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
-  const animalToDelete = await Animal.findOne({ _id: args.id, farmer_id: id });
-  const valid = Animal.findByIdAndDelete(animalToDelete.id);
+  const valid = await Animal.findByIdAndDelete(args.id);
   if (!valid) {
     return { code: 400, success: false, message: "Animal not deleted" };
   }
@@ -135,7 +149,7 @@ async function deleteAnimal(parent, args, context) {
     code: 200,
     success: true,
     message: "Animal deleted successful",
-    animal: animalToDelete,
+    animal: valid,
   };
 }
 // Group Mutations

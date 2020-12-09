@@ -16,11 +16,11 @@ function farmer(parent, args, context) {
   return Farmer.findById(id);
 }
 //Animal
-function animal(parent, args) {
+function animal(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ _id: args.id, farmer_id: id });
 }
-function animal(parent, args, context) {
+function animalByTag(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
 }
@@ -128,14 +128,11 @@ function breedCode(parent, args, context) {
 }
 
 module.exports = {
-
     info,
     farmer,
-    farmMedicationAdministrators,
-
     // Animal
     animal,
-    //animalByTag,
+    animalByTag,
     herd,
     animalByBreed,
     animalByPureBreed,
@@ -146,20 +143,16 @@ module.exports = {
     animalsBornBefore,
     animalsBornBetween,
     animalsByCrossBreed,
-    
-
   // Group
   group,
   groupByName,
   groupByDescription,
-
     // Medication
     medication,
     medications,
     medicationsByName,
     medicationsExpired,
     medicationsReasonsFor,
-
     // Breed
     breedName,
     breedCode,
