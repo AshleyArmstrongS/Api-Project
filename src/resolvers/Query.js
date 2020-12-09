@@ -16,7 +16,7 @@ function farmer(parent, args, context) {
   return Farmer.findById(id);
 }
 //Animal
-function animal(parent, args) {
+function animal(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ _id: args.id, farmer_id: id });
 }

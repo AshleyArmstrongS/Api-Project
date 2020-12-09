@@ -141,7 +141,7 @@ async function deleteAnimal(parent, args, context) {
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
-  valid = await Animal.findByIdAndDelete(valid.id);
+  const valid = await Animal.findByIdAndDelete(args.id);
   if (!valid) {
     return { code: 400, success: false, message: "Animal not deleted" };
   }
