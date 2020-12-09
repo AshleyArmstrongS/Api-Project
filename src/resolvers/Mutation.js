@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
-
+const {animalTag} = require('./Query')
 const Animal = require("../models/animals")
 const Farmer = require("../models/farmer")
 const Medication = require("../models/medication")
@@ -52,6 +52,8 @@ async function login(parent, args) {
 async function createAnimal(parent, args, context){
   const id = getUserId(context)
   const herd_number = await farmerHerdNo(id)
+  const alreadyExists = await animalTag(parent, args, context)
+  if(!alreadyExists){
   const newAnimal = new Animal({
       tag_number:     args.tag_number,
       herd_number:    herd_number.herd_number,
@@ -73,6 +75,7 @@ async function createAnimal(parent, args, context){
    const AnimalMutationResponse =
         {code: 201, success: true, message: "Animal created successful", animal: newAnimal}
   return AnimalMutationResponse
+}
 }
 async function updateAnimal(parent, args){
   const valid = await Animal.findByIdAndUpdate({"_id" : args.id},
