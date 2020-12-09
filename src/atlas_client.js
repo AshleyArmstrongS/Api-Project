@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const uri = "mongodb+srv://optiOne:oneOpti@cluster0.ikcii.mongodb.net/OptiFarmTestDb?retryWrites=true&w=majority";
+const mongoose = require("mongoose");
+const uri =
+  "mongodb+srv://optiOne:oneOpti@cluster0.ikcii.mongodb.net/OptiFarmTestDb?retryWrites=true&w=majority";
 
 const options = {
   useNewUrlParser: true,
@@ -10,11 +11,12 @@ const options = {
   poolSize: 10, // Maintain up to 10 socket connections
   serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  family: 4 // Use IPv4, skip trying IPv6
+  family: 4, // Use IPv4, skip trying IPv6
 };
 
-mongoose.connect(uri, options)
-.then(() => {
-  console.log('MongoDB Connected…')
-})
-.catch(err => console.log(err))
+mongoose
+  .connect(uri, options)
+  .then(() => {
+    console.log("MongoDB Connected…");
+  })
+  .catch((err) => console.log(err));

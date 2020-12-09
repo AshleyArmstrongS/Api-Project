@@ -1,7 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { APP_SECRET, getUserId } = require("../utils");
-const { animalTag } = require("./Query");
+
+const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
+
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
@@ -26,22 +27,17 @@ async function signUp(parent, args) {
   });
   const valid = await newFarmer.save();
   if (!valid) {
-    const AuthPayLoad = {
-      code: 400,
-      success: false,
-      message: "Sign Up failed.",
-    };
-    return AuthPayLoad;
+
+    return { code: 400, success: false, message: "Sign Up failed." };
   }
   const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET);
-  const AuthPayLoad = {
+  return {
     code: 201,
     success: true,
     message: "Signed Up successfully.",
     token: userToken,
     farmer: newFarmer,
   };
-  return AuthPayLoad;
 }
 async function login(parent, args) {
   const loggingInFarmer = await Farmer.findOne({ email: args.email });
@@ -55,61 +51,53 @@ async function login(parent, args) {
   }
   const valid = await bcrypt.compare(args.password, loggingInFarmer.password);
   if (!valid) {
-    const AuthPayLoad = {
-      code: 400,
-      success: false,
-      message: "Password Incorrect.",
-    };
-    return AuthPayLoad;
+    return { code: 400, success: false, message: "Password Incorrect." };
   }
   const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET);
-  const AuthPayLoad = {
+  return {
     code: 200,
     success: true,
     message: "Logged in successfully.",
     token: userToken,
     farmer: loggingInFarmer,
   };
-  return AuthPayLoad;
 }
 //Animal Mutations
 async function createAnimal(parent, args, context) {
   const id = getUserId(context);
-  const herd_number = await farmerHerdNo(id);
-  const alreadyExists = await animalTag(parent, args, context);
-  if (!alreadyExists) {
-    const newAnimal = new Animal({
-      tag_number: args.tag_number,
-      herd_number: herd_number.herd_number,
-      sire_number: args.sire_number,
-      mother_number: args.mother_number,
-      male_female: args.male_female,
-      breed_type: args.breed_type,
-      date_of_birth: args.date_of_birth,
-      pure_breed: args.pure_breed,
-      animal_name: args.animal_name,
-      description: args.description,
-      farmer_id: id,
-    });
-    const valid = await newAnimal.save();
-    if (!valid) {
-      const AnimalMutationResponse = {
-        code: 400,
-        success: false,
-        message: "Animal not created",
-      };
-      return AnimalMutationResponse;
-    }
-    const AnimalMutationResponse = {
-      code: 201,
-      success: true,
-      message: "Animal created successful",
-      animal: newAnimal,
-    };
-    return AnimalMutationResponse;
+  if (!id) {
+    return FAILED_AUTHENTICATION;
   }
+  const herd_number = await farmerHerdNo(id);
+  const newAnimal = new Animal({
+    tag_number: args.tag_number,
+    herd_number: herd_number.herd_number,
+    sire_number: args.sire_number,
+    mother_number: args.mother_number,
+    male_female: args.male_female,
+    breed_type: args.breed_type,
+    date_of_birth: args.date_of_birth,
+    pure_breed: args.pure_breed,
+    animal_name: args.animal_name,
+    description: args.description,
+    farmer_id: id,
+  });
+  const valid = await newAnimal.save();
+  if (!valid) {
+    return { code: 400, success: false, message: "Animal not created" };
+  }
+  return {
+    code: 201,
+    success: true,
+    message: "Animal created successful",
+    animal: newAnimal,
+  };
 }
 async function updateAnimal(parent, args) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
   const valid = await Animal.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -124,50 +112,39 @@ async function updateAnimal(parent, args) {
     }
   );
   if (!valid) {
-    const AnimalMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Animal not updated",
-    };
-    return AnimalMutationResponse;
+    return { code: 400, success: false, message: "Animal not updated" };
   }
   const editedAnimal = Animal.findOne({ _id: args.id });
-  const AnimalMutationResponse = {
+  return {
     code: 200,
     success: true,
     message: "Animal updated successful",
     animal: editedAnimal,
   };
-  return AnimalMutationResponse;
 }
-
 async function deleteAnimal(parent, args, context) {
   const id = await getUserId(context);
-  const animalToDelete = await Animal.findOne({
-    tag_number: args.tag_number,
-    farmer_id: id,
-  });
-  const valid = Animal.findByIdAndDelete(animalId.id);
-  if (!valid) {
-    const AnimalMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Animal not deleted",
-    };
-    return AnimalMutationResponse;
+  if (!id) {
+    return FAILED_AUTHENTICATION;
   }
-  const AnimalMutationResponse = {
+  const animalToDelete = await Animal.findOne({ _id: args.id, farmer_id: id });
+  const valid = Animal.findByIdAndDelete(animalToDelete.id);
+  if (!valid) {
+    return { code: 400, success: false, message: "Animal not deleted" };
+  }
+  return {
     code: 200,
     success: true,
     message: "Animal deleted successful",
     animal: animalToDelete,
   };
-  return AnimalMutationResponse;
 }
-
 // Group Mutations
 async function createGroup(parent, args, context) {
   const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
   const newGroup = new Group({
     group_name: args.group_name,
     group_description: args.group_description,
@@ -175,23 +152,20 @@ async function createGroup(parent, args, context) {
   });
   const valid = await newGroup.save();
   if (!valid) {
-    const GroupMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Group not created",
-    };
-    return GroupMutationResponse;
+    return { code: 400, success: false, message: "Group not created" };
   }
-  const GroupMutationResponse = {
+  return {
     code: 201,
     success: true,
     message: "Group created successful",
     group: newGroup,
   };
-  return GroupMutationResponse;
 }
 async function updateGroup(parent, args, context) {
   const id = await getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
   const valid = await Group.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -200,25 +174,22 @@ async function updateGroup(parent, args, context) {
     }
   );
   if (!valid) {
-    const GroupMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Group not updated",
-    };
-    return GroupMutationResponse;
+    return { code: 400, success: false, message: "Group not updated" };
   }
   const editedGroup = Group.findOne({ _id: args.id });
-  const GroupMutationResponse = {
+  return {
     code: 200,
     success: true,
     message: "Animal updated successful",
     group: editedGroup,
   };
-  return GroupMutationResponse;
 }
 //Medication Queries
 async function createMedication(parent, args, context) {
   const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
   const newMedication = new Medication({
     medication_name: args.medication_name,
     supplied_by: args.supplied_by,
@@ -235,22 +206,20 @@ async function createMedication(parent, args, context) {
   });
   const valid = await newMedication.save();
   if (!valid) {
-    const MedicationMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Medication not created",
-    };
-    return MedicationMutationResponse;
+    return { code: 400, success: false, message: "Medication not created" };
   }
-  const MedicationMutationResponse = {
+  return {
     code: 201,
     success: true,
     message: "Medication created successful",
     medication: newMedication,
   };
-  return MedicationMutationResponse;
 }
 async function updateMedication(parent, args) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
   const valid = await Medication.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -268,21 +237,15 @@ async function updateMedication(parent, args) {
     }
   );
   if (!valid) {
-    const MedicationMutationResponse = {
-      code: 400,
-      success: false,
-      message: "Medication not updated",
-    };
-    return MedicationMutationResponse;
+    return { code: 400, success: false, message: "Medication not updated" };
   }
   const updatedMedication = await Medication.findOne({ _id: args.id });
-  const MedicationMutationResponse = {
+  return {
     code: 200,
     success: true,
     message: "Animal updated successful",
     medication: updatedMedication,
   };
-  return MedicationMutationResponse;
 }
 
 module.exports = {
