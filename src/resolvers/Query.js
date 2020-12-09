@@ -20,7 +20,7 @@ function animal(parent, args) {
   const id = getUserId(context);
   return Animal.findOne({ _id: args.id, farmer_id: id });
 }
-function animal(parent, args, context) {
+function animalByTag(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
 }
@@ -132,7 +132,7 @@ module.exports = {
     farmer,
     // Animal
     animal,
-    //animalByTag,
+    animalByTag,
     herd,
     animalByBreed,
     animalByPureBreed,
