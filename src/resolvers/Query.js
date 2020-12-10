@@ -111,7 +111,7 @@ function medicationsByName(parent, args, context) {
 }
 function medicationsExpired(parent, args, context) {
   const id = getUserId(context)
-  return Medication.find({"expiry_date": {$lt : Date.now}, "farmer_id" : id})
+  return Medication.find({"expiry_date": {$lt : Date.now()}, "farmer_id" : id})
 }
 function searchForMedicationByName(parent, args, context) {
   const id = getUserId(context)
