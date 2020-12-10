@@ -1,19 +1,47 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
-
+const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
-
+const MedicationAdministration = require("../models/medication_administration");
+const { findById } = require("../models/animals");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
 }
+async function checkMedicationAvailability(id, quantity_used) {
+  const available = await Medication.findById(id);
+  if (available.remaining_quantity >= quantity_used) {
+    return available.quantity_type;
+  }
+  return false;
+}
+async function updateMedicationQuantity(id, quantity_used) {
+  const valid = await Medication.findByIdAndUpdate(
+    { _id: id },
+    { $inc: { remaining_quantity: -quantity_used } }
+  );
+  if (valid) {
+    return true;
+  }
+  return false;
+}
 //Login/SignUp
-
 async function signUp(parent, args) {
+  const alreadyExists = await Farmer.findOne({ email: args.email });
+  if (alreadyExists) {
+    return {
+      code: 400,
+      success: false,
+      message:
+        "Sign Up failed, email " +
+        alreadyExists.email +
+        " already has an account.",
+    };
+  }
   const password = await bcrypt.hash(args.password, 10);
   const newFarmer = await new Farmer({
     first_name: args.first_name,
@@ -67,29 +95,33 @@ async function createAnimal(parent, args, context) {
     return FAILED_AUTHENTICATION;
   }
   const herd_number = await farmerHerdNo(id);
-  const newAnimal = new Animal({
-    tag_number: args.tag_number,
-    herd_number: herd_number.herd_number,
-    sire_number: args.sire_number,
-    mother_number: args.mother_number,
-    male_female: args.male_female,
-    breed_type: args.breed_type,
-    date_of_birth: args.date_of_birth,
-    pure_breed: args.pure_breed,
-    animal_name: args.animal_name,
-    description: args.description,
-    farmer_id: id,
-  });
-  const valid = await newAnimal.save();
-  if (!valid) {
-    return { code: 400, success: false, message: "Animal not created" };
+  const alreadyExists = await animalByTag(parent, args, context);
+  if (!alreadyExists) {
+    const newAnimal = new Animal({
+      tag_number: args.tag_number,
+      herd_number: herd_number.herd_number,
+      sire_number: args.sire_number,
+      mother_number: args.mother_number,
+      male_female: args.male_female,
+      breed_type: args.breed_type,
+      date_of_birth: args.date_of_birth,
+      pure_breed: args.pure_breed,
+      animal_name: args.animal_name,
+      description: args.description,
+      farmer_id: id,
+    });
+    const valid = await newAnimal.save();
+    if (!valid) {
+      return { code: 400, success: false, message: "Animal not created" };
+    }
+    return {
+      code: 201,
+      success: true,
+      message: "Animal created successful",
+      animal: newAnimal,
+    };
   }
-  return {
-    code: 201,
-    success: true,
-    message: "Animal created successful",
-    animal: newAnimal,
-  };
+  return { code: 400, success: false, message: "Animal already exists" };
 }
 async function updateAnimal(parent, args) {
   const id = getUserId(context);
@@ -120,14 +152,12 @@ async function updateAnimal(parent, args) {
     animal: editedAnimal,
   };
 }
-
 async function deleteAnimal(parent, args, context) {
   const id = await getUserId(context);
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
-  const animalToDelete = await Animal.findOne({ _id: args.id, farmer_id: id });
-  const valid = Animal.findByIdAndDelete(animalToDelete.id);
+  const valid = await Animal.findByIdAndDelete(args.id);
   if (!valid) {
     return { code: 400, success: false, message: "Animal not deleted" };
   }
@@ -135,7 +165,7 @@ async function deleteAnimal(parent, args, context) {
     code: 200,
     success: true,
     message: "Animal deleted successful",
-    animal: animalToDelete,
+    animal: valid,
   };
 }
 // Group Mutations
@@ -183,7 +213,7 @@ async function updateGroup(parent, args, context) {
     group: editedGroup,
   };
 }
-//Medication Queries
+//Medication Mutations
 async function createMedication(parent, args, context) {
   const id = getUserId(context);
   if (!id) {
@@ -214,7 +244,7 @@ async function createMedication(parent, args, context) {
     medication: newMedication,
   };
 }
-async function updateMedication(parent, args) {
+async function updateMedication(parent, args, context) {
   const id = getUserId(context);
   if (!id) {
     return FAILED_AUTHENTICATION;
@@ -246,7 +276,47 @@ async function updateMedication(parent, args) {
     medication: updatedMedication,
   };
 }
-
+//MedicationAdministration Mutations
+async function administerMedication(parent, args, context) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  const available = await checkMedicationAvailability(
+    args.medication_id,
+    args.quantity_administered
+  );
+  var message = "Medication not administered";
+  if (available) {
+    const newMedAdmin = new MedicationAdministration({
+      date_of_administration: args.date_of_administration,
+      quantity_administered: args.quantity_administered,
+      quantity_type: available.quantity_type,
+      administered_by: args.administered_by,
+      reason_for_administration: args.reason_for_administration,
+      animal_id: args.animal_id,
+      medication_id: args.medication_id,
+      farmer_id: id,
+    });
+    const valid = await newMedAdmin.save();
+    if (valid) {
+      await updateMedicationQuantity(args.medication_id, args.quantity_administered);
+      return {
+        code: 201,
+        success: true,
+        message: "Medication administered successful",
+        administeredMedication: newMedAdmin,
+      };
+    }
+  } else {
+    message = "Medication quantity is to low";
+  }
+  return {
+    code: 400,
+    success: false,
+    message: message,
+  };
+}
 module.exports = {
   createAnimal,
   signUp,
@@ -257,4 +327,5 @@ module.exports = {
   createMedication,
   updateAnimal,
   updateMedication,
+  administerMedication,
 };

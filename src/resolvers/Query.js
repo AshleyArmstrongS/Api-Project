@@ -1,11 +1,9 @@
-
-const Animal = require("../models/animals")
-const breed = require("../models/breed")
-const Farmer = require("../models/farmer")
-const Group = require("../models/group")
-const Medication = require("../models/medication")
-const Breed = require("../models/breed")
-const {getUserId } = require('../utils')
+const Animal = require("../models/animals");
+const Farmer = require("../models/farmer");
+const Group = require("../models/group");
+const Medication = require("../models/medication");
+const Breed = require("../models/breed");
+const { getUserId } = require("../utils");
 //API info
 function info() {
   return "This is the OptiFarm API";
@@ -16,11 +14,11 @@ function farmer(parent, args, context) {
   return Farmer.findById(id);
 }
 //Animal
-function animal(parent, args) {
+function animal(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ _id: args.id, farmer_id: id });
 }
-function animal(parent, args, context) {
+function animalByTag(parent, args, context) {
   const id = getUserId(context);
   return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
 }
@@ -78,8 +76,8 @@ function animalsBornBetween(parent, args, context) {
   });
 }
 function animalsByCrossBreed(parent, args, context) {
-  const id = getUserId(context)
-  return Animal.find({"cross_breed": args.cross_breed, farmer_id: id})
+  const id = getUserId(context);
+  return Animal.find({ cross_breed: args.cross_breed, farmer_id: id });
 }
 //Group
 function group(parent, args) {
@@ -106,8 +104,11 @@ function medications(parent, args, context) {
   return Medication.find({ farmer_id: id });
 }
 function medicationsByName(parent, args, context) {
-  const id = getUserId(context)
-  return Medication.find({"medication_name": args.medication_name, "farmer_id" : id})
+  const id = getUserId(context);
+  return Medication.find({
+    medication_name: args.medication_name,
+    farmer_id: id,
+  });
 }
 function medicationsExpired(parent, args, context) {
   const id = getUserId(context)
@@ -117,55 +118,46 @@ function searchForMedicationByName(parent, args, context) {
   const id = getUserId(context)
   var str = args.medication_name
   return Medication.find({"medication_name": {$regex: /test$/, $options: 'i'}, farmer_id: id})
+
 }
 
 // Medical_Administration
 function medicationsReasonsFor(parent, args, context) {
   const id = getUserId(context)
   return Medication.find({"reason_for": args.reason_for, "farmer_id" : id})
+
 }
 // Breeds
 function breedName(parent, args, context) {
-  return Breed.find({"breed_name": args.breed_name})
+  return Breed.find({ breed_name: args.breed_name });
 }
 function breedCode(parent, args, context) {
-  return Breed.find({"breed_code": args.breed_code})
+  return Breed.find({ breed_code: args.breed_code });
 }
 
 module.exports = {
-
-    info,
-    farmer,
-
-    // Animal
-    animal,
-    //animalByTag,
-    herd,
-    animalByBreed,
-    animalByPureBreed,
-    animalBySex,
-    progeny,
-    animalsBornOn,
-    animalsBornAfter,
-    animalsBornBefore,
-    animalsBornBetween,
-    animalsByCrossBreed,
-    
-
-  // Group
-  group,
-  groupByName,
-  groupByDescription,
-
-    // Medication
-    medication,
-    medications,
-    medicationsByName,
-    medicationsExpired,
-    medicationsReasonsFor,
-    searchForMedicationByName,
-
-    // Breed
-    breedName,
-    breedCode,
-}
+  info,
+  farmer,
+  // Animal
+  animal,
+  animalByTag,
+  herd,
+  animalByBreed,
+  animalByPureBreed,
+  animalBySex,
+  progeny,
+  animalsBornOn,
+  animalsBornAfter,
+  animalsBornBefore,
+  animalsBornBetween,
+  animalsByCrossBreed,
+  // Medication
+  medication,
+  medications,
+  medicationsByName,
+  medicationsExpired,
+  medicationsReasonsFor,
+  // Breed
+  breedName,
+  breedCode,
+};
