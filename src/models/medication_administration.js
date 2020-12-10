@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
-var MedicalAdministrationSchema = new Schema(
+var MedicationAdministrationSchema = new Schema(
   {
     // verify quantity in API as there are three diff quantities
-    date_of_use: {
+    date_of_administration: {
       type: Date,
       default: Date.now,
     },
@@ -13,28 +13,28 @@ var MedicalAdministrationSchema = new Schema(
     //   type: String,
     //   required: true
     // },
-    quantity_used: {
+    quantity_administered: {
       type: Number,
       required: true,
       default: 0,
     },
     quantity_type: {
       type: String,
-      enum: ["Ml", "Mg", "Count", "Unassigned"],
-      default: "Unassigned",
+      enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
+      default: "UNASSIGNED",
     },
     administered_by: {
       type: String,
       required: true,
     },
-    reason_for: {
+    reason_for_administration: {
       type: String,
     },
-    animal_tag_number: {
+    animal_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Animal",
     },
-    medication_used: {
+    medication_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Medication",
     },
@@ -47,6 +47,6 @@ var MedicalAdministrationSchema = new Schema(
 );
 
 module.exports = mongoose.model(
-  "MedicalAdministration",
-  MedicalAdministrationSchema
+  "MedicationAdministration",
+  MedicationAdministrationSchema
 );
