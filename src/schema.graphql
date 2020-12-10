@@ -3,6 +3,7 @@ type Query {
   info: String
   #Users Info
   farmer: Farmer
+
   farmMedicationAdministrators: [String]!
   #Animal
   animal(id: ID!): Animal
@@ -23,6 +24,7 @@ type Query {
   #Breed
   breedName(breed_name: String!): [Breed]!
   breedCode(breed_code: String!): [Breed]!
+
 
   #Medication
   medication(id: ID!): Medication
