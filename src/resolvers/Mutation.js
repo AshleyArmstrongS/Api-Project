@@ -287,8 +287,7 @@ async function administerMedication(parent, args, context) {
     args.quantity_administered
   );
   var message = "Medication not administered";
-  console.log(available)
-  if (available != false) {
+  if (available) {
     const newMedAdmin = new MedicationAdministration({
       date_of_administration: args.date_of_administration,
       quantity_administered: args.quantity_administered,
@@ -306,7 +305,7 @@ async function administerMedication(parent, args, context) {
         code: 201,
         success: true,
         message: "Medication administered successful",
-        AdministeredMedication: newMedAdmin,
+        administeredMedication: newMedAdmin,
       };
     }
   } else {
