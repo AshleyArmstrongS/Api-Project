@@ -1,19 +1,16 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
 const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
-
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
 }
 //Login/SignUp
-
 async function signUp(parent, args) {
   const alreadyExists = await Farmer.findOne({ email: args.email });
   if (alreadyExists) {
