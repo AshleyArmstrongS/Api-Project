@@ -20,8 +20,8 @@ var MedicationAdministrationSchema = new Schema(
     },
     quantity_type: {
       type: String,
-      enum: ["Ml", "Mg", "Count", "Unassigned"],
-      default: "Unassigned",
+      enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
+      default: "UNASSIGNED",
     },
     administered_by: {
       type: String,
