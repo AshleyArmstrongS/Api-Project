@@ -28,14 +28,17 @@ type Query {
 
   #Medication
   medication(id: ID!): Medication
+
   #Medications
   medications: [Medication]!
   medicationsByName: [Medication]!
   medicationsExpired: [Medication]!
-  medicationsReasonsFor: [Medication]!
   searchForMedicationByName(medication_name: String!): [Medication]!
+
   #AdministeredMedication
-  #administeredMedication: [AdministeredMedication]!
+  allAdministeredMedication: [AdministeredMedication]!
+  administeredMedicationOnDate(date_of_administration: Date!): [AdministeredMedication]!
+
   #Group
   group(id: ID!): Group
   groupByName(group_name: String!): [Group]!
