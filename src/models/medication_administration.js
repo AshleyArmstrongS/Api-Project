@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
-var MedicationAdministrationSchema = new Schema(
+var AdministeredMedicationSchema = new Schema(
   {
     // verify quantity in API as there are three diff quantities
     date_of_administration: {
@@ -47,6 +47,6 @@ var MedicationAdministrationSchema = new Schema(
 );
 
 module.exports = mongoose.model(
-  "MedicationAdministration",
-  MedicationAdministrationSchema
+  "AdministeredMedication",
+  AdministeredMedicationSchema
 );
