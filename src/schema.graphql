@@ -33,6 +33,7 @@ type Query {
   medicationsByName: [Medication]!
   medicationsExpired: [Medication]!
   medicationsReasonsFor: [Medication]!
+  searchForMedicationByName(medication_name: String!): [Medication]!
   #AdministeredMedication
   #administeredMedication: [AdministeredMedication]!
   #Group
