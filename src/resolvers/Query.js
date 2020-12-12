@@ -117,8 +117,7 @@ function medicationsExpired(parent, args, context) {
 function searchForMedicationByName(parent, args, context) {
   const id = getUserId(context)
   var str = args.medication_name
-  return Medication.find({"medication_name": {$regex: /test$/, $options: 'i'}, farmer_id: id})
-
+  return Medication.find({"medication_name": {$regex: new RegExp(".*"+str+".*", "i")}, farmer_id: id})
 }
 
 // Medical_Administration
@@ -157,6 +156,7 @@ module.exports = {
   medicationsByName,
   medicationsExpired,
   medicationsReasonsFor,
+  searchForMedicationByName,
   // Breed
   breedName,
   breedCode,
