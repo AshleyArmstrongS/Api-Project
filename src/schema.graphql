@@ -25,7 +25,6 @@ type Query {
   breedName(breed_name: String!): [Breed]!
   breedCode(breed_code: String!): [Breed]!
 
-
   #Medication
   medication(id: ID!): Medication
 
@@ -37,7 +36,9 @@ type Query {
 
   #AdministeredMedication
   allAdministeredMedication: [AdministeredMedication]!
-  administeredMedicationOnDate(date_of_administration: Date!): [AdministeredMedication]!
+  administeredMedicationOnDate(
+    date_of_administration: Date!
+  ): [AdministeredMedication]!
 
   #Group
   group(id: ID!): Group
@@ -132,6 +133,10 @@ type Mutation {
     reason_for_administration: String
     animal_id: ID
     medication_id: ID
+  ): AdministeredMedicationMutationResponse!
+  deleteAdministeredMedication(
+    id: ID
+    quantity_administered: Int
   ): AdministeredMedicationMutationResponse!
 }
 

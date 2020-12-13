@@ -29,6 +29,16 @@ async function updateMedicationQuantity(id, quantity_used) {
   }
   return false;
 }
+async function restoreMedicationQuantity(id, quantity_used) {
+  const valid = await Medication.findByIdAndUpdate(
+    { _id: id },
+    { $inc: { remaining_quantity: +quantity_used } }
+  );
+  if (valid) {
+    return true;
+  }
+  return false;
+}
 //Login/SignUp
 async function signUp(parent, args) {
   const alreadyExists = await Farmer.findOne({ email: args.email });
@@ -300,7 +310,10 @@ async function administerMedication(parent, args, context) {
     });
     const valid = await newMedAdmin.save();
     if (valid) {
-      await updateMedicationQuantity(args.medication_id, args.quantity_administered);
+      await updateMedicationQuantity(
+        args.medication_id,
+        args.quantity_administered
+      );
       return {
         code: 201,
         success: true,
@@ -317,6 +330,30 @@ async function administerMedication(parent, args, context) {
     message: message,
   };
 }
+async function deleteAdministeredMedication(parent, args, context) {
+  //restores the medication quantity
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  await restoreMedicationQuantity(
+    args.medication_id,
+    args.quantity_administered
+  );
+  const deletedAdminMed = MedicationAdministration.findByIdAndDelete(args.id);
+  if (deletedAdminMed) {
+    return {
+      code: 400,
+      success: false,
+      message: "Administered Medication deleted successfully",
+      administeredMedication: deletedAdminMed,
+    };
+  }
+  return {
+    code: 400,
+    success: false,
+    message: "Administered Medication deleted successfully",
+  };
+}
 module.exports = {
   createAnimal,
   signUp,
@@ -328,4 +365,5 @@ module.exports = {
   updateAnimal,
   updateMedication,
   administerMedication,
+  deleteAdministeredMedication,
 };
