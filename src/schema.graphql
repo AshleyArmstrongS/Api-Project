@@ -35,7 +35,8 @@ type Query {
   searchForMedicationByName(medication_name: String!): [Medication]!
 
   #AdministeredMedication
-  allAdministeredMedication: [AdministeredMedication]!
+  administeredMedication(id: ID): AdministeredMedication
+  administeredMedications: [AdministeredMedication]!
   administeredMedicationOnDate(
     date_of_administration: Date!
   ): [AdministeredMedication]!
@@ -136,6 +137,7 @@ type Mutation {
   ): AdministeredMedicationMutationResponse!
   deleteAdministeredMedication(
     id: ID
+    medication_id: ID
     quantity_administered: Int
   ): AdministeredMedicationMutationResponse!
 }

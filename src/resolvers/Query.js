@@ -131,9 +131,12 @@ function searchForMedicationByName(parent, args, context) {
     farmer_id: id,
   });
 }
-
 // Medical_Administration
-function allAdministeredMedication(parent, args, context) {
+function administeredMedication(parent, args, context) {
+  const id = getUserId(context);
+  return AdministeredMedication.findOne({_id: args.id, farmer_id: id});
+}
+function administeredMedications(parent, args, context) {
   const id = getUserId(context);
   return AdministeredMedication.find({ farmer_id: id });
 }
@@ -181,7 +184,8 @@ module.exports = {
   medicationsExpired,
   searchForMedicationByName,
   // AdministeredMedication
-  allAdministeredMedication,
+  administeredMedication,
+  administeredMedications,
   administeredMedicationOnDate,
 
   // Breed

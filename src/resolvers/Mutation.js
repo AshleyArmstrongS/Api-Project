@@ -332,6 +332,7 @@ async function administerMedication(parent, args, context) {
 }
 async function deleteAdministeredMedication(parent, args, context) {
   //restores the medication quantity
+  const id = getUserId(context);
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
@@ -339,7 +340,7 @@ async function deleteAdministeredMedication(parent, args, context) {
     args.medication_id,
     args.quantity_administered
   );
-  const deletedAdminMed = MedicationAdministration.findByIdAndDelete(args.id);
+  const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(args.id);
   if (deletedAdminMed) {
     return {
       code: 400,
