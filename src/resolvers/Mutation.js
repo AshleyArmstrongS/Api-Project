@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { APP_SECRET } = require("../Config");
 const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
-const { findById } = require("../models/animals");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
@@ -23,6 +23,16 @@ async function updateMedicationQuantity(id, quantity_used) {
   const valid = await Medication.findByIdAndUpdate(
     { _id: id },
     { $inc: { remaining_quantity: -quantity_used } }
+  );
+  if (valid) {
+    return true;
+  }
+  return false;
+}
+async function restoreMedicationQuantity(id, quantity_used) {
+  const valid = await Medication.findByIdAndUpdate(
+    { _id: id },
+    { $inc: { remaining_quantity: +quantity_used } }
   );
   if (valid) {
     return true;
@@ -300,7 +310,10 @@ async function administerMedication(parent, args, context) {
     });
     const valid = await newMedAdmin.save();
     if (valid) {
-      await updateMedicationQuantity(args.medication_id, args.quantity_administered);
+      await updateMedicationQuantity(
+        args.medication_id,
+        args.quantity_administered
+      );
       return {
         code: 201,
         success: true,
@@ -317,6 +330,33 @@ async function administerMedication(parent, args, context) {
     message: message,
   };
 }
+async function deleteAdministeredMedication(parent, args, context) {
+  //restores the medication quantity
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  await restoreMedicationQuantity(
+    args.medication_id,
+    args.quantity_administered
+  );
+  const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(
+    args.id
+  );
+  if (deletedAdminMed) {
+    return {
+      code: 400,
+      success: false,
+      message: "Administered Medication deleted successfully",
+      administeredMedication: deletedAdminMed,
+    };
+  }
+  return {
+    code: 400,
+    success: false,
+    message: "Administered Medication deleted successfully",
+  };
+}
 module.exports = {
   createAnimal,
   signUp,
@@ -328,4 +368,5 @@ module.exports = {
   updateAnimal,
   updateMedication,
   administerMedication,
+  deleteAdministeredMedication,
 };

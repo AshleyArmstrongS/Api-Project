@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const APP_SECRET = "OptiFarmSecret";
+const {APP_SECRET} = require("./Config");
 const FAILED_AUTHENTICATION = {
   code: 400,
   success: false,
@@ -21,7 +21,6 @@ function getUserId(context) {
 }
 
 module.exports = {
-  APP_SECRET,
   FAILED_AUTHENTICATION,
   getUserId,
 };

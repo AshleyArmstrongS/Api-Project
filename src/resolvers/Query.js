@@ -120,24 +120,33 @@ function medicationsByName(parent, args, context) {
   });
 }
 function medicationsExpired(parent, args, context) {
-  const id = getUserId(context)
-  return Medication.find({"expiry_date": {$lt : Date.now()}, "farmer_id" : id})
+  const id = getUserId(context);
+  return Medication.find({ expiry_date: { $lt: Date.now() }, farmer_id: id });
 }
 function searchForMedicationByName(parent, args, context) {
-  const id = getUserId(context)
-  var str = args.medication_name
-  return Medication.find({"medication_name": {$regex: new RegExp(".*"+str+".*", "i")}, farmer_id: id})
+  const id = getUserId(context);
+  var str = args.medication_name;
+  return Medication.find({
+    medication_name: { $regex: new RegExp(".*" + str + ".*", "i") },
+    farmer_id: id,
+  });
 }
-
 // Medical_Administration
-function allAdministeredMedication(parent, args, context) {
-  const id = getUserId(context)
-  return AdministeredMedication.find({"farmer_id": id})
+function administeredMedication(parent, args, context) {
+  const id = getUserId(context);
+  return AdministeredMedication.findOne({_id: args.id, farmer_id: id});
+}
+function administeredMedications(parent, args, context) {
+  const id = getUserId(context);
+  return AdministeredMedication.find({ farmer_id: id });
 }
 // need to look at this again, thinking of adding complexity to it but will have to do some research first
 function administeredMedicationOnDate(parent, args, context) {
-  const id = getUserId(context)
-  return AdministeredMedication.find({"date_of_administration": args.date_of_administration, "farmer_id": id})
+  const id = getUserId(context);
+  return AdministeredMedication.find({
+    date_of_administration: args.date_of_administration,
+    farmer_id: id,
+  });
 }
 
 // Breeds
@@ -175,7 +184,8 @@ module.exports = {
   medicationsExpired,
   searchForMedicationByName,
   // AdministeredMedication
-  allAdministeredMedication,
+  administeredMedication,
+  administeredMedications,
   administeredMedicationOnDate,
 
   // Breed
