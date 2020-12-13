@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { APP_SECRET, FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { APP_SECRET } = require("../Config");
 const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
-const { findById } = require("../models/animals");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
@@ -340,7 +340,9 @@ async function deleteAdministeredMedication(parent, args, context) {
     args.medication_id,
     args.quantity_administered
   );
-  const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(args.id);
+  const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(
+    args.id
+  );
   if (deletedAdminMed) {
     return {
       code: 400,

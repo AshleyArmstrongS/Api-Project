@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const uri =
-  "mongodb+srv://optiOne:oneOpti@cluster0.ikcii.mongodb.net/OptiFarmTestDb?retryWrites=true&w=majority";
+const {atlasURI} = require("./Config")
 
 const options = {
   useNewUrlParser: true,
@@ -15,7 +14,7 @@ const options = {
 };
 
 mongoose
-  .connect(uri, options)
+  .connect(atlasURI, options)
   .then(() => {
     console.log("MongoDB Connected…");
   })
