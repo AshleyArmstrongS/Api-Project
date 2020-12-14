@@ -62,44 +62,28 @@ type Mutation {
   ): AuthPayload!
   login(email: String!, password: String!): AuthPayload!
   #Animal
-  createAnimal(
+  saveAnimal(
+    id: ID
     tag_number: Int!
     sire_number: Int!
     mother_number: Int!
     male_female: Sex!
     breed_type: String!
     pure_breed: Boolean!
-    animal_name: String
-    description: String
+    animal_name: String!
+    description: String!
     date_of_birth: Date!
   ): AnimalMutationResponse!
-
-  updateAnimal(
-    id: ID!
-    sire_number: Int
-    mother_number: Int
-    male_female: Sex
-    breed_type: String
-    pure_breed: Boolean
-    animal_name: String
-    description: String
-    date_of_birth: Date
-  ): AnimalMutationResponse!
-
   deleteAnimal(id: ID!): AnimalMutationResponse!
   #Group
-  createGroup(
+ saveGroup(
+    id: ID
     group_name: String!
-    group_description: String
-  ): GroupMutationResponse!
-
-  updateGroup(
-    group_name: String!
-    group_description: String
-  ): GroupMutationResponse!
-
+    group_description: String!
+ ): GroupMutationResponse!
   #Medication
-  createMedication(
+  saveMedication(
+    id: ID
     medication_name: String!
     supplied_by: String!
     quantity: Int!
@@ -110,36 +94,22 @@ type Mutation {
     expiry_date: Date!
     purchase_date: Date!
     comments: String
-  ): MedicationMutationResponse!
-  updateMedication(
-    id: ID!
-    medication_name: String
-    supplied_by: String
-    quantity: Int
-    quantity_type: QuantityType
-    withdrawal_days_meat: Int
-    withdrawal_days_dairy: Int
-    batch_number: String
-    remaining_quantity: Int
-    expiry_date: Date
-    purchase_date: Date
-    batch_number: String
-    comments: String
-  ): MedicationMutationResponse!
-  administerMedication(
-    date_of_administration: Date
-    quantity_administered: Int
-    quantity_type: QuantityType
-    administered_by: String
-    reason_for_administration: String
-    animal_id: ID
-    medication_id: ID
-  ): AdministeredMedicationMutationResponse!
+  ):MedicationMutationResponse!
+  SaveAdminMed(
+    id: ID
+    date_of_administration: Date!
+    quantity_administered: Int!
+    quantity_type: QuantityType!
+    administered_by: String!
+    reason_for_administration: String!
+    animal_id: ID!
+    medication_id: ID!
+  ): AdminMedMutationResponse!
   deleteAdministeredMedication(
     id: ID
     medication_id: ID
     quantity_administered: Int
-  ): AdministeredMedicationMutationResponse!
+  ): AdminMedMutationResponse!
 }
 
 #OBJECT_TYPES
@@ -225,7 +195,7 @@ type MedicationMutationResponse {
   message: String!
   medication: Medication
 }
-type AdministeredMedicationMutationResponse {
+type AdminMedMutationResponse {
   code: String!
   success: Boolean!
   message: String!
