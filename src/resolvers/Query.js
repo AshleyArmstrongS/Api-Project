@@ -44,7 +44,7 @@ function animalBySex(parent, args, context) {
   const id = getUserId(context);
   return Animal.find({ male_female: args.male_female, farmer_id: id });
 }
-function progeny(parent, args, context) {
+function animalsByProgeny(parent, args, context) {
   const id = getUserId(context);
   if (args.male_female == "M") {
     return Animal.find({ sire_number: args.tag_number, farmer_id: id });
@@ -88,7 +88,8 @@ function animalsByCrossBreed(parent, args, context) {
 
 //Group
 function group(parent, args) {
-  return Group.findById(args.id);
+  const id = getUserId(context);
+  return Group.findOne({ _id: args.id, farmer_id: farmer_id });
 }
 function groupByName(parent, args, context) {
   const id = getUserId(context);
@@ -104,7 +105,8 @@ function groupByDescription(parent, args, context) {
 
 //Medication
 function medication(parent, args, context) {
-  return Medication.findById(args.id);
+  const id = getUserId(context);
+  return Medication.findOne({ _id: args.id, farmer_id: id });
 }
 
 //Medications
@@ -112,18 +114,11 @@ function medications(parent, args, context) {
   const id = getUserId(context);
   return Medication.find({ farmer_id: id });
 }
-function medicationsByName(parent, args, context) {
-  const id = getUserId(context);
-  return Medication.find({
-    medication_name: args.medication_name,
-    farmer_id: id,
-  });
-}
 function medicationsExpired(parent, args, context) {
   const id = getUserId(context);
   return Medication.find({ expiry_date: { $lt: Date.now() }, farmer_id: id });
 }
-function searchForMedicationByName(parent, args, context) {
+function medicationsByName(parent, args, context) {
   const id = getUserId(context);
   var str = args.medication_name;
   return Medication.find({
@@ -134,7 +129,7 @@ function searchForMedicationByName(parent, args, context) {
 // Medical_Administration
 function administeredMedication(parent, args, context) {
   const id = getUserId(context);
-  return AdministeredMedication.findOne({_id: args.id, farmer_id: id});
+  return AdministeredMedication.findOne({ _id: args.id, farmer_id: id });
 }
 function administeredMedications(parent, args, context) {
   const id = getUserId(context);
@@ -150,10 +145,10 @@ function administeredMedicationOnDate(parent, args, context) {
 }
 
 // Breeds
-function breedName(parent, args, context) {
+function breedName(parent, args) {
   return Breed.find({ breed_name: args.breed_name });
 }
-function breedCode(parent, args, context) {
+function breedCode(parent, args) {
   return Breed.find({ breed_code: args.breed_code });
 }
 
@@ -167,7 +162,7 @@ module.exports = {
   animalByBreed,
   animalByPureBreed,
   animalBySex,
-  progeny,
+  animalsByProgeny,
   animalsBornOn,
   animalsBornAfter,
   animalsBornBefore,
@@ -180,9 +175,8 @@ module.exports = {
   // Medication
   medication,
   medications,
-  medicationsByName,
   medicationsExpired,
-  searchForMedicationByName,
+  medicationsByName,
   // AdministeredMedication
   administeredMedication,
   administeredMedications,

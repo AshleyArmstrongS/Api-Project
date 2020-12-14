@@ -76,11 +76,11 @@ type Mutation {
   ): AnimalMutationResponse!
   deleteAnimal(id: ID!): AnimalMutationResponse!
   #Group
- saveGroup(
+  saveGroup(
     id: ID
     group_name: String!
     group_description: String!
- ): GroupMutationResponse!
+  ): GroupMutationResponse!
   #Medication
   saveMedication(
     id: ID
@@ -94,7 +94,7 @@ type Mutation {
     expiry_date: Date!
     purchase_date: Date!
     comments: String
-  ):MedicationMutationResponse!
+  ): MedicationMutationResponse!
   SaveAdminMed(
     id: ID
     date_of_administration: Date!
