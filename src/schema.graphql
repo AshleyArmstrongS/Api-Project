@@ -10,7 +10,7 @@ type Query {
   animalByTag(tag_number: Int!): Animal
   #Animals
   herd: [Animal]!
-  progeny(tag_number: Int!, male_female: Sex!): [Animal]!
+  animalsByProgeny(tag_number: Int!, male_female: Sex!): [Animal]!
   animalBySex(male_female: Sex!): [Animal]!
   animalByBreed(breed_type: String!): [Animal]!
   animalByPureBreed(pure_breed: Boolean!): [Animal]!
@@ -30,9 +30,8 @@ type Query {
 
   #Medications
   medications: [Medication]!
-  medicationsByName: [Medication]!
   medicationsExpired: [Medication]!
-  searchForMedicationByName(medication_name: String!): [Medication]!
+  medicationsByName(medication_name: String!): [Medication]!
 
   #AdministeredMedication
   administeredMedication(id: ID): AdministeredMedication
@@ -95,7 +94,7 @@ type Mutation {
     purchase_date: Date!
     comments: String
   ): MedicationMutationResponse!
-  SaveAdminMed(
+  saveAdminMed(
     id: ID
     date_of_administration: Date!
     quantity_administered: Int!

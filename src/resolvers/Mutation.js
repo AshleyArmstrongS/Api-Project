@@ -299,7 +299,7 @@ async function updateMedication(args) {
   };
 }
 //MedicationAdministration Mutations
-async function SaveAdminMed(parent, args, context) {
+async function saveAdminMed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = (returnable = FAILED_AUTHENTICATION);
   if (farmer_id) {
@@ -419,6 +419,6 @@ module.exports = {
   deleteAnimal,
   saveGroup,
   saveMedication,
-  SaveAdminMed,
+  saveAdminMed,
   deleteAdministeredMedication,
 };
