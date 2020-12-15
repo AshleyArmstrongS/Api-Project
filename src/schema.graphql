@@ -98,11 +98,10 @@ type Mutation {
     id: ID
     date_of_administration: Date!
     quantity_administered: Int!
-    quantity_type: QuantityType!
     administered_by: String!
     reason_for_administration: String!
-    animal_id: ID!
-    medication_id: ID!
+    animal_id: ID
+    medication_id: ID
   ): AdminMedMutationResponse!
   deleteAdministeredMedication(
     id: ID
@@ -132,7 +131,7 @@ type Medication {
   quantity: Int
   quantity_type: QuantityType
   withdrawal_days_meat: Int
-  withdrawal_days__dairy: Int
+  withdrawal_days_dairy: Int
   remaining_quantity: Int
   batch_number: String
   expiry_date: Date
