@@ -24,6 +24,9 @@ function animal(parent, args, context) {
 }
 function animalByTag(parent, args, context) {
   const id = getUserId(context);
+  if(!id){
+    return null
+  }
   return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
 }
 

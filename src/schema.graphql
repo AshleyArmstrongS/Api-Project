@@ -169,35 +169,29 @@ type Breed {
 }
 #RESPONSE_TYPES
 type AuthPayload {
-  code: String!
-  success: Boolean!
-  message: String!
+  responseCheck: ResponseCheck!
   token: String
   farmer: Farmer
 }
 type AnimalMutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
+  responseCheck: ResponseCheck!
   animal: Animal
 }
 type GroupMutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
+  responseCheck: ResponseCheck!
   group: Group
 }
 type MedicationMutationResponse {
-  code: String!
-  success: Boolean!
-  message: String!
+  responseCheck: ResponseCheck!
   medication: Medication
 }
 type AdminMedMutationResponse {
-  code: String!
+  responseCheck: ResponseCheck!
+  administeredMedication: AdministeredMedication
+}
+type ResponseCheck {
   success: Boolean!
   message: String!
-  administeredMedication: AdministeredMedication
 }
 #ENUMS
 enum Sex {

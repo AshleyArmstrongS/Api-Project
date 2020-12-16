@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { FAILED_AUTHENTICATION, getUserId } = require("../utils");
+const { getUserId } = require("../utils");
 const { APP_SECRET } = require("../Config");
 const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
@@ -8,6 +8,14 @@ const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
+const {
+  FAILED_AUTHENTICATION,
+  OPERATION_SUCCESSFUL,
+  ALREADY_EXISTS,
+  OPERATION_FAILED,
+  NO_SUCH_EMAIL,
+  INCORRECT_PASSWORD,
+} = require("./ResolverErrorMessages");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
@@ -47,17 +55,10 @@ async function restoreMedicationQuantity(id, quantity_used) {
 async function signUp(parent, args) {
   const alreadyExists = await Farmer.findOne({ email: args.email });
   if (alreadyExists) {
-    return {
-      code: 400,
-      success: false,
-      message:
-        "Sign Up failed, email " +
-        alreadyExists.email +
-        " already has an account.",
-    };
+    return { responseCheck: ALREADY_EXISTS };
   }
   const password = await bcrypt.hash(args.password, 10);
-  const newFarmer = await new Farmer({
+  const newFarmer = new Farmer({
     first_name: args.first_name,
     second_name: args.second_name,
     farm_type: args.farm_type,
@@ -68,13 +69,11 @@ async function signUp(parent, args) {
   });
   const valid = await newFarmer.save();
   if (!valid) {
-    return { code: 400, success: false, message: "Sign Up failed." };
+    return { responseCheck: OPERATION_FAILED };
   }
   const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET);
   return {
-    code: 201,
-    success: true,
-    message: "Signed Up successfully.",
+    responseCheck: OPERATION_SUCCESSFUL,
     token: userToken,
     farmer: newFarmer,
   };
@@ -82,22 +81,15 @@ async function signUp(parent, args) {
 async function login(parent, args) {
   const loggingInFarmer = await Farmer.findOne({ email: args.email });
   if (!loggingInFarmer) {
-    const AuthPayLoad = {
-      code: 400,
-      success: false,
-      message: "Email doesn't exist.",
-    };
-    return AuthPayLoad;
+    return { responseCheck: NO_SUCH_EMAIL };
   }
   const valid = await bcrypt.compare(args.password, loggingInFarmer.password);
   if (!valid) {
-    return { code: 400, success: false, message: "Password Incorrect." };
+    return { responseCheck: INCORRECT_PASSWORD };
   }
   const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET);
   return {
-    code: 200,
-    success: true,
-    message: "Logged in successfully.",
+    responseCheck: OPERATION_SUCCESSFUL,
     token: userToken,
     farmer: loggingInFarmer,
   };
@@ -105,7 +97,7 @@ async function login(parent, args) {
 //Animal Mutations
 async function saveAnimal(parent, args, context) {
   const farmer_id = getUserId(context);
-  var returnable = (returnable = FAILED_AUTHENTICATION);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     if (args.id) {
       returnable = await updateAnimal(args);
@@ -134,16 +126,14 @@ async function createAnimal(parent, args, context, farmer_id) {
     });
     const valid = await newAnimal.save();
     if (!valid) {
-      return { code: 400, success: false, message: "Animal not created" };
+      return { responseCheck: OPERATION_FAILED };
     }
     return {
-      code: 201,
-      success: true,
-      message: "Animal created successful",
+      responseCheck: OPERATION_SUCCESSFUL,
       animal: newAnimal,
     };
   }
-  return { code: 400, success: false, message: "Animal already exists" };
+  return { responseCheck: ALREADY_EXISTS };
 }
 async function updateAnimal(args) {
   const valid = await Animal.findByIdAndUpdate(
@@ -160,36 +150,32 @@ async function updateAnimal(args) {
     }
   );
   if (!valid) {
-    return { code: 400, success: false, message: "Animal not updated" };
+    return { responseCheck: OPERATION_FAILED };
   }
   const editedAnimal = Animal.findOne({ _id: args.id });
   return {
-    code: 200,
-    success: true,
-    message: "Animal updated successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     animal: editedAnimal,
   };
 }
 async function deleteAnimal(parent, args, context) {
   const id = await getUserId(context);
   if (!id) {
-    return FAILED_AUTHENTICATION;
+    return { responseCheck: FAILED_AUTHENTICATION };
   }
   const valid = await Animal.findByIdAndDelete(args.id);
   if (!valid) {
-    return { code: 400, success: false, message: "Animal not deleted" };
+    return { responseCheck: OPERATION_FAILED };
   }
   return {
-    code: 200,
-    success: true,
-    message: "Animal deleted successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     animal: valid,
   };
 }
 // Group Mutations
 async function saveGroup(parent, args, context) {
   const farmer_id = getUserId(context);
-  var returnable = (returnable = FAILED_AUTHENTICATION);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     if (args.id) {
       returnable = updateGroup(args, farmer_id);
@@ -209,16 +195,14 @@ async function createGroup(args, farmer_id) {
     });
     const valid = await newGroup.save();
     if (!valid) {
-      return { code: 400, success: false, message: "Group not created" };
+      return { responseCheck: OPERATION_FAILED };
     }
     return {
-      code: 201,
-      success: true,
-      message: "Group created successful",
+      responseCheck: OPERATION_SUCCESSFUL,
       group: newGroup,
     };
   }
-  return { code: 400, success: false, message: "Group already exists" };
+  return { responseCheck: ALREADY_EXISTS };
 }
 async function updateGroup(args) {
   const valid = await Group.findByIdAndUpdate(
@@ -229,20 +213,18 @@ async function updateGroup(args) {
     }
   );
   if (!valid) {
-    return { code: 400, success: false, message: "Group not updated" };
+    return { responseCheck: OPERATION_FAILED };
   }
   const editedGroup = Group.findOne({ _id: args.id });
   return {
-    code: 200,
-    success: true,
-    message: "Group updated successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     group: editedGroup,
   };
 }
 //Medication Mutations
 async function saveMedication(parent, args, context) {
   const farmer_id = getUserId(context);
-  var returnable = (returnable = FAILED_AUTHENTICATION);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     if (args.id) {
       returnable = updateMedication(args);
@@ -269,12 +251,10 @@ async function createMedication(args, farmer_id) {
   });
   const valid = await newMedication.save();
   if (!valid) {
-    return { code: 400, success: false, message: "Medication not created" };
+    return { responseCheck: OPERATION_FAILED };
   }
   return {
-    code: 201,
-    success: true,
-    message: "Medication created successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     medication: newMedication,
   };
 }
@@ -295,20 +275,18 @@ async function updateMedication(args) {
     }
   );
   if (!valid) {
-    return { code: 400, success: false, message: "Medication not updated" };
+    return { responseCheck: OPERATION_FAILED };
   }
   const updatedMedication = await Medication.findOne({ _id: args.id });
   return {
-    code: 200,
-    success: true,
-    message: "Animal updated successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     medication: updatedMedication,
   };
 }
 //MedicationAdministration Mutations
 async function saveAdminMed(parent, args, context) {
   const farmer_id = getUserId(context);
-  var returnable = (returnable = FAILED_AUTHENTICATION);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     if (args.id) {
       returnable = updateAdminMed(args);
@@ -342,20 +320,15 @@ async function createAdminMed(args, farmer_id) {
         args.quantity_administered
       );
       return {
-        code: 201,
-        success: true,
-        message: "Medication administered successful",
+        responseCheck: OPERATION_SUCCESSFUL,
         administeredMedication: newMedAdmin,
       };
     }
   } else {
     message = "Medication quantity is to low";
   }
-  return {
-    code: 400,
-    success: false,
-    message: message,
-  };
+  const responseCheck = { status: false, message: message };
+  return { responseCheck: responseCheck };
 }
 async function updateAdminMed(args) {
   const valid = await MedicationAdministration.findByIdAndUpdate(
@@ -373,11 +346,7 @@ async function updateAdminMed(args) {
       args.medication_id,
       args.quantity_administered
     );
-    return {
-      code: 400,
-      success: false,
-      message: "AdministeredMedication not updated",
-    };
+    return { responseCheck: OPERATION_FAILED };
   }
   await restoreMedicationQuantity(
     args.medication_id,
@@ -385,9 +354,7 @@ async function updateAdminMed(args) {
   );
   const updatedMedication = await MedicationAdministration.findById(args.id);
   return {
-    code: 200,
-    success: true,
-    message: "AdministeredMedication updated successful",
+    responseCheck: OPERATION_SUCCESSFUL,
     administeredMedication: updatedMedication,
   };
 }
@@ -406,16 +373,12 @@ async function deleteAdministeredMedication(parent, args, context) {
   );
   if (deletedAdminMed) {
     return {
-      code: 200,
-      success: false,
-      message: "Administered Medication deleted successfully",
+      responseCheck: OPERATION_SUCCESSFUL,
       administeredMedication: deletedAdminMed,
     };
   }
   return {
-    code: 400,
-    success: false,
-    message: "Administered Medication not deleted",
+    responseCheck: OPERATION_FAILED,
   };
 }
 
