@@ -1,10 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {APP_SECRET} = require("./Config");
-const FAILED_AUTHENTICATION = {
-  code: 400,
-  success: false,
-  message: "Authentication Failed",
-};
+const { APP_SECRET } = require("./Config");
 function getUserId(context) {
   const Authorization = context.request.get("Authorization");
   if (Authorization) {
@@ -16,11 +11,8 @@ function getUserId(context) {
       return false;
     }
   }
-
   throw new Error("Not authenticated");
 }
-
 module.exports = {
-  FAILED_AUTHENTICATION,
   getUserId,
 };
