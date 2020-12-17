@@ -4,14 +4,14 @@ const FAILED_AUTHENTICATION = {
 };
 const OPERATION_SUCCESSFUL = {
   success: true,
-  message: "Operation successfully.",
+  message: "Operation Successful.",
 };
-const OPERATION_FAILED = { success: false, message: "Sign Up failed." };
 const ALREADY_EXISTS = {
   success: false,
   message: "Object already exists.",
 };
-const NO_SUCH_EMAIL = { success: false, message: "Email doesn't exist." };
+const OPERATION_FAILED = { success: false, message: "Operation Failed." };
+const NO_SUCH_EMAIL = { success: false, message: "Email doesn't Exist." };
 const INCORRECT_PASSWORD = { success: false, message: "Password Incorrect." };
 module.exports = {
   FAILED_AUTHENTICATION,
