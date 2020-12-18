@@ -1,8 +1,8 @@
 const { GraphQLServer } = require("graphql-yoga");
-require("./atlas_client");
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
 const { apiOptions } = require("./Config");
+require("./atlas_client");
 
 const resolvers = {
   Query,

@@ -8,4 +8,5 @@ const options = {
 module.exports = {
   atlasURI,
   APP_SECRET,
+  apiOptions,
 };

@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { getUserId } = require("../utils");
-const { APP_SECRET } = require("../Config");
 const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
+const { APP_SECRET } = require("../Config");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
@@ -221,6 +221,24 @@ async function updateGroup(args) {
     group: editedGroup,
   };
 }
+async function deleteGroup(parent, args, context) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  const deletedGroup = await Group.findByIdAndDelete(
+    args.id
+  );
+  if (deletedGroup) {
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      group: deletedGroup,
+    };
+  }
+  return {
+    responseCheck: OPERATION_FAILED,
+  };
+}
 //Medication Mutations
 async function saveMedication(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -388,6 +406,7 @@ module.exports = {
   saveAnimal,
   deleteAnimal,
   saveGroup,
+  deleteGroup,
   saveMedication,
   saveAdminMed,
   deleteAdministeredMedication,
