@@ -226,9 +226,7 @@ async function deleteGroup(parent, args, context) {
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
-  const deletedGroup = await Group.findByIdAndDelete(
-    args.id
-  );
+  const deletedGroup = await Group.findByIdAndDelete(args.id);
   if (deletedGroup) {
     return {
       responseCheck: OPERATION_SUCCESSFUL,
