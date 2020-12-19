@@ -359,7 +359,6 @@ async function updateAdminMed(args) {
       reason_for_administration: args.reason_for_administration,
     }
   );
-
   if (!valid) {
     await updateMedicationQuantity(
       args.medication_id,
