@@ -80,6 +80,7 @@ type Mutation {
     group_name: String!
     group_description: String!
   ): GroupMutationResponse!
+  deleteGroup(id: ID!) GroupMutationResponse!
   #Medication
   saveMedication(
     id: ID
@@ -94,6 +95,7 @@ type Mutation {
     purchase_date: Date!
     comments: String
   ): MedicationMutationResponse!
+  #AdminMed
   saveAdminMed(
     id: ID
     date_of_administration: Date!

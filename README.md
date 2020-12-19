@@ -1,23 +1,18 @@
 **For now this will just contain setup**
 
-<p>
-mkdir folder  <br  />
-cd folder  <br  />
-npm init -y <br  />
-mkdir src <br  />
-touch src/index.js <br  />
+**Installs**<br  />
 npm install graphql-yoga <br  />
-touch src/schema.graphql <br  />
 npm install mongoose <br />
-touch src/mongoose_schema.js <br />
-mkdir src/resolvers <br />
-touch src/resolvers/Query.js <br />
-touch src/resolvers/Mutation.js <br />
 npm install --save graphql-scalars <br />
 npm install jsonwebtoken bcryptjs <br />
+<br  />
+**Other setup<br  />**
+Create Config.js in src.<br  />
+Populate with Config.sample and change information to be correct<br  />
+
 <p>
-  
-  <p>
-    Using gitignore at <br /> 
-    https://github.com/github/gitignore/blob/master/Node.gitignore
-    <p>
+
+**Gitignore used**<br />
+https://github.com/github/gitignore/blob/master/Node.gitignore
+
+The initial gitignore I used for the project
