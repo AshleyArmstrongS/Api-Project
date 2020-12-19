@@ -175,18 +175,29 @@ async function deleteAnimal(parent, args, context) {
 // Group Mutations
 async function saveGroup(parent, args, context) {
   const farmer_id = getUserId(context);
+  console.log("farmboy "+ farmer_id)
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  
+  console.log(1)
   if (farmer_id) {
+    console.log(2)
     if (args.id) {
+      
+    console.log(3)
       returnable = updateGroup(args, farmer_id);
     } else {
+      
+    console.log(4)
       returnable = createGroup(args, farmer_id);
     }
+  }  
+    console.log(5)
+    console.log("hello there "+ returnable)
     return returnable;
-  }
+  
 }
 async function createGroup(args, farmer_id) {
-  const alreadyExists = Group.findOne({ group_name: args.group_name });
+  const alreadyExists = await Group.findOne({ group_name: args.group_name, farmer_id: farmer_id });
   if (!alreadyExists) {
     const newGroup = new Group({
       group_name: args.group_name,
