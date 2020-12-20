@@ -24,8 +24,8 @@ function animal(parent, args, context) {
 }
 function animalByTag(parent, args, context) {
   const id = getUserId(context);
-  if(!id){
-    return null
+  if (!id) {
+    return null;
   }
   return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
 }
@@ -90,9 +90,13 @@ function animalsByCrossBreed(parent, args, context) {
 }
 
 //Group
-function group(parent, args) {
+function group(parent, args, context) {
   const id = getUserId(context);
-  return Group.findOne({ _id: args.id, farmer_id: farmer_id });
+  return Group.findOne({ _id: args.id, farmer_id: id });
+}
+function groups(parent, args, context) {
+  const id = getUserId(context);
+  return Group.find({ farmer_id: id });
 }
 function groupByName(parent, args, context) {
   const id = getUserId(context);
@@ -173,6 +177,7 @@ module.exports = {
   animalsByCrossBreed,
   // Group
   group,
+  groups,
   groupByName,
   groupByDescription,
   // Medication

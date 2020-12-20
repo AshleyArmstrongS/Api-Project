@@ -36,6 +36,7 @@ type Query {
   ): [AdministeredMedication]!
 
   #Group
+  groups:[Group]!
   group(id: ID!): Group
   groupByName(group_name: String!): [Group]!
   groupByDescription(group_description: String!): [Group]!

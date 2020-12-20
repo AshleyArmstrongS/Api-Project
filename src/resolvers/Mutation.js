@@ -182,11 +182,14 @@ async function saveGroup(parent, args, context) {
     } else {
       returnable = createGroup(args, farmer_id);
     }
-    return returnable;
   }
+  return returnable;
 }
 async function createGroup(args, farmer_id) {
-  const alreadyExists = Group.findOne({ group_name: args.group_name });
+  const alreadyExists = await Group.findOne({
+    group_name: args.group_name,
+    farmer_id: farmer_id,
+  });
   if (!alreadyExists) {
     const newGroup = new Group({
       group_name: args.group_name,
@@ -356,7 +359,6 @@ async function updateAdminMed(args) {
       reason_for_administration: args.reason_for_administration,
     }
   );
-
   if (!valid) {
     await updateMedicationQuantity(
       args.medication_id,
