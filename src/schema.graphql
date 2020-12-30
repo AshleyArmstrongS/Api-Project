@@ -2,44 +2,44 @@ type Query {
   #API info
   info: String
   #Users Info
-  farmer: Farmer
+  farmer: farmerResponse!
   farmMedicationAdministrators: [String]!
   #Animal
-  animal(id: ID!): Animal
-  animalByTag(tag_number: Int!): Animal
-  herd: [Animal]!
-  animalsByProgeny(tag_number: Int!, male_female: Sex!): [Animal]!
-  animalBySex(male_female: Sex!): [Animal]!
-  animalByBreed(breed_type: String!): [Animal]!
-  animalByPureBreed(pure_breed: Boolean!): [Animal]!
-  animalsBornOn(date_of_birth: Date!): [Animal]!
-  animalsBornAfter(date_of_birth: Date!): [Animal]!
-  animalsBornBefore(date_of_birth: Date!): [Animal]!
-  animalsBornBetween(after: Date!, before: Date!): [Animal]!
-  animalsByCrossBreed(cross_breeds: String!): [Animal]!
-  animalsByName(animal_name: String!): [Animal]!
+  animal(id: ID!): AnimalResponse!
+  animalByTag(tag_number: Int!): AnimalResponse!
+  herd: AnimalsResponse!
+  animalsByProgeny(tag_number: Int!, male_female: Sex!): AnimalsResponse!
+  animalBySex(male_female: Sex!): AnimalsResponse!
+  animalByBreed(breed_type: String!): AnimalsResponse!
+  animalByPureBreed(pure_breed: Boolean!): AnimalsResponse!
+  animalsBornOn(date_of_birth: Date!): AnimalsResponse!
+  animalsBornAfter(date_of_birth: Date!): AnimalsResponse!
+  animalsBornBefore(date_of_birth: Date!): AnimalsResponse!
+  animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
+  animalsByCrossBreed(cross_breeds: String!): AnimalsResponse!
+  animalsByName(animal_name: String!): AnimalsResponse!
   #Breed
   breedName(breed_name: String!): [Breed]!
   breedCode(breed_code: String!): [Breed]!
 
   #Medication
-  medication(id: ID!): Medication
-  medications: [Medication]!
-  medicationsExpired: [Medication]!
-  medicationsByName(medication_name: String!): [Medication]!
+  medication(id: ID!): MedicationResponse!
+  medications: MedicationsResponse!
+  medicationsExpired: MedicationsResponse!
+  medicationsByName(medication_name: String!): MedicationsResponse!
 
   #AdministeredMedication
-  administeredMedication(id: ID): AdministeredMedication
-  administeredMedications: [AdministeredMedication]!
+  administeredMedication(id: ID): AdminMedResponse!
+  administeredMedications: AdminMedsResponse!
   administeredMedicationOnDate(
     date_of_administration: Date!
-  ): [AdministeredMedication]!
+  ): AdminMedsResponse!
 
   #Group
-  groups:[Group]!
-  group(id: ID!): Group
-  groupByName(group_name: String!): [Group]!
-  groupByDescription(group_description: String!): [Group]!
+  groups:GroupsResponse!
+  group(id: ID!): GroupResponse!
+  groupByName(group_name: String!): GroupsResponse!
+  groupByDescription(group_description: String!): GroupsResponse!
 }
 
 type Mutation {
@@ -68,15 +68,15 @@ type Mutation {
     animal_name: String!
     description: String!
     date_of_birth: Date!
-  ): AnimalMutationResponse!
-  deleteAnimal(id: ID!): AnimalMutationResponse!
+  ): AnimalResponse!
+  deleteAnimal(id: ID!): AnimalResponse!
   #Group
   saveGroup(
     id: ID
     group_name: String!
     group_description: String!
-  ): GroupMutationResponse!
-  deleteGroup(id: ID!): GroupMutationResponse!
+  ): GroupResponse!
+  deleteGroup(id: ID!): GroupResponse!
   #Medication
   saveMedication(
     id: ID
@@ -90,7 +90,7 @@ type Mutation {
     expiry_date: Date!
     purchase_date: Date!
     comments: String
-  ): MedicationMutationResponse!
+  ): MedicationResponse!
   #AdminMed
   saveAdminMed(
     id: ID
@@ -100,12 +100,12 @@ type Mutation {
     reason_for_administration: String!
     animal_id: ID
     medication_id: ID
-  ): AdminMedMutationResponse!
+  ): AdminMedResponse!
   deleteAdministeredMedication(
     id: ID
     medication_id: ID
     quantity_administered: Int
-  ): AdminMedMutationResponse!
+  ): AdminMedResponse!
 }
 
 #OBJECT_TYPES
@@ -171,21 +171,41 @@ type AuthPayload {
   token: String
   farmer: Farmer
 }
-type AnimalMutationResponse {
+type farmerResponse {
+  responseCheck: ResponseCheck!
+  farmer: Farmer
+}
+type AnimalResponse {
   responseCheck: ResponseCheck!
   animal: Animal
 }
-type GroupMutationResponse {
+type AnimalsResponse {
+  responseCheck: ResponseCheck!
+  animals: [Animal]
+}
+type GroupResponse {
   responseCheck: ResponseCheck!
   group: Group
 }
-type MedicationMutationResponse {
+type GroupsResponse {
+  responseCheck: ResponseCheck!
+  groups: [Group]
+}
+type MedicationResponse {
   responseCheck: ResponseCheck!
   medication: Medication
 }
-type AdminMedMutationResponse {
+type MedicationsResponse {
+  responseCheck: ResponseCheck!
+  medications: [Medication]
+}
+type AdminMedResponse {
   responseCheck: ResponseCheck!
   administeredMedication: AdministeredMedication
+}
+type AdminMedsResponse {
+  responseCheck: ResponseCheck!
+  administeredMedications: [AdministeredMedication]
 }
 type ResponseCheck {
   success: Boolean!
