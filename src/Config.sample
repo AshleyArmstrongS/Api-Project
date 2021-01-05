@@ -1,12 +1,24 @@
 //Holds the APP_SECRET DB name and other information that may change between development and production
 const APP_SECRET = "secret";
 const atlasURI = "mongodb+srv://username:password@cluster0.ikcii.mongodb.net/database?retryWrites=true&w=majority";
-const options = {
+  const atlasOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    autoIndex: false, // Don't build indexes
+    poolSize: 10, // Maintain up to 10 socket connections
+    serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    family: 4, // Use IPv4, skip trying IPv6
+  };
+const apiOptions = {
   port: 4000,
   endpoint: "/sample",
 };
 module.exports = {
   atlasURI,
+  atlasOptions,
   APP_SECRET,
   apiOptions,
 };
