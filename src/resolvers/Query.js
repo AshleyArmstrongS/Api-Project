@@ -5,6 +5,14 @@ const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");
 const Breed = require("../models/breed");
 const { getUserId } = require("../utils");
+const {
+  FAILED_AUTHENTICATION,
+  OPERATION_SUCCESSFUL,
+  ALREADY_EXISTS,
+  OPERATION_FAILED,
+  NO_SUCH_EMAIL,
+  INCORRECT_PASSWORD,
+} = require("./ResolverErrorMessages");
 
 //API info
 function info() {
@@ -12,143 +20,355 @@ function info() {
 }
 
 //User
-function farmer(parent, args, context) {
-  const id = getUserId(context);
-  return Farmer.findById(id);
+async function farmer(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const farmer = await Farmer.findById(farmer_id);
+    if (!farmer) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, farmer: farmer};
+    }
+  }
+  return returnable;
 }
 
 //Animal
-function animal(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.findOne({ _id: args.id, farmer_id: id });
-}
-function animalByTag(parent, args, context) {
-  const id = getUserId(context);
-  if (!id) {
-    return null;
+async function animal(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animal = await Animal.findOne({ _id: args.id, farmer_id: farmer_id });
+    if (!animal) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animal: animal};
+    }
   }
-  return Animal.findOne({ tag_number: args.tag_number, farmer_id: id });
+  return returnable;
+}
+async function animalByTag(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animal = await Animal.findOne({ tag_number: args.tag_number, farmer_id: farmer_id });
+    if (!animal) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animal: animal};
+    }
+  }
+  return returnable;
 }
 
 //Animals
-function herd(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({ farmer_id: id });
-}
-function animalByBreed(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({ breed_type: args.breed_type, farmer_id: id });
-}
-function animalByPureBreed(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({ pure_breed: args.pure_breed, farmer_id: id });
-}
-function animalBySex(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({ male_female: args.male_female, farmer_id: id });
-}
-function animalsByProgeny(parent, args, context) {
-  const id = getUserId(context);
-  if (args.male_female == "M") {
-    return Animal.find({ sire_number: args.tag_number, farmer_id: id });
+async function herd(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({ farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
   }
-  return Animal.find({ mother_number: args.tag_number, farmer_id: id });
+  return returnable;
+}
+async function animalByBreed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({ breed_type: args.breed_type, farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
+}
+async function animalByPureBreed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({ breed_type: args.breed_type, farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
+}
+async function animalBySex(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({ male_female: args.male_female, farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
+}
+async function animalsByProgeny(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = new Animal
+    if (args.male_female == "M") {
+      animals = await Animal.find({ sire_number: args.tag_number, farmer_id: farmer_id });
+    } else {
+    animals = await Animal.find({ mother_number: args.tag_number, farmer_id: farmer_id });
+    }
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
 
 // Animal
-function animalsBornOn(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({
+async function animalsBornOn(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({
     date_of_birth: new Date(args.date_of_birth),
-    farmer_id: id,
+    farmer_id: farmer_id,
   });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
-function animalsBornAfter(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({
+async function animalsBornAfter(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({
     date_of_birth: { $gte: new Date(args.date_of_birth) },
-    farmer_id: id,
+    farmer_id: farmer_id,
   });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
-function animalsBornBefore(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({
+async function animalsBornBefore(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({
     date_of_birth: { $lte: new Date(args.date_of_birth) },
-    farmer_id: id,
+    farmer_id: farmer_id,
   });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
-function animalsBornBetween(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({
+async function animalsBornBetween(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({
     date_of_birth: { $gte: new Date(args.after), $lte: new Date(args.before) },
-    farmer_id: id,
+    farmer_id: farmer_id,
   });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
-function animalsByCrossBreed(parent, args, context) {
-  const id = getUserId(context);
-  return Animal.find({ cross_breed: args.cross_breed, farmer_id: id });
+async function animalsByCrossBreed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animals = await Animal.find({ cross_breed: args.cross_breed, farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
 }
 
 //Group
-function group(parent, args, context) {
-  const id = getUserId(context);
-  return Group.findOne({ _id: args.id, farmer_id: id });
+async function group(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const group = await Group.findOne({ _id: args.id, farmer_id: farmer_id });
+    if (!group) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, group: group};
+    }
+  }
+  return returnable;
 }
-function groups(parent, args, context) {
-  const id = getUserId(context);
-  return Group.find({ farmer_id: id });
+async function groups(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const groups = await Group.find({ farmer_id: farmer_id });
+    if (!groups) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, groups: groups};
+    }
+  }
+  return returnable;
 }
-function groupByName(parent, args, context) {
-  const id = getUserId(context);
-  return Group.find({ group_name: args.group_name, farmer_id: id });
+async function groupByName(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const groups = await Group.find({ group_name: args.group_name, farmer_id: farmer_id });
+    if (!groups) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, groups: groups};
+    }
+  }
+  return returnable;
 }
-function groupByDescription(parent, args, context) {
-  const id = getUserId(context);
-  return Group.find({
-    group_description: args.group_description,
-    farmer_id: id,
-  });
+async function groupByDescription(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const groups = await Group.find({ group_name: args.group_name, farmer_id: farmer_id });
+    if (!groups) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, groups: groups};
+    }
+  }
+  return returnable;
 }
 
 //Medication
-function medication(parent, args, context) {
-  const id = getUserId(context);
-  return Medication.findOne({ _id: args.id, farmer_id: id });
+async function medication(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const medication = await Medication.findOne({ _id: args.id, farmer_id: farmer_id });
+    if (!medication) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, medication: medication};
+    }
+  }
+  return returnable;
 }
 
 //Medications
-function medications(parent, args, context) {
-  const id = getUserId(context);
-  return Medication.find({ farmer_id: id });
+async function medications(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const medications = await Medication.find({ farmer_id: farmer_id });
+    if (!medications) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, medications: medications};
+    }
+  }
+  return returnable;
 }
-function medicationsExpired(parent, args, context) {
-  const id = getUserId(context);
-  return Medication.find({ expiry_date: { $lt: Date.now() }, farmer_id: id });
+async function medicationsExpired(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const medications = await Medication.find({ expiry_date: { $lt: Date.now() }, farmer_id: farmer_id });
+    if (!medications) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, medications: medications};
+    }
+  }
+  return returnable;
 }
-function medicationsByName(parent, args, context) {
-  const id = getUserId(context);
+async function medicationsByName(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
   var str = args.medication_name;
-  return Medication.find({
+  const medications = await Medication.find({
     medication_name: { $regex: new RegExp(".*" + str + ".*", "i") },
     farmer_id: id,
   });
+  if (!medications) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, medications: medications};
+    }
+  }
+  return returnable;
 }
 // Medical_Administration
-function administeredMedication(parent, args, context) {
-  const id = getUserId(context);
-  return AdministeredMedication.findOne({ _id: args.id, farmer_id: id });
+async function administeredMedication(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const administeredMedication = await AdministeredMedication.findOne({ _id: args.id, farmer_id: farmer_id });
+    if (!administeredMedication) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, administeredMedication: administeredMedication};
+    }
+  }
+  return returnable;
 }
-function administeredMedications(parent, args, context) {
-  const id = getUserId(context);
-  return AdministeredMedication.find({ farmer_id: id });
+async function administeredMedications(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const administeredMedications = await AdministeredMedication.find({ farmer_id: farmer_id });
+    if (!administeredMedications) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, administeredMedications: administeredMedications};
+    }
+  }
+  return returnable;
 }
 // need to look at this again, thinking of adding complexity to it but will have to do some research first
-function administeredMedicationOnDate(parent, args, context) {
-  const id = getUserId(context);
-  return AdministeredMedication.find({
+async function administeredMedicationOnDate(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const administeredMedications = await AdministeredMedication.find({
     date_of_administration: args.date_of_administration,
     farmer_id: id,
   });
+    if (!administeredMedications) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, administeredMedications: administeredMedications};
+    }
+  }
+  return returnable;
 }
 
 // Breeds
