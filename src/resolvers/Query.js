@@ -48,6 +48,19 @@ async function animal(parent, args, context) {
   }
   return returnable;
 }
+async function animalsByName(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  const animal = await Animal.findOne({ animal_name: args.animal_name, farmer_id: farmer_id });
+    if (!animal) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animal: animal};
+    }
+  }
+  return returnable;
+}
 async function animalByTag(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -384,6 +397,7 @@ module.exports = {
   farmer,
   // Animal
   animal,
+  animalsByName,
   animalByTag,
   herd,
   animalByBreed,
