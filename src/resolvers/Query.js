@@ -52,7 +52,7 @@ async function animalsByName(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-  const animal = await Animal.findOne({ animal_name: args.animal_name, farmer_id: farmer_id });
+    const animal = await Animal.findOne({ animal_name: { $regex: new RegExp(".*" + args.animal_name + ".*", "i") }, farmer_id: farmer_id });
     if (!animal) {
       returnable = {responseCheck: OPERATION_FAILED};
     } else {
