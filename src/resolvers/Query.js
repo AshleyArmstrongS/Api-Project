@@ -128,7 +128,7 @@ async function animalBySex(parent, args, context) {
   }
   return returnable;
 }
-async function animalsByProgeny(parent, args, context) {
+async function animalByProgeny(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
@@ -403,7 +403,7 @@ module.exports = {
   animalByBreed,
   animalByPureBreed,
   animalBySex,
-  animalsByProgeny,
+  animalByProgeny,
   animalsBornOn,
   animalsBornAfter,
   animalsBornBefore,
