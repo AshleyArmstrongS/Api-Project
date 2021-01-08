@@ -17,7 +17,7 @@ type Query {
   animalsBornAfter(date_of_birth: Date!): AnimalsResponse!
   animalsBornBefore(date_of_birth: Date!): AnimalsResponse!
   animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
-  animalsByCrossBreed(cross_breeds: String!): AnimalsResponse!
+  animalsByCrossBreed(breed_type: String!): AnimalsResponse!
   #Breed
   breedName(breed_name: String!): [Breed]!
   breedCode(breed_code: String!): [Breed]!
