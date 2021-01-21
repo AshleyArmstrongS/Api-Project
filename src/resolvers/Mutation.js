@@ -224,6 +224,52 @@ async function updateGroup(args) {
     group: editedGroup,
   };
 }
+async function addAnimalToGroup(parent, args, context) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  const animal = await Animal.findOne({ _id: args.id, farmer_id: id }).select({
+    groups_id: 1,
+    _id: 0,
+  });
+  const existing_groups = animal.groups_id;
+  for(const group of existing_groups){
+    if (group.toString() === args.groups_id.toString()) {
+      return { responseCheck: ALREADY_EXISTS };
+    }
+  }
+  const valid = await Animal.findByIdAndUpdate(
+    { _id: args.id },
+    { $push: { groups_id: args.groups_id } }
+  );
+  if (!valid) {
+    return { responseCheck: OPERATION_FAILED };
+  }
+  const editedAnimal = Animal.findOne({ _id: args.id });
+  return {
+    responseCheck: OPERATION_SUCCESSFUL,
+    animal: editedAnimal,
+  };
+}
+async function removeAnimalFromGroup(parent, args, context) {
+  const id = getUserId(context);
+  if (!id) {
+    return FAILED_AUTHENTICATION;
+  }
+  const valid = await Animal.findByIdAndUpdate(
+    { _id: args.id },
+    { $pull: { groups_id: args.groups_id } }
+  );
+  if (!valid) {
+    return { responseCheck: OPERATION_FAILED };
+  }
+  const editedAnimal = Animal.findOne({ _id: args.id });
+  return {
+    responseCheck: OPERATION_SUCCESSFUL,
+    animal: editedAnimal,
+  };
+}
 async function deleteGroup(parent, args, context) {
   const id = getUserId(context);
   if (!id) {
@@ -406,6 +452,8 @@ module.exports = {
   saveAnimal,
   deleteAnimal,
   saveGroup,
+  addAnimalToGroup,
+  removeAnimalFromGroup,
   deleteGroup,
   saveMedication,
   saveAdminMed,

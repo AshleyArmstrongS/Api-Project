@@ -54,10 +54,10 @@ const AnimalSchema = new Schema(
       ref: "Farmer",
       required: true,
     },
-    // groups: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Group"
-    // }
+    groups_id: {
+       type: [mongoose.Schema.Types.ObjectId],
+       ref: "Group"
+     }
   },
   { collection: "animals" }
 );
