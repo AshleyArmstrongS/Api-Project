@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { getUserId } = require("../utils");
-const { animalByTag } = require("./Query");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
@@ -102,15 +101,17 @@ async function saveAnimal(parent, args, context) {
     if (args.id) {
       returnable = await updateAnimal(args);
     } else {
-      returnable = await createAnimal(parent, args, context, farmer_id);
+      returnable = await createAnimal(args, farmer_id);
     }
   }
   return returnable;
 }
-async function createAnimal(parent, args, context, farmer_id) {
+async function createAnimal(args, farmer_id) {
   const herd_number = await farmerHerdNo(farmer_id);
-  const alreadyExists = await animalByTag(parent, args, context);
+  const alreadyExists = await Animal.findOne({tag_number: args.tag_number, farmer_id: farmer_id});
+  console.log(alreadyExists)
   if (!alreadyExists) {
+    console.log("here")
     const newAnimal = new Animal({
       tag_number: args.tag_number,
       herd_number: herd_number.herd_number,
