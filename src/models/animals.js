@@ -7,11 +7,22 @@ const AnimalSchema = new Schema(
     tag_number: {
       type: Number,
       required: true,
+      min:  10000,
+      max: 99999,
+
+      // validate:  {
+      //   validater: function(v){
+      //     var re = /^d{5}$/;
+      //     return (v ==null || v.trim(v.length < 1) || re.test(v))
+      //   },
+      //   message: 'Provided number is invalid.'
+      // },
       integer: true,
     },
     herd_number: {
       type: String,
       required: true,
+      maxlength: 8,
     },
     sire_number: {
       type: Number,
