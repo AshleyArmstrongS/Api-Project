@@ -6,10 +6,8 @@ const AnimalSchema = new Schema(
   {
     tag_number: {
       type: Number,
-      required: true,
       min:  10000,
       max: 99999,
-
       // validate:  {
       //   validater: function(v){
       //     var re = /^d{5}$/;
@@ -18,32 +16,48 @@ const AnimalSchema = new Schema(
       //   message: 'Provided number is invalid.'
       // },
       integer: true,
+      trim: true,
+      required: true,
     },
     herd_number: {
       type: String,
-      required: true,
+      uppercase: true,
+      trim: true,
+      minlength: 8,
       maxlength: 8,
+      required: true,
     },
     sire_number: {
       type: Number,
-      required: true,
+      min:  10000,
+      max: 99999,
+      integer: true,
+      trim: true,
+      required: "Please give a sire number that is 5 in length XXXXX.",
     },
     mother_number: {
       type: Number,
-      required: true,
+      min:  10000,
+      max: 99999,
+      integer: true,
+      trim: true,
+      required: "Please give a mother number that is 5 in length XXXXX.",
     },
     male_female: {
       type: String,
+      trim: true,
       enum: ["M", "F"],
+      required: "Animal must have a gender."
     },
     breed_type: {
       //type: mongoose.Schema.Types.ObjectId,
       //ref: "Breed"
       type: String,
+      trim: true,
     },
     date_of_birth: {
       type: Date,
-      required: true,
+      required: "Date of birth is required",
     },
     pure_breed: {
       type: Boolean,
@@ -51,13 +65,16 @@ const AnimalSchema = new Schema(
     },
     cross_breed: {
       type: Boolean,
+      default: true
     },
     animal_name: {
       type: String,
+      trim: true,
       default: "",
     },
     description: {
       type: String,
+      trim: true,
       default: "",
     },
     farmer_id: {
