@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
+const validateTagNumber = tag_number => {
+  const re = /^{5}$/
+  return re.test(tag_number)
+}
+
 const AnimalSchema = new Schema(
   {
     tag_number: {
@@ -17,6 +22,7 @@ const AnimalSchema = new Schema(
       // },
       integer: true,
       trim: true,
+      validate: [validateTagNumber, 'Please give a sire number that is 5 in length.'],
       required: true,
     },
     herd_number: {
