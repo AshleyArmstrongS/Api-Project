@@ -15,6 +15,7 @@ const {
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
 } = require("./ResolverErrorMessages");
+const { animal } = require("./Query");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
@@ -108,10 +109,11 @@ async function saveAnimal(parent, args, context) {
 }
 async function createAnimal(args, farmer_id) {
   const herd_number = await farmerHerdNo(farmer_id);
-  const alreadyExists = await Animal.findOne({tag_number: args.tag_number, farmer_id: farmer_id});
-  console.log(alreadyExists)
+  const alreadyExists = await Animal.findOne({
+    tag_number: args.tag_number,
+    farmer_id: farmer_id,
+  });
   if (!alreadyExists) {
-    console.log("here")
     const newAnimal = new Animal({
       tag_number: args.tag_number,
       herd_number: herd_number.herd_number,
@@ -235,7 +237,7 @@ async function addAnimalToGroup(parent, args, context) {
     _id: 0,
   });
   const existing_groups = animal.groups_id;
-  for(const group of existing_groups){
+  for (const group of existing_groups) {
     if (group.toString() === args.groups_id.toString()) {
       return { responseCheck: ALREADY_EXISTS };
     }
@@ -275,6 +277,20 @@ async function deleteGroup(parent, args, context) {
   const id = getUserId(context);
   if (!id) {
     return FAILED_AUTHENTICATION;
+  }
+  const animals = await Animal.find({
+    groups_id: args.groups_id,
+    farmer_id: id,
+  }).select({
+    _id: 1,
+  });
+  for (const animal_id of animals) {
+
+    var help = await Animal.findByIdAndUpdate(
+      { _id: animal_id.id },
+      { $pull: { groups_id: args.groups_id } }
+    );
+    console.log(help)
   }
   const deletedGroup = await Group.findByIdAndDelete(args.id);
   if (deletedGroup) {

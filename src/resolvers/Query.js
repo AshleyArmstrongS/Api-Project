@@ -8,10 +8,7 @@ const { getUserId } = require("../utils");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
-  ALREADY_EXISTS,
   OPERATION_FAILED,
-  NO_SUCH_EMAIL,
-  INCORRECT_PASSWORD,
 } = require("./ResolverErrorMessages");
 
 //API info
