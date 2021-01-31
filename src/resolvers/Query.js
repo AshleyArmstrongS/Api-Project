@@ -45,6 +45,19 @@ async function animal(parent, args, context) {
   }
   return returnable;
 }
+async function animalsByName(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const animal = await Animal.findOne({ animal_name: { $regex: new RegExp(".*" + args.animal_name + ".*", "i") }, farmer_id: farmer_id });
+    if (!animal) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animal: animal};
+    }
+  }
+  return returnable;
+}
 async function animalByTag(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -86,6 +99,20 @@ async function animalByBreed(parent, args, context) {
   }
   return returnable;
 }
+async function animalsByCrossBreed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+  var animalBreedType = args.breed_type.split('X').join('')
+  const animals = await Animal.find({ breed_type: { $regex: new RegExp(".*" + animalBreedType + ".*?X", "i") }, farmer_id: farmer_id });
+    if (!animals) {
+      returnable = {responseCheck: OPERATION_FAILED};
+    } else {
+      returnable = {responseCheck: OPERATION_SUCCESSFUL, animals: animals};
+    }
+  }
+  return returnable;
+}
 async function animalByPureBreed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -112,7 +139,7 @@ async function animalBySex(parent, args, context) {
   }
   return returnable;
 }
-async function animalsByProgeny(parent, args, context) {
+async function animalByProgeny(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
@@ -196,11 +223,14 @@ async function animalsBornBetween(parent, args, context) {
   }
   return returnable;
 }
-async function animalsByCrossBreed(parent, args, context) {
+async function animalsInGroup(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-  const animals = await Animal.find({ cross_breed: args.cross_breed, farmer_id: farmer_id });
+  const animals = await Animal.find({
+    groups_id: args.groups_id,
+    farmer_id: farmer_id
+  });
     if (!animals) {
       returnable = {responseCheck: OPERATION_FAILED};
     } else {
@@ -381,17 +411,19 @@ module.exports = {
   farmer,
   // Animal
   animal,
+  animalsByName,
   animalByTag,
   herd,
   animalByBreed,
   animalByPureBreed,
   animalBySex,
-  animalsByProgeny,
+  animalByProgeny,
   animalsBornOn,
   animalsBornAfter,
   animalsBornBefore,
   animalsBornBetween,
   animalsByCrossBreed,
+  animalsInGroup,
   // Group
   group,
   groups,

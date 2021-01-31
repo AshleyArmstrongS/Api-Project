@@ -6,9 +6,10 @@ type Query {
   farmMedicationAdministrators: [String]!
   #Animal
   animal(id: ID!): AnimalResponse!
+  animalsByName(animal_name: String!): AnimalResponse!
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
-  animalsByProgeny(tag_number: Int!, male_female: Sex!): AnimalsResponse!
+  animalByProgeny(tag_number: Int!, male_female: Sex!): AnimalsResponse!
   animalBySex(male_female: Sex!): AnimalsResponse!
   animalByBreed(breed_type: String!): AnimalsResponse!
   animalByPureBreed(pure_breed: Boolean!): AnimalsResponse!
@@ -16,8 +17,8 @@ type Query {
   animalsBornAfter(date_of_birth: Date!): AnimalsResponse!
   animalsBornBefore(date_of_birth: Date!): AnimalsResponse!
   animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
-  animalsByCrossBreed(cross_breeds: String!): AnimalsResponse!
-  animalsByName(animal_name: String!): AnimalsResponse!
+  animalsByCrossBreed(breed_type: String!): AnimalsResponse!
+  animalsInGroup(groups_id: String): AnimalsResponse!
   #Breed
   breedName(breed_name: String!): [Breed]!
   breedCode(breed_code: String!): [Breed]!
