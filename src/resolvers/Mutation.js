@@ -15,7 +15,6 @@ const {
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
 } = require("./ResolverErrorMessages");
-const { animal } = require("./Query");
 //Internal functions
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
