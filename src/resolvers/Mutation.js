@@ -277,16 +277,13 @@ async function deleteGroup(parent, args, context) {
   if (!farmer_id) {
     return FAILED_AUTHENTICATION;
   }
-  const animals = await Animal.find({
-    groups_id: args.id,
-    farmer_id: farmer_id,
-  });
-  for (const animal_id of animals) {
-    var help = await Animal.findByIdAndUpdate(
-      { _id: animal_id.id },
-      { $pull: { groups_id: args.id } }
-    );
-  }
+  await Animal.updateMany(
+    {
+      groups_id: args.id,
+      farmer_id: farmer_id,
+    },
+    { $pull: { groups_id: args.id } }
+  );
   const deletedGroup = await Group.findByIdAndDelete(args.id);
   if (deletedGroup) {
     return {
