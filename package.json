@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/OptiFarm/optiFarmAPI#readme",
   "dependencies": {
+    "artillery": "^1.6.1",
     "bcryptjs": "^2.4.3",
     "graphql-iso-date": "^3.6.1",
     "graphql-playground-html": "^1.6.29",
@@ -25,5 +26,8 @@
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.4"
+  },
+  "devDependencies": {
+    "easygraphql-tester": "^5.1.6"
   }
 }
