@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
-const validateTagNumber = tag_number => {
-  const re = /^{5}$/
+const validateFiveDigitNumber = tag_number => {
+  const re = /^d{5}$/
   return re.test(tag_number)
 }
 
@@ -13,16 +13,9 @@ const AnimalSchema = new Schema(
       type: Number,
       min:  10000,
       max: 99999,
-      // validate:  {
-      //   validater: function(v){
-      //     var re = /^d{5}$/;
-      //     return (v ==null || v.trim(v.length < 1) || re.test(v))
-      //   },
-      //   message: 'Provided number is invalid.'
-      // },
       integer: true,
       trim: true,
-      validate: [validateTagNumber, 'Please give a sire number that is 5 in length.'],
+      validate: [validateFiveDigitNumber, 'Please give a tag number that is 5 in length.'],
       required: true,
     },
     herd_number: {
@@ -39,7 +32,7 @@ const AnimalSchema = new Schema(
       max: 99999,
       integer: true,
       trim: true,
-      required: "Please give a sire number that is 5 in length XXXXX.",
+      required: [validateFiveDigitNumber, "Please give a sire number that is 5 in length."],
     },
     mother_number: {
       type: Number,
@@ -47,7 +40,7 @@ const AnimalSchema = new Schema(
       max: 99999,
       integer: true,
       trim: true,
-      required: "Please give a mother number that is 5 in length XXXXX.",
+      required: [validateFiveDigitNumber, "Please give a mother number that is 5 in length."]
     },
     male_female: {
       type: String,
