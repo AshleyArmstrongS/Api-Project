@@ -7,7 +7,7 @@ const validateFiveDigitNumber = tag_number => {
   return re.test(tag_number)
 }
 const validateHerdNumber = herd_number => {
-  const re = /^[a-zA-Z{2}0-9{3}_.-]*$/
+  const re = /^[a-zA-Z0-9{10}]$/
   return re.test(herd_number)
 }
 const validateAnimalName = animal_name => {
@@ -30,10 +30,9 @@ const AnimalSchema = new Schema(
       type: String,
       uppercase: true,
       trim: true,
-      minlength: 9,
-      maxlength: 10,
-      uppercase: true,
-      validate: [validateHerdNumber, 'Please use a valid herd number, format: IE1234567 or 3721234567'],
+      minlength: 10,
+      maxlength: 11,
+      validate: [validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
       required: true,
     },
     sire_number: {
