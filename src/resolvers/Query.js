@@ -345,8 +345,7 @@ async function medicationsByName(parent, args, context) {
   if (farmer_id) {
   var str = args.medication_name;
   const medications = await Medication.find({
-    medication_name: { $regex: new RegExp(".*" + str + ".*", "i") },
-    farmer_id: id,
+    medication_name: { $regex: new RegExp(".*" + str + ".*", "i") }, farmer_id: farmer_id,
   });
   if (!medications) {
       returnable = {responseCheck: OPERATION_FAILED};
