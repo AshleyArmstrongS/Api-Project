@@ -2,47 +2,74 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
+const validateIsName = name => {
+  const re = /^[a-zA-Z ]{2,30}$/
+  return re.test(name) 
+}
+
+// https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
+var validateEmail = function(email) {
+  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email)
+};
+
+const validateHerdNumber = herd_number => {
+  const re = /^[a-zA-Z0-9{10}]$/
+  return re.test(herd_number)
+}
+
 const FarmerSchema = new Schema(
   {
     first_name: {
       type: String,
+      trim: true,
+      validate: [validateIsName, 'Invalid, use all letters, max length of 30'],
       required: true,
-      validate: /\S+/,
     },
     second_name: {
       type: String,
+      trim: true,
+      validate: [validateIsName, 'Invalid, use all letters, max length of 30'],
       required: true,
-      validate: /\S+/,
     },
     email: {
       type: String,
       trim: true,
       lowercase: true,
       unique: true,
-      required: "Email address is required", //put in validation here
+      validate: [validateEmail, 'Please fill a valid email address'],
+      required: "Email address is required", 
     },
     password: {
       type: String,
+      trim: true,
       required: true,
     },
     farm_type: {
       type: String,
+      trim: true,
       enum: ["BEEF", "DAIRY", "SUCKLER", "OTHER"],
       default: "Other",
     },
     farm_address: {
       type: String,
+      trim: true,
       required: true,
     },
     medication_administrators: {
-      // normally the farmer but can be the vet
       type: [String],
+      trim: true,
     },
     herd_number: {
       type: String,
+      uppercase: true,
+      trim: true,
+      minlength: 10,
+      maxlength: 11,
+      validate: [validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
       required: true,
-      unique: true,
-    }, // might need validation here
+      unique: true
+    },
   },
   { collection: "farmers" }
 );

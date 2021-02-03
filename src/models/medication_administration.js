@@ -2,33 +2,46 @@ const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
+const validateIsNumber = qty => {
+  // regex from https://stackoverflow.com/questions/4246077/matching-numbers-with-regular-expressions-only-digits-and-commas/4247184#4247184
+  const re = /^-?\d{1,3}(,\d{3})*(\.\d\d)?$|^\.\d\d$/
+  return re.test(qty)
+}
+const validateIsString = qty => {
+  const re = /^$|^\[a-zA-Z ]+$/
+  return re.test(qty)
+}
+
 var AdministeredMedicationSchema = new Schema(
   {
-    // verify quantity in API as there are three diff quantities
     date_of_administration: {
       type: Date,
       default: Date.now,
     },
-    // medication_name: {  might not need as medication is referenced
-    //   type: String,
-    //   required: true
-    // },
     quantity_administered: {
       type: Number,
+      trim: true,
+      validate: [validateIsNumber, 'Enter valid quantity.'],
       required: true,
       default: 0,
     },
     quantity_type: {
       type: String,
+      trim: true,
+      validate: [validateIsString, 'Please enter a valid quantity type.'],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
     },
     administered_by: {
       type: String,
+      trim: true,
+      validate: [validateIsString, 'Please enter a valid name.'],
       required: true,
+      default: "", // should we use the farmer's name here?!??
     },
     reason_for_administration: {
       type: String,
+      default: "",
     },
     animal_id: {
       type: mongoose.Schema.Types.ObjectId,
