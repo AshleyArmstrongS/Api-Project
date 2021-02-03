@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const validateGroupName = name => {
   const re = /^[a-zA-Z ]{2,30}$/
-  return re.test(name) 
+  re.test(name) 
+  return re
 }
 
 const GroupSchema = new Schema(

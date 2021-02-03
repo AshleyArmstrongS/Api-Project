@@ -5,11 +5,13 @@ const Schema = mongoose.Schema;
 const validateIsNumber = number => {
   // regex from https://stackoverflow.com/questions/4246077/matching-numbers-with-regular-expressions-only-digits-and-commas/4247184#4247184
   const re = /^-?\d{1,3}(,\d{3})*(\.\d\d)?$|^\.\d\d$/
-  return re.test(number)
+  re.test(number)
+  return re
 }
 const validateIsString = str => {
   const re = /^$|^\[a-zA-Z ]+$/
-  return re.test(str)
+  re.test(str)
+  return re
 }
 
 var MedicationSchema = new Schema(
@@ -18,13 +20,13 @@ var MedicationSchema = new Schema(
     medication_name: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Enter valid quantity.'],
+      validate: [validateIsString, 'Enter valid medication name.'],
       required: true,
     },
     supplied_by: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Enter valid quantity.'],
+      validate: [validateIsString, 'Enter valid supplier name.'],
       required: true,
     },
     quantity: {
@@ -49,7 +51,7 @@ var MedicationSchema = new Schema(
     quantity_type: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Enter valid quantity.'],
+      validate: [validateIsString, 'Enter valid quantity type.'],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
       required: true,
@@ -57,13 +59,13 @@ var MedicationSchema = new Schema(
     remaining_quantity: {
       type: Number,
       trim: true,
-      validate: [validateIsNumber, 'Enter valid quantity.'],
+      validate: [validateIsNumber, 'Invalid remaining quantity.'],
       required: true,
     },
     batch_number: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Enter valid quantity.'],
+      validate: [validateIsString, 'Enter valid batch number.'],
       required: true,
     },
     expiry_date: {

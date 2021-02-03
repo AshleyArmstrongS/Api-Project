@@ -5,11 +5,13 @@ const Schema = mongoose.Schema;
 const validateIsNumber = number => {
   // regex from https://stackoverflow.com/questions/4246077/matching-numbers-with-regular-expressions-only-digits-and-commas/4247184#4247184
   const re = /^-?\d{1,3}(,\d{3})*(\.\d\d)?$|^\.\d\d$/
-  return re.test(number)
+  re.test(number)
+  return re
 }
 const validateIsString = str => {
   const re = /^$|^\[a-zA-Z ]+$/
-  return re.test(str)
+  re.test(str)
+  return re
 }
 
 var AdministeredMedicationSchema = new Schema(

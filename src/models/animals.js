@@ -4,15 +4,18 @@ const Schema = mongoose.Schema;
 
 const validateFiveDigitNumber = tag_number => {
   const re = /^d{5}$/
-  return re.test(tag_number)
+  re.test(tag_number)
+  return re
 }
 const validateHerdNumber = herd_number => {
   const re = /^[a-zA-Z0-9{10}]$/
-  return re.test(herd_number)
+  re.test(herd_number)
+  return re
 }
 const validateAnimalName = animal_name => {
   const re = /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/
-  return re.test(animal_name)
+  re.test(animal_name)
+  return re
 }
 
 const AnimalSchema = new Schema(
