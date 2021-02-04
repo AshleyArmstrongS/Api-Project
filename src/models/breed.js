@@ -4,12 +4,14 @@ const Schema = mongoose.Schema;
 
 const validateBreedName = name => {
   const re = /^[a-zA-Z ]{2,30}$/
-  return re.test(name) 
+  re.test(name) 
+  return re
 }
 
 const validateBreedCode = breed_code => {
   const re = /^[a-zA-Z0-9]{2,4}$/
-  return re.test(breed_code)
+  re.test(breed_code)
+  return re
 }
 
 const BreedSchema = new Schema({

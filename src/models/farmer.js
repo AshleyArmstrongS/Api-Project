@@ -4,18 +4,21 @@ const Schema = mongoose.Schema;
 
 const validateIsName = name => {
   const re = /^[a-zA-Z ]{2,30}$/
-  return re.test(name) 
+  re.test(name) 
+  return re
 }
 
 // https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
 var validateEmail = function(email) {
   var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return re.test(email)
+  re.test(email)
+  return re
 };
 
 const validateHerdNumber = herd_number => {
   const re = /^[a-zA-Z0-9{10}]$/
-  return re.test(herd_number)
+  re.test(herd_number)
+  return re
 }
 
 const FarmerSchema = new Schema(
