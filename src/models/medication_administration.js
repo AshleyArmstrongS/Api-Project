@@ -1,16 +1,7 @@
 const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
-
-const validateIsNumber = number => {
-  // regex from https://stackoverflow.com/questions/4246077/matching-numbers-with-regular-expressions-only-digits-and-commas/4247184#4247184
-  const re = /^-?\d{1,3}(,\d{3})*(\.\d\d)?$|^\.\d\d$/
-  return re.test(number)
-}
-const validateIsString = str => {
-  const re = /^$|^\[a-zA-Z ]+$/
-  return re.test(str)
-}
+const val = require("../models/mongoose_validation");
 
 var AdministeredMedicationSchema = new Schema(
   {
@@ -21,21 +12,21 @@ var AdministeredMedicationSchema = new Schema(
     quantity_administered: {
       type: Number,
       trim: true,
-      validate: [validateIsNumber, 'Enter valid quantity.'],
+      validate: [val.validateIsNumber, 'Enter valid quantity.'],
       required: true,
       default: 0,
     },
     quantity_type: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Please enter a valid quantity type.'],
+      validate: [val.validateIsString, 'Please enter a valid quantity type.'],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
     },
     administered_by: {
       type: String,
       trim: true,
-      validate: [validateIsString, 'Please enter a valid name.'],
+      validate: [val.validateIsString, 'Please enter a valid name.'],
       required: true,
       default: "", // should we use the farmer's name here?!??
     },
