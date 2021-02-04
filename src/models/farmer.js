@@ -1,38 +1,20 @@
 const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
-
-const validateIsName = name => {
-  const re = /^[a-zA-Z ]{2,30}$/
-  re.test(name) 
-  return re
-}
-
-// https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
-var validateEmail = function(email) {
-  var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  re.test(email)
-  return re
-};
-
-const validateHerdNumber = herd_number => {
-  const re = /^[a-zA-Z0-9{10}]$/
-  re.test(herd_number)
-  return re
-}
+const val = require("../models/mongoose_validation");
 
 const FarmerSchema = new Schema(
   {
     first_name: {
       type: String,
       trim: true,
-      validate: [validateIsName, 'Invalid, use all letters, max length of 30'],
+      validate: [val.validateIsName, 'Invalid, use all letters, max length of 30'],
       required: true,
     },
     second_name: {
       type: String,
       trim: true,
-      validate: [validateIsName, 'Invalid, use all letters, max length of 30'],
+      validate: [val.validateIsName, 'Invalid, use all letters, max length of 30'],
       required: true,
     },
     email: {
@@ -40,7 +22,7 @@ const FarmerSchema = new Schema(
       trim: true,
       lowercase: true,
       unique: true,
-      validate: [validateEmail, 'Please fill a valid email address'],
+      validate: [val.validateEmail, 'Please fill a valid email address'],
       required: "Email address is required", 
     },
     password: {
@@ -69,7 +51,7 @@ const FarmerSchema = new Schema(
       trim: true,
       minlength: 10,
       maxlength: 11,
-      validate: [validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
+      validate: [val.validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
       required: true,
       unique: true
     },
