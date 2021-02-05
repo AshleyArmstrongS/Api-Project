@@ -65,9 +65,9 @@ type Mutation {
     mother_number: Int!
     male_female: Sex!
     breed_type: String!
-    pure_breed: Boolean!
-    animal_name: String!
-    description: String!
+    pure_breed: Boolean
+    animal_name: String
+    description: String
     date_of_birth: Date!
   ): AnimalResponse!
   deleteAnimal(id: ID!): AnimalResponse!
@@ -90,14 +90,14 @@ type Mutation {
   saveMedication(
     id: ID
     medication_name: String!
-    supplied_by: String!
+    supplied_by: String
     quantity: Int!
     quantity_type: QuantityType!
     withdrawal_days_meat: Int
     withdrawal_days_dairy: Int
-    batch_number: String!
-    expiry_date: Date!
-    purchase_date: Date!
+    batch_number: String
+    expiry_date: Date
+    purchase_date: Date
     comments: String
   ): MedicationResponse!
   #AdminMed
@@ -106,7 +106,7 @@ type Mutation {
     date_of_administration: Date!
     quantity_administered: Int!
     administered_by: String!
-    reason_for_administration: String!
+    reason_for_administration: String
     animal_id: ID
     medication_id: ID
   ): AdminMedResponse!
