@@ -9,38 +9,38 @@ var MedicationSchema = new Schema(
     medication_name: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Enter valid quantity.'],
+      validate: [val.validateIsString, "Enter valid quantity."],
       required: true,
     },
     supplied_by: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Enter valid quantity.'],
+      validate: [val.validateIsString, "Enter valid quantity."],
       required: true,
     },
     quantity: {
       type: Number,
       trim: true,
-      validate: [val.validateIsNumber, 'Enter valid quantity.'],
+      validate: [val.validateIsNumber, "Enter valid quantity."],
       required: true, // question if default is 0 does it go to false?!??
       default: 0,
     },
     withdrawal_days_meat: {
       type: Number,
       trim: true,
-      validate: [val.validateIsNumber, 'Enter valid number.'],
+      validate: [val.validateIsNumber, "Enter valid number."],
       required: true,
     },
     withdrawal_days_dairy: {
       type: Number,
       trim: true,
-      validate: [val.validateIsNumber, 'Enter valid number.'],
+      validate: [val.validateIsNumber, "Enter valid number."],
       required: true,
     },
     quantity_type: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Enter valid quantity.'],
+      validate: [val.validateIsString, "Enter valid quantity."],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
       required: true,
@@ -48,13 +48,13 @@ var MedicationSchema = new Schema(
     remaining_quantity: {
       type: Number,
       trim: true,
-      validate: [val.validateIsNumber, 'Enter valid quantity.'],
+      validate: [val.validateIsNumber, "Enter valid quantity."],
       required: true,
     },
     batch_number: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Enter valid quantity.'],
+      validate: [val.validateIsString, "Enter valid quantity."],
       required: true,
     },
     expiry_date: {

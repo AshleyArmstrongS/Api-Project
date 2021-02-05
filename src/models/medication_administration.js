@@ -12,21 +12,21 @@ var AdministeredMedicationSchema = new Schema(
     quantity_administered: {
       type: Number,
       trim: true,
-      validate: [val.validateIsNumber, 'Enter valid quantity.'],
+      validate: [val.validateIsNumber, "Enter valid quantity."],
       required: true,
       default: 0,
     },
     quantity_type: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Please enter a valid quantity type.'],
+      validate: [val.validateIsString, "Please enter a valid quantity type."],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
     },
     administered_by: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, 'Please enter a valid name.'],
+      validate: [val.validateIsString, "Please enter a valid name."],
       required: true,
       default: "", // should we use the farmer's name here?!??
     },

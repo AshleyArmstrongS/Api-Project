@@ -37,7 +37,7 @@ type Query {
   ): AdminMedsResponse!
 
   #Group
-  groups:GroupsResponse!
+  groups: GroupsResponse!
   group(id: ID!): GroupResponse!
   groupByName(group_name: String!): GroupsResponse!
   groupByDescription(group_description: String!): GroupsResponse!
@@ -71,14 +71,8 @@ type Mutation {
     date_of_birth: Date!
   ): AnimalResponse!
   deleteAnimal(id: ID!): AnimalResponse!
-  addAnimalToGroup(
-    id: ID!
-    groups_id: ID!
-  ): AnimalResponse!
-  removeAnimalFromGroup(
-    id:ID!
-    groups_id: ID!
-  ): AnimalResponse!
+  addAnimalToGroup(id: ID!, groups_id: ID!): AnimalResponse!
+  removeAnimalFromGroup(id: ID!, groups_id: ID!): AnimalResponse!
   #Group
   saveGroup(
     id: ID

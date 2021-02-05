@@ -8,13 +8,19 @@ const FarmerSchema = new Schema(
     first_name: {
       type: String,
       trim: true,
-      validate: [val.validateIsName, 'Invalid, use all letters, max length of 30'],
+      validate: [
+        val.validateIsName,
+        "Invalid, use all letters, max length of 30",
+      ],
       required: true,
     },
     second_name: {
       type: String,
       trim: true,
-      validate: [val.validateIsName, 'Invalid, use all letters, max length of 30'],
+      validate: [
+        val.validateIsName,
+        "Invalid, use all letters, max length of 30",
+      ],
       required: true,
     },
     email: {
@@ -22,8 +28,8 @@ const FarmerSchema = new Schema(
       trim: true,
       lowercase: true,
       unique: true,
-      validate: [val.validateEmail, 'Please fill a valid email address'],
-      required: "Email address is required", 
+      validate: [val.validateEmail, "Please fill a valid email address"],
+      required: "Email address is required",
     },
     password: {
       type: String,
@@ -51,9 +57,12 @@ const FarmerSchema = new Schema(
       trim: true,
       minlength: 10,
       maxlength: 11,
-      validate: [val.validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
+      validate: [
+        val.validateHerdNumber,
+        "Please use a valid herd number, format: IE 1234567 or 372 1234567",
+      ],
       required: true,
-      unique: true
+      unique: true,
     },
   },
   { collection: "farmers" }
