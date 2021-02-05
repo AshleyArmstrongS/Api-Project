@@ -1,11 +1,11 @@
 
-
+//https://stackoverflow.com/questions/4975644/regular-expression-to-match-exactly-5-digits
 const validateFiveDigitNumber = tag_number => {
-  const re = /^d{5}$/
+  const re = /\b\d{5}\b/g
   return re.test(tag_number)
 }
 const validateHerdNumber = herd_number => {
-  const re = /^[a-zA-Z0-9{10}]$/
+  const re = /^[a-zA-Z0-9{10,11}]$/
   return re.test(herd_number)
 }
 const validateAnimalName = animal_name => {
