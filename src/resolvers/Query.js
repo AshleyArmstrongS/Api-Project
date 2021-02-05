@@ -465,11 +465,37 @@ async function administeredMedicationOnDate(parent, args, context) {
 }
 
 // Breeds
-function breedName(parent, args) {
-  return Breed.find({ breed_name: args.breed_name });
+async function breedName(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const breedName = await Breed.find({ breed_name: args.breed_name, farmer_id: farmer_id });
+    if (!breedName) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        breed_name: breedName,
+      };
+    }
+  }
+  return returnable;
 }
-function breedCode(parent, args) {
-  return Breed.find({ breed_code: args.breed_code });
+async function breedCode(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const animal = await Breed.find({ breed_code: args.breed_code, farmer_id: farmer_id });
+    if (!breedCode) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        breed_code: breedCode,
+      };
+    }
+  }
+  return returnable;
 }
 
 module.exports = {
