@@ -7,11 +7,14 @@ const AnimalSchema = new Schema(
   {
     tag_number: {
       type: Number,
-      min:  10000,
+      min: 10000,
       max: 99999,
       integer: true,
       trim: true,
-      validate: [val.validateFiveDigitNumber, 'Please give a tag number that is 5 in length.'],
+      validate: [
+        val.validateFiveDigitNumber,
+        "Please give a tag number that is 5 in length.",
+      ],
       required: true,
     },
     herd_number: {
@@ -20,32 +23,41 @@ const AnimalSchema = new Schema(
       trim: true,
       minlength: 10,
       maxlength: 11,
-      validate: [val.validateHerdNumber, 'Please use a valid herd number, format: IE 1234567 or 372 1234567'],
+      validate: [
+        val.validateHerdNumber,
+        "Please use a valid herd number, format: IE 1234567 or 372 1234567",
+      ],
       required: true,
     },
     sire_number: {
       type: Number,
-      min:  10000,
+      min: 10000,
       max: 99999,
       integer: true,
       trim: true,
-      validate: [val.validateFiveDigitNumber, "Please give a sire number that is 5 in length."],
+      validate: [
+        val.validateFiveDigitNumber,
+        "Please give a sire number that is 5 in length.",
+      ],
       required: true,
     },
     mother_number: {
       type: Number,
-      min:  10000,
+      min: 10000,
       max: 99999,
       integer: true,
       trim: true,
-      validate: [val.validateFiveDigitNumber, "Please give a mother number that is 5 in length."],
+      validate: [
+        val.validateFiveDigitNumber,
+        "Please give a mother number that is 5 in length.",
+      ],
       required: true,
     },
     male_female: {
       type: String,
       trim: true,
       enum: ["M", "F"],
-      required: true
+      required: true,
     },
     breed_type: {
       type: String,
@@ -66,12 +78,15 @@ const AnimalSchema = new Schema(
     cross_breed: {
       type: Boolean,
       trim: true,
-      default: true
+      default: true,
     },
     animal_name: {
       type: String,
       trim: true,
-      validate: [val.validateAnimalName, 'Please give a tag number that is 5 in length.'],
+      validate: [
+        val.validateAnimalName,
+        "Please give a tag number that is 5 in length.",
+      ],
       default: "",
     },
     description: {
@@ -85,9 +100,9 @@ const AnimalSchema = new Schema(
       required: true,
     },
     groups_id: {
-       type: [mongoose.Schema.Types.ObjectId],
-       ref: "Group"
-     }
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Group",
+    },
   },
   { collection: "animals" }
 );

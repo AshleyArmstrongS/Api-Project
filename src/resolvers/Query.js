@@ -388,7 +388,6 @@ async function medicationsByName(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-
     var str = args.medication_name;
     const medications = await Medication.find({
       medication_name: { $regex: new RegExp(".*" + str + ".*", "i") },

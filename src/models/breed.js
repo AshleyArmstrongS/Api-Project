@@ -8,14 +8,14 @@ const BreedSchema = new Schema({
     type: String,
     trim: true,
     uppercase: true,
-    validate: [val.validateBreedName, 'Invalid, please enter valid breed name'],
+    validate: [val.validateBreedName, "Invalid, please enter valid breed name"],
     required: true,
   },
   breed_code: {
     type: String,
     trim: true,
     uppercase: true,
-    validate: [val.validateBreedCode, 'Invalid, code must be 2-4 in length'],
+    validate: [val.validateBreedCode, "Invalid, code must be 2-4 in length"],
     required: true,
   },
 });
