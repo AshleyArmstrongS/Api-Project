@@ -465,7 +465,7 @@ async function administeredMedicationOnDate(parent, args, context) {
 // Breeds
 async function breedName(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  const breed_name = await Breed.find({ breed_name: args.breed_name});
+  const breed_name = await Breed.find({ breed_name: args.breed_name });
   if (!breed_name) {
     returnable = { responseCheck: OPERATION_FAILED };
   } else {
@@ -494,15 +494,18 @@ async function breedCode(parent, args, context) {
 }
 
 async function breed(parent, args, context) {
+  const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  const breed_code = await Breed.find({ id: args.id });
-  if (!breed_code) {
-    returnable = { responseCheck: OPERATION_FAILED };
-  } else {
-    returnable = {
-      responseCheck: OPERATION_SUCCESSFUL,
-      breed_code: breed_code,
-    };
+  if (farmer_id) {
+    const breed_code = await Breed.findById({ _id: args.id });
+    if (!breed_code) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        breed: breed_code,
+      };
+    }
   }
   return returnable;
 }
