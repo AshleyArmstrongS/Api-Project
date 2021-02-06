@@ -442,7 +442,6 @@ async function administeredMedications(parent, args, context) {
   }
   return returnable;
 }
-// need to look at this again, thinking of adding complexity to it but will have to do some research first
 async function administeredMedicationOnDate(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -464,11 +463,48 @@ async function administeredMedicationOnDate(parent, args, context) {
 }
 
 // Breeds
-function breedName(parent, args) {
-  return Breed.find({ breed_name: args.breed_name });
+async function breedName(parent, args, context) {
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  const breed_name = await Breed.find({ breed_name: args.breed_name});
+  if (!breed_name) {
+    returnable = { responseCheck: OPERATION_FAILED };
+  } else {
+    returnable = {
+      responseCheck: OPERATION_SUCCESSFUL,
+      breed: breed_name,
+    };
+  }
+  return returnable;
 }
-function breedCode(parent, args) {
-  return Breed.find({ breed_code: args.breed_code });
+async function breedCode(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const breed_code = await Breed.find({ breed_code: args.breed_code });
+    if (!breed_code) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        breed: breed_code,
+      };
+    }
+  }
+  return returnable;
+}
+
+async function breed(parent, args, context) {
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  const breed_code = await Breed.find({ id: args.id });
+  if (!breed_code) {
+    returnable = { responseCheck: OPERATION_FAILED };
+  } else {
+    returnable = {
+      responseCheck: OPERATION_SUCCESSFUL,
+      breed_code: breed_code,
+    };
+  }
+  return returnable;
 }
 
 module.exports = {
@@ -505,6 +541,7 @@ module.exports = {
   administeredMedicationOnDate,
 
   // Breed
+  breed,
   breedName,
   breedCode,
 };
