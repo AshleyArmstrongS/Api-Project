@@ -20,8 +20,9 @@ type Query {
   animalsByCrossBreed(breed_type: String!): AnimalsResponse!
   animalsInGroup(groups_id: String): AnimalsResponse!
   #Breed
-  breedName(breed_name: String!): [Breed]!
-  breedCode(breed_code: String!): [Breed]!
+  breed(id: ID!): BreedResponse!
+  breedName(breed_name: String!): BreedsResponse!
+  breedCode(breed_code: String!): BreedsResponse!
 
   #Medication
   medication(id: ID!): MedicationResponse!
@@ -210,6 +211,14 @@ type AdminMedResponse {
 type AdminMedsResponse {
   responseCheck: ResponseCheck!
   administeredMedications: [AdministeredMedication]
+}
+type BreedResponse {
+  responseCheck: ResponseCheck!
+  breed: Breed
+}
+type BreedsResponse {
+  responseCheck: ResponseCheck!
+  breed: [Breed]
 }
 type ResponseCheck {
   success: Boolean!
