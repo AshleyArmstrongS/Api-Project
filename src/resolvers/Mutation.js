@@ -15,6 +15,7 @@ const {
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
 } = require("./ResolverErrorMessages");
+const breed = require("../models/breed");
 
 //Internal functions
 function farmerHerdNo(id) {
@@ -479,6 +480,22 @@ async function deleteAdministeredMedication(parent, args, context) {
     responseCheck: OPERATION_FAILED,
   };
 }
+async function saveBreed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const valid = await breed.save({
+      breed_name: args.breed_name,
+      breed_code: args.breed_code,
+    });
+    if (valid) {
+      returnable = { responseCheck: OPERATION_SUCCESSFUL, breed: valid };
+    }
+    returnable = { responseCheck: OPERATION_FAILED };
+  }
+  return returnable;
+}
+
 module.exports = {
   signUp,
   login,
@@ -491,4 +508,5 @@ module.exports = {
   saveMedication,
   saveAdminMed,
   deleteAdministeredMedication,
+  saveBreed,
 };
