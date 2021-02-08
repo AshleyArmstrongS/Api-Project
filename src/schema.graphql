@@ -81,6 +81,12 @@ type Mutation {
     group_description: String!
   ): GroupResponse!
   deleteGroup(id: ID!): GroupResponse!
+  #Breed
+  saveBreed(
+    id: ID
+    breed_name: String!
+    breed_code: String!
+  ): BreedResponse!
   #Medication
   saveMedication(
     id: ID
