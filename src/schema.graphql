@@ -116,12 +116,6 @@ type Mutation {
     medication_id: ID
     quantity_administered: Int
   ): AdminMedResponse!
-  #Breed
-  saveBreed(
-    id: ID
-    breed_name: String!
-    breed_code: String!
-  ): BreedResponse!
 }
 #OBJECT_TYPES
 type Animal {
