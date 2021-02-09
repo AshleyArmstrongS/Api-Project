@@ -1,18 +1,46 @@
-**For now this will just contain setup**
+# This is the OptiFarm API
+
+## Setup
+
+---
 
 **Installs**<br  />
 npm install graphql-yoga <br  />
 npm install mongoose <br />
 npm install --save graphql-scalars <br />
 npm install jsonwebtoken bcryptjs <br />
-<br  />
+
 **Other setup<br  />**
 Create Config.js in src.<br  />
-Populate with Config.sample and change information to be correct<br  />
+Populate with Config.sample and update the values to include a suitable Atlas db API url and APP secret. </br>Other details can be updated as desired.
 
-<p>
+## Using the API
 
-**Gitignore used**<br />
-https://github.com/github/gitignore/blob/master/Node.gitignore
+---
 
-The initial gitignore I used for the project
+**Run the API**
+
+
+To Run the API, open a terminal and enter "node src/index.js"
+
+**Test it**
+
+Once you have the API running you can open up a browser go to the url "http://localhost:4000/"
+
+You will be presented with a screen that looks like this:
+
+![playground](https://cdn.discordapp.com/attachments/694874903584833546/808441264860430336/Screenshot_173.jpg)
+
+**Playground**
+
+This is graphql playground. It allows you to use the API without the need of a client. Its a great tool to help understand the API.
+
+The Docs and Schema tabs are also useful for helping you understand what functionality the API provides.
+
+## Testing
+
+---
+
+Out testing has been done in Postman. This Button will take you to the testing site where you can create an account and have a look.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/660af285d8dc16ca17e7)
