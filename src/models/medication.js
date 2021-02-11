@@ -9,13 +9,13 @@ var MedicationSchema = new Schema(
     medication_name: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, "Enter valid quantity."],
+      validate: [val.validateIsString, "Enter valid name."],
       required: true,
     },
     supplied_by: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, "Enter valid quantity."],
+      validate: [val.validateIsString, "Enter valid supplier."],
       required: true,
     },
     quantity: {
@@ -40,7 +40,7 @@ var MedicationSchema = new Schema(
     quantity_type: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, "Enter valid quantity."],
+      validate: [val.validateIsString, "Enter valid quantity type"],
       enum: ["ML", "MG", "COUNT", "UNASSIGNED"],
       default: "UNASSIGNED",
       required: true,
@@ -54,7 +54,7 @@ var MedicationSchema = new Schema(
     batch_number: {
       type: String,
       trim: true,
-      validate: [val.validateIsString, "Enter valid quantity."],
+      validate: [val.validateIsString, "Enter valid batch."],
       required: true,
     },
     expiry_date: {
