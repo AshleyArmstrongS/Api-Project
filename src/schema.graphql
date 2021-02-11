@@ -65,6 +65,7 @@ type Mutation {
     sire_number: Int!
     mother_number: Int!
     male_female: Sex!
+    herd_number: String
     breed_type: String!
     pure_breed: Boolean
     animal_name: String
