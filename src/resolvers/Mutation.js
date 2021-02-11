@@ -128,7 +128,7 @@ async function createAnimal(args, farmer_id) {
     if (!alreadyExists) {
       const newAnimal = new Animal({
         tag_number: args.tag_number,
-        herd_number: herd_number.herd_number,
+        herd_number: args.herd_number ?? herd_number.herd_number,
         sire_number: args.sire_number,
         mother_number: args.mother_number,
         male_female: args.male_female,

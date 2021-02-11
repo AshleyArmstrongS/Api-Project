@@ -57,10 +57,10 @@ const FarmerSchema = new Schema(
       trim: true,
       minlength: 10,
       maxlength: 11,
-      validate: [
-        val.validateHerdNumber,
-        "Please use a valid herd number, format: IE 1234567 or 372 1234567",
-      ],
+      //validate: [
+      //  val.validateHerdNumber,
+      //  "Please use a valid herd number, format: IE 1234567 or 372 1234567",
+      //],
       required: true,
       unique: true,
     },
