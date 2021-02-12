@@ -20,7 +20,6 @@ Populate with Config.sample and update the values to include a suitable Atlas db
 
 **Run the API**
 
-
 To Run the API, open a terminal and enter "node src/index.js"
 
 **Test it**
@@ -35,7 +34,11 @@ You will be presented with a screen that looks like this:
 
 This is graphql playground. It allows you to use the API without the need of a client. Its a great tool to help understand the API.
 
-The Docs and Schema tabs are also useful for helping you understand what functionality the API provides.
+![playground](https://cdn.discordapp.com/attachments/694874903584833546/809758139184447518/Screenshot_186.png)
+
+The Docs and Schema tabs are also useful for helping you understand what functionality the API provides. 
+
+Within the docs you can select a query or mutation. from here you can see the response and get information on those responses.
 
 ## Testing
 
