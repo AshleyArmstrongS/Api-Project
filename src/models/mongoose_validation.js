@@ -13,7 +13,7 @@ const validateAnimalName = animal_name => {
 }
 const validateBreedName = name => {
   const re = /^[a-zA-Z ]{2,30}$/
-  return re.test(name) 
+  return re.test(name)
 }
 const validateBreedCode = breed_code => {
   const re = /^[a-zA-Z0-9]{2,4}$/
@@ -21,7 +21,7 @@ const validateBreedCode = breed_code => {
 }
 const validateIsName = name => {
   const re = /^[a-zA-Z ]{2,30}$/
-  return re.test(name) 
+  return re.test(name)
 }
 // https://stackoverflow.com/questions/18022365/mongoose-validate-email-syntax
 var validateEmail = function (email) {
@@ -34,11 +34,11 @@ const validateGroupName = (name) => {
 };
 const validateIsNumber = (number) => {
   // regex from https://stackoverflow.com/questions/4246077/matching-numbers-with-regular-expressions-only-digits-and-commas/4247184#4247184
-  const re = /^-?\d{1,3}(,\d{3})*(\.\d\d)?$|^\.\d\d$/;
+  const re = /^-?\d{1,20}(,\d{3})*(\.\d\d)?$|^\.\d\d$/;
   return re.test(number);
 };
 const validateIsString = (str) => {
-  const re = /^$|^\[a-zA-Z ]+$/;
+  const re = /^([a-zA-Z0-9_ ]*)$/;
   return re.test(str);
 };
 
