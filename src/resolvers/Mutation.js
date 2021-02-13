@@ -21,6 +21,12 @@ const breed = require("../models/breed");
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
 }
+function errorConstructor(RESOLVER_ERROR, schema_error) {
+  const message =
+    RESOLVER_ERROR.message +
+    schema_error.toString().replace("ValidationError: ", " ");
+  return { success: RESOLVER_ERROR.success, message: message };
+}
 async function checkMedicationAvailability(id, quantity_used) {
   const available = await Medication.findById(id).select({
     remaining_quantity: 1,
@@ -51,12 +57,6 @@ async function restoreMedicationQuantity(id, quantity_used) {
     return true;
   }
   return false;
-}
-function errorConstructor(RESOLVER_ERROR, schema_error) {
-  const message =
-    RESOLVER_ERROR.message +
-    schema_error.toString().replace("ValidationError: ", " ");
-  return { success: RESOLVER_ERROR.success, message: message };
 }
 //Login/SignUp
 async function signUp(parent, args) {
@@ -159,12 +159,13 @@ async function updateAnimal(args) {
     {
       sire_number: args.sire_number,
       mother_number: args.mother_number,
+      herd_number: args.herd_number,
       male_female: args.male_female,
       breed_type: args.breed_type,
       date_of_birth: args.date_of_birth,
-      pure_breed: args.pure_breed,
-      animal_name: args.animal_name,
-      description: args.description,
+      pure_breed: args.pure_breed ?? false,
+      animal_name: args.animal_name ?? null,
+      description: args.description ?? null,
     }
   );
   if (!valid) {
@@ -234,7 +235,7 @@ async function updateGroup(args) {
     { _id: args.id },
     {
       group_name: args.group_name,
-      group_description: args.group_description,
+      group_description: args.group_description ?? null,
     }
   );
   if (!valid) {
@@ -359,15 +360,15 @@ async function updateMedication(args) {
     { _id: args.id },
     {
       medication_name: args.medication_name,
-      supplied_by: args.supplied_by,
+      supplied_by: args.supplied_by ?? null,
       quantity: args.quantity,
       quantity_type: args.quantity_type,
-      withdrawal_days_dairy: args.withdrawal_days_dairy,
-      withdrawal_days_meat: args.withdrawal_days_meat,
-      batch_number: args.batch_number,
-      expiry_date: args.expiry_date,
-      purchase_date: args.purchase_date,
-      comments: args.comments,
+      withdrawal_days_dairy: args.withdrawal_days_dairy ?? null,
+      withdrawal_days_meat: args.withdrawal_days_meat ?? null,
+      batch_number: args.batch_number ?? null,
+      expiry_date: args.expiry_date ?? null,
+      purchase_date: args.purchase_date ?? null,
+      comments: args.comments ?? null,
     }
   );
   if (!valid) {
@@ -437,7 +438,7 @@ async function updateAdminMed(args) {
       date_of_administration: args.date_of_administration,
       quantity_administered: args.quantity_administered,
       administered_by: args.administered_by,
-      reason_for_administration: args.reason_for_administration,
+      reason_for_administration: args.reason_for_administration ?? null,
     }
   );
   if (!valid) {
