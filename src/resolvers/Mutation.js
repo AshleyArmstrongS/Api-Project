@@ -356,6 +356,8 @@ async function createMedication(args, farmer_id) {
   }
 }
 async function updateMedication(args) {
+  const current_medication = await Medication.findById(args.id).select({_id: 0, remaining_quantity:1, quantity:1})
+  const remaining = current_medication.quantity - current_medication.remaining_quantity
   const valid = await Medication.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -363,6 +365,7 @@ async function updateMedication(args) {
       supplied_by: args.supplied_by ?? null,
       quantity: args.quantity,
       quantity_type: args.quantity_type,
+      remaining_quantity: args.quantity - remaining,
       withdrawal_days_dairy: args.withdrawal_days_dairy ?? null,
       withdrawal_days_meat: args.withdrawal_days_meat ?? null,
       batch_number: args.batch_number ?? null,
