@@ -1,3 +1,8 @@
+https://stackoverflow.com/questions/63511237/how-to-capitalize-first-letter-and-lowercase-the-rest-of-the-string
+function titleCase(string){
+  return string[0].toUpperCase() + string.slice(1).toLowerCase();
+}
+
 //https://stackoverflow.com/questions/4975644/regular-expression-to-match-exactly-5-digits
 const validateFiveDigitNumber = tag_number => {
   const re = /\b\d{5}\b/g
@@ -17,14 +22,17 @@ const validateAnimalName = animal_name => {
   return re.test(animal_name)
 }
 const validateBreedName = name => {
+  name = titleCase(name)
   const re = /^[a-zA-Z ]{2,30}$/
   return re.test(name)
 }
 const validateBreedCode = breed_code => {
-  const re = /^[a-zA-Z0-9]{2,4}$/
+
+  const re = /^[A-Z0-9]{2,4}$/
   return re.test(breed_code)
 }
 const validateIsName = name => {
+  name = titleCase(name)
   const re = /^[a-zA-Z ]{2,30}$/
   return re.test(name)
 }
