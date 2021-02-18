@@ -4,8 +4,13 @@ const validateFiveDigitNumber = tag_number => {
   return re.test(tag_number)
 }
 const validateHerdNumber = herd_number => {
-  const re = /^[a-zA-Z0-9{10,11}]$/
-  return re.test(herd_number)
+  if(herd_number.includes("IE")) {
+    const re = /^[a-zA-Z0-9 ]{10}$/
+    return re.test(herd_number)
+  } else {
+    const re = /^[a-zA-Z0-9 ]{11}$/
+    return re.test(herd_number)
+  }
 }
 const validateAnimalName = animal_name => {
   const re = /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/
