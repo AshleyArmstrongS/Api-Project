@@ -1,16 +1,23 @@
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 //https://stackoverflow.com/questions/4975644/regular-expression-to-match-exactly-5-digits
 const validateFiveDigitNumber = tag_number => {
   const re = /\b\d{5}\b/g
   return re.test(tag_number)
 }
 const validateHerdNumber = herd_number => {
-  if(herd_number.includes("IE")) {
-    const re = /^[a-zA-Z0-9 ]{10}$/
-    return re.test(herd_number)
-  } else {
-    const re = /^[a-zA-Z0-9 ]{11}$/
-    return re.test(herd_number)
-  }
+  // if(herd_number.includes("IE")) {
+  //   const re = /^[a-zA-Z0-9 ]{10}$/
+  //   return re.test(herd_number)
+  // } else {
+  //   const re = /^[a-zA-Z0-9 ]{11}$/
+  //   return re.test(herd_number)
+  // }
+  herd_number = capitalizeFirstLetter(herd_number)
+  const re = /^[a-zA-Z][0-9]{7}$/
+  return re.test(herd_number)
 }
 const validateAnimalName = animal_name => {
   const re = /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/
