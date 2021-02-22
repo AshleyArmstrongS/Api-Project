@@ -21,13 +21,14 @@ const AnimalSchema = new Schema(
       type: String,
       uppercase: true,
       trim: true,
-      minlength: 10,
-      maxlength: 11,
-      //validate: [
-      //  val.validateHerdNumber,
-      //  "Please use a valid herd number, format: IE 1234567 or 372 1234567",
-      //],
+      // minlength: 10,
+      // maxlength: 11,
+      validate: [
+       val.validateHerdNumber,
+       "Please use a valid herd number, example format: B1234567",
+      ],
       required: true,
+      unique: true,
     },
     sire_number: {
       type: Number,

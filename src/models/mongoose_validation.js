@@ -1,4 +1,4 @@
-https://stackoverflow.com/questions/63511237/how-to-capitalize-first-letter-and-lowercase-the-rest-of-the-string
+//https://stackoverflow.com/questions/63511237/how-to-capitalize-first-letter-and-lowercase-the-rest-of-the-string
 function titleCase(string){
   return string[0].toUpperCase() + string.slice(1).toLowerCase();
 }
@@ -9,13 +9,16 @@ const validateFiveDigitNumber = tag_number => {
   return re.test(tag_number)
 }
 const validateHerdNumber = herd_number => {
-  if(herd_number.includes("IE")) {
-    const re = /^[a-zA-Z0-9 ]{10}$/
-    return re.test(herd_number)
-  } else {
-    const re = /^[a-zA-Z0-9 ]{11}$/
-    return re.test(herd_number)
-  }
+  // if(herd_number.includes("IE")) {
+  //   const re = /^[a-zA-Z0-9 ]{10}$/
+  //   return re.test(herd_number)
+  // } else {
+  //   const re = /^[a-zA-Z0-9 ]{11}$/
+  //   return re.test(herd_number)
+  // }
+  herd_number = titleCase(herd_number)
+  const re = /^[a-zA-Z][0-9]{7}$/
+  return re.test(herd_number)
 }
 const validateAnimalName = animal_name => {
   const re = /^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/
