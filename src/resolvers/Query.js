@@ -447,7 +447,7 @@ async function administeredMedicationOnDate(parent, args, context) {
   if (farmer_id) {
     const administeredMedications = await AdministeredMedication.find({
       date_of_administration: args.date_of_administration,
-      farmer_id: id,
+      farmer_id: farmer_id,
     });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
