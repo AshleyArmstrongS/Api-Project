@@ -1,5 +1,6 @@
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+//https://stackoverflow.com/questions/63511237/how-to-capitalize-first-letter-and-lowercase-the-rest-of-the-string
+function titleCase(string){
+  return string[0].toUpperCase() + string.slice(1).toLowerCase();
 }
 
 //https://stackoverflow.com/questions/4975644/regular-expression-to-match-exactly-5-digits
@@ -15,7 +16,7 @@ const validateHerdNumber = herd_number => {
   //   const re = /^[a-zA-Z0-9 ]{11}$/
   //   return re.test(herd_number)
   // }
-  herd_number = capitalizeFirstLetter(herd_number)
+  herd_number = titleCase(herd_number)
   const re = /^[a-zA-Z][0-9]{7}$/
   return re.test(herd_number)
 }
@@ -24,14 +25,17 @@ const validateAnimalName = animal_name => {
   return re.test(animal_name)
 }
 const validateBreedName = name => {
+  name = titleCase(name)
   const re = /^[a-zA-Z ]{2,30}$/
   return re.test(name)
 }
 const validateBreedCode = breed_code => {
-  const re = /^[a-zA-Z0-9]{2,4}$/
+
+  const re = /^[A-Z0-9]{2,4}$/
   return re.test(breed_code)
 }
 const validateIsName = name => {
+  name = titleCase(name)
   const re = /^[a-zA-Z ]{2,30}$/
   return re.test(name)
 }
