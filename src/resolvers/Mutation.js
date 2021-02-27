@@ -59,7 +59,9 @@ async function restoreMedicationQuantity(id, quantity_used) {
   return false;
 }
 async function addMedAdministrator(id, med_administrator) {
-  const validPresent = farmer.findOne({_id: id, medication_administrators: med_administrator}).select({_id:0, medication_administrators:1})
+  const validPresent = farmer
+    .findOne({ _id: id, medication_administrators: med_administrator })
+    .select({ _id: 0, medication_administrators: 1 });
   const valid = farmer.findByIdAndUpdate(
     { _id: id },
     { $push: { medication_administrators: med_administrator } }
@@ -77,12 +79,14 @@ async function signUp(parent, args) {
       return { responseCheck: ALREADY_EXISTS };
     }
     const password = await bcrypt.hash(args.password, 10);
+    const med_administrator = args.first_name + " " + args.second_name;
     const newFarmer = new Farmer({
       first_name: args.first_name,
       second_name: args.second_name,
       farm_type: args.farm_type,
       farm_address: args.farm_address ?? null,
       password: password,
+      medication_administrators: med_administrator,
       email: args.email,
       herd_number: args.herd_number,
     });
