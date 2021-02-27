@@ -58,6 +58,17 @@ async function restoreMedicationQuantity(id, quantity_used) {
   }
   return false;
 }
+async function addMedAdministrator(id, med_administrator) {
+  const validPresent = farmer.findOne({_id: id, medication_administrators: med_administrator}).select({_id:0, medication_administrators:1})
+  const valid = farmer.findByIdAndUpdate(
+    { _id: id },
+    { $push: { medication_administrators: med_administrator } }
+  );
+  if (valid || validPresent) {
+    return true;
+  }
+  return false;
+}
 //Login/SignUp
 async function signUp(parent, args) {
   try {
@@ -355,8 +366,13 @@ async function createMedication(args, farmer_id) {
   }
 }
 async function updateMedication(args) {
-  const current_medication = await Medication.findById(args.id).select({_id: 0, remaining_quantity:1, quantity:1})
-  const remaining = current_medication.quantity - current_medication.remaining_quantity
+  const current_medication = await Medication.findById(args.id).select({
+    _id: 0,
+    remaining_quantity: 1,
+    quantity: 1,
+  });
+  const remaining =
+    current_medication.quantity - current_medication.remaining_quantity;
   const valid = await Medication.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -419,6 +435,7 @@ async function createAdminMed(args, farmer_id) {
           args.medication_id,
           args.quantity_administered
         );
+        await addMedAdministrator(farmer_id, args.administered_by);
         return {
           responseCheck: OPERATION_SUCCESSFUL,
           administeredMedication: newMedAdmin,
@@ -444,16 +461,17 @@ async function updateAdminMed(args) {
     }
   );
   if (!valid) {
-    await updateMedicationQuantity(
-      args.medication_id,
-      args.quantity_administered
-    );
     return { responseCheck: OPERATION_FAILED };
   }
   await restoreMedicationQuantity(
     args.medication_id,
     valid.quantity_administered
   );
+  await updateMedicationQuantity(
+    args.medication_id,
+    args.quantity_administered
+  );
+  await addMedAdministrator(farmer_id, args.administered_by);
   const updatedMedication = await MedicationAdministration.findById(args.id);
   return {
     responseCheck: OPERATION_SUCCESSFUL,
@@ -483,6 +501,16 @@ async function deleteAdministeredMedication(parent, args, context) {
     responseCheck: OPERATION_FAILED,
   };
 }
+async function deleteMedAdministrator(id, med_administrator) {
+  const valid = farmer.findByIdAndUpdate(
+    { _id: id },
+    { $pull: { medication_administrators: med_administrator } }
+  );
+  if (valid) {
+    return true;
+  }
+  return false;
+}
 async function saveBreed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -511,5 +539,6 @@ module.exports = {
   saveMedication,
   saveAdminMed,
   deleteAdministeredMedication,
+  deleteMedAdministrator,
   saveBreed,
 };
