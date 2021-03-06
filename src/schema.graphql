@@ -116,6 +116,10 @@ type Mutation {
     medication_id: ID
     quantity_administered: Int
   ): AdminMedResponse!
+  deleteMedAdministrator(
+    id: ID!
+    med_administrator: String!
+  ): farmerResponse!
 }
 #OBJECT_TYPES
 type Animal {
