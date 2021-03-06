@@ -1,6 +1,6 @@
 //Holds the APP_SECRET DB name and other information that may change between development and production
-const APP_SECRET = "secret";
-const atlasURI = "mongodb+srv://username:password@cluster0.ikcii.mongodb.net/database?retryWrites=true&w=majority";
+const APP_SECRET = "secret"; //Used for generating the JWT and authenticating users
+const atlasURI = "mongodb+srv://username:password@cluster0.ikcii.mongodb.net/database?retryWrites=true&w=majority";//Connection to the mongodb database hosted on atlas
   const atlasOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -13,8 +13,8 @@ const atlasURI = "mongodb+srv://username:password@cluster0.ikcii.mongodb.net/dat
     family: 4, // Use IPv4, skip trying IPv6
   };
 const apiOptions = {
-  port: 4000,
-  endpoint: "/sample",
+  port: 4000,//port the API can be found on
+  endpoint: "/sample",//Url of the API
 };
 module.exports = {
   atlasURI,

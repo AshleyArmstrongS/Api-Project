@@ -65,7 +65,6 @@ type Mutation {
     sire_number: Int!
     mother_number: Int!
     male_female: Sex!
-    herd_number: String
     breed_type: String!
     pure_breed: Boolean
     animal_name: String
@@ -163,6 +162,7 @@ type Farmer {
   second_name: String
   farm_type: FarmType
   farm_address: String
+  medication_administrators: String
   email: String
   herd_number: String
 }
