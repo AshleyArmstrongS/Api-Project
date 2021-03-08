@@ -59,10 +59,10 @@ async function restoreMedicationQuantity(id, quantity_used) {
   return false;
 }
 async function addMedAdministrator(id, med_administrator) {
-  const validPresent = farmer
-    .findOne({ _id: id, medication_administrators: med_administrator })
-    .select({ _id: 0, medication_administrators: 1 });
-  const valid = farmer.findByIdAndUpdate(
+  const validPresent = await Farmer.find( { medication_administrators: { $exists: true, $in: med_administrator }, _id: id } )
+  console.log("Hello")
+  console.log(validPresent)
+  const valid = await Farmer.findByIdAndUpdate(
     { _id: id },
     { $push: { medication_administrators: med_administrator } }
   );

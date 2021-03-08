@@ -166,7 +166,7 @@ type Farmer {
   second_name: String
   farm_type: FarmType
   farm_address: String
-  medication_administrators: String
+  medication_administrators: [String]
   email: String
   herd_number: String
 }
