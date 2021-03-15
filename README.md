@@ -19,7 +19,7 @@ Populate with Config.sample and update the values to include a suitable Atlas db
 
 **Run the API**
 
-To Run the API, open a terminal and enter "node src/index.js"
+To Run the API, open a terminal and enter "npm start"
 
 **Test it**
 
