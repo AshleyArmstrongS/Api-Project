@@ -6,9 +6,8 @@
 
 **Installs**<br  />
 npm install graphql-yoga <br  />
-npm install mongoose <br />
-npm install --save graphql-scalars <br />
-npm install jsonwebtoken bcryptjs <br />
+
+npm ci
 
 **Other setup<br  />**
 Create Config.js in src.<br  />
@@ -36,7 +35,7 @@ This is graphql playground. It allows you to use the API without the need of a c
 
 ![playground](https://cdn.discordapp.com/attachments/694874903584833546/809758139184447518/Screenshot_186.png)
 
-The Docs and Schema tabs are also useful for helping you understand what functionality the API provides. 
+The Docs and Schema tabs are also useful for helping you understand what functionality the API provides.
 
 Within the docs you can select a query or mutation. from here you can see the response and get information on those responses.
 

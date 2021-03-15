@@ -6,7 +6,7 @@ const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
-const { APP_SECRET } = require("../DevConfig");
+const { APP_SECRET } = require("../Config");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
@@ -59,9 +59,12 @@ async function restoreMedicationQuantity(id, quantity_used) {
   return false;
 }
 async function addMedAdministrator(id, med_administrator) {
-  const validPresent = await Farmer.find( { medication_administrators: { $exists: true, $in: med_administrator }, _id: id } )
-  console.log("Hello")
-  console.log(validPresent)
+  const validPresent = await Farmer.find({
+    medication_administrators: { $exists: true, $in: med_administrator },
+    _id: id,
+  });
+  console.log("Hello");
+  console.log(validPresent);
   const valid = await Farmer.findByIdAndUpdate(
     { _id: id },
     { $push: { medication_administrators: med_administrator } }
