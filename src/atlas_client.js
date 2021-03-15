@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { atlasURI, atlasOptions } = require("./Config");
+const { atlasURI, atlasOptions } = require("./DevConfig");
 
 mongoose
   .connect(atlasURI, atlasOptions)

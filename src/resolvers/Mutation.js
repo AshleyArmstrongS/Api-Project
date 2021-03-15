@@ -6,7 +6,7 @@ const Farmer = require("../models/farmer");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
-const { APP_SECRET } = require("../Config");
+const { APP_SECRET } = require("../DevConfig");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
