@@ -130,7 +130,7 @@ async function animalByPureBreed(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const animals = await Animal.find({
-      breed_type: args.breed_type,
+      pure_breed: args.pure_breed,
       farmer_id: farmer_id,
     });
     if (!animals) {
