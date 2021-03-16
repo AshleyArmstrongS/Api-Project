@@ -139,6 +139,7 @@ async function saveAnimal(parent, args, context) {
 async function createAnimal(args, farmer_id) {
   try {
     const herd_number = await farmerHerdNo(farmer_id);
+    console.log(herd_number)
     const alreadyExists = await Animal.findOne({
       tag_number: args.tag_number,
       farmer_id: farmer_id,
@@ -146,7 +147,7 @@ async function createAnimal(args, farmer_id) {
     if (!alreadyExists) {
       const newAnimal = new Animal({
         tag_number: args.tag_number,
-        herd_number: herd_number,
+        herd_number: herd_number.herd_number,
         sire_number: args.sire_number,
         mother_number: args.mother_number,
         male_female: args.male_female,
