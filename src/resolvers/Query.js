@@ -10,12 +10,10 @@ const {
   OPERATION_SUCCESSFUL,
   OPERATION_FAILED,
 } = require("./ResolverErrorMessages");
-
 //API info
 function info() {
   return "This is the OptiFarm API";
 }
-
 //User
 async function farmer(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -30,7 +28,6 @@ async function farmer(parent, args, context) {
   }
   return returnable;
 }
-
 //Animal
 async function animal(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -77,7 +74,6 @@ async function animalByTag(parent, args, context) {
   }
   return returnable;
 }
-
 //Animals
 async function herd(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -180,7 +176,6 @@ async function animalByProgeny(parent, args, context) {
   }
   return returnable;
 }
-
 // Animal
 async function animalsBornOn(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -265,7 +260,6 @@ async function animalsInGroup(parent, args, context) {
   }
   return returnable;
 }
-
 //Group
 async function group(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -491,7 +485,6 @@ async function breedCode(parent, args, context) {
   }
   return returnable;
 }
-
 async function breed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
