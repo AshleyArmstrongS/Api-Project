@@ -340,7 +340,6 @@ async function medication(parent, args, context) {
   }
   return returnable;
 }
-
 //Medications
 async function medications(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -454,7 +453,6 @@ async function administeredMedicationOnDate(parent, args, context) {
   }
   return returnable;
 }
-
 // Breeds
 async function breedName(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
