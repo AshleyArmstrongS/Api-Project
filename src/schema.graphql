@@ -249,6 +249,11 @@ enum FarmType {
   SUCKLER
   OTHER
 }
+enum medicineType {
+  VACCINATION
+  ANTIBIOTIC
+  DOSE
+}
 #CUSTOM_SCALARS
 scalar Date
 type date {
