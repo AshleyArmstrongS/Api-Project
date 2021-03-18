@@ -74,6 +74,10 @@ async function addMedAdministrator(id, med_administrator) {
   }
   return false;
 }
+async function addLastCalvedToDam(dam_no, farmer_id, date) {
+  const dam_id = await Animal.findOne({tag_number: dam_no, farmer_id:farmer_id}).isSelect({_id:1})
+  await Animal.findByIdAndUpdate({_id:dam_id.id},{last_calved: date})
+}
 //Login/SignUp
 async function signUp(parent, args) {
   try {
@@ -162,6 +166,7 @@ async function createAnimal(args, farmer_id) {
       if (!valid) {
         return { responseCheck: OPERATION_FAILED };
       }
+      await addLastCalvedToDam(args.mother_number,farmer_id, args.date_of_birth);
       return {
         responseCheck: OPERATION_SUCCESSFUL,
         animal: newAnimal,

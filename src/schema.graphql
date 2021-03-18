@@ -127,6 +127,7 @@ type Animal {
   herd_number: String
   sire_number: Int
   mother_number: Int
+  last_calved: Date
   male_female: Sex
   breed_type: String
   groups_id: [ID]
