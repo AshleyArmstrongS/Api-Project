@@ -92,6 +92,7 @@ type Mutation {
     batch_number: String
     quantity: Int!
     quantity_type: QuantityType!
+    medicine_type: MedicineType!
     supplied_by: String
     expiry_date: Date
     purchase_date: Date
@@ -139,6 +140,7 @@ type Medication {
   medication_name: String
   supplied_by: String
   quantity: Int
+  medicine_type: MedicineType
   quantity_type: QuantityType
   withdrawal_days_meat: Int
   withdrawal_days_dairy: Int
@@ -249,7 +251,7 @@ enum FarmType {
   SUCKLER
   OTHER
 }
-enum medicineType {
+enum MedicineType {
   VACCINATION
   ANTIBIOTIC
   DOSE
