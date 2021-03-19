@@ -25,6 +25,14 @@ var MedicationSchema = new Schema(
       required: true, // question if default is 0 does it go to false?!??
       default: 0,
     },
+    medicine_type: {
+      type: String,
+      trim: true,
+      validate: [val.validateIsString, "Enter valid medicine type"],
+      enum: ["ANTIBIOTIC","VACCINATION","DOSE", "UNASSIGNED"],
+      default: "UNASSIGNED",
+      required: true,
+    },
     withdrawal_days_meat: {
       type: Number,
       trim: true,
