@@ -54,6 +54,11 @@ const AnimalSchema = new Schema(
       ],
       required: true,
     },
+    last_calved: {
+      type: Date,
+      trim: true,
+      required: true,
+    },
     male_female: {
       type: String,
       trim: true,
