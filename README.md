@@ -6,7 +6,6 @@
 
 **Installs**<br  />
 npm install graphql-yoga <br  />
-
 npm ci
 
 **Other setup<br  />**
