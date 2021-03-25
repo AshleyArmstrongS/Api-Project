@@ -14,6 +14,9 @@ const {
   OPERATION_FAILED,
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
+  INCORRECT_MOTHER,
+  INCORRECT_SIRE,
+  INCORRECT_PARENTS,
 } = require("./ResolverErrorMessages");
 const breed = require("../models/breed");
 
@@ -75,8 +78,42 @@ async function addMedAdministrator(id, med_administrator) {
   return false;
 }
 async function addLastCalvedToDam(dam_no, farmer_id, date) {
-  const dam_id = await Animal.findOne({tag_number: dam_no, farmer_id:farmer_id}).isSelect({_id:1})
-  await Animal.findByIdAndUpdate({_id:dam_id.id},{last_calved: date})
+  const dam_id = await Animal.findOne({
+    tag_number: dam_no,
+    farmer_id: farmer_id,
+  }).select({ _id: 1 });
+  if (dam_id) {
+    await Animal.findByIdAndUpdate({ _id: dam_id.id }, { last_calved: date });
+  }
+}
+async function animalParentCheck(farmer_id, sire_number, mother_number) {
+  var sire = await Animal.findOne({
+    farmer_id: farmer_id,
+    tag_number: sire_number,
+  }).select({ _id: 0, male_female: 1 });
+  var mother = await Animal.findOne({
+    farmer_id: farmer_id,
+    tag_number: mother_number,
+  }).select({ _id: 0, male_female: 1 });
+  if (sire) {
+    if (sire.male_female == "M") {
+      sire = true;
+    } else {
+      sire = false;
+    }
+  } else {
+    sire = true;
+  }
+  if (mother) {
+    if (mother.male_female == "F") {
+      mother = true;
+    } else {
+      mother = false;
+    }
+  } else {
+    mother = true;
+  }
+  return { sire: sire, mother: mother };
 }
 //Login/SignUp
 async function signUp(parent, args) {
@@ -143,36 +180,53 @@ async function saveAnimal(parent, args, context) {
 async function createAnimal(args, farmer_id) {
   try {
     const herd_number = await farmerHerdNo(farmer_id);
-    console.log(herd_number)
+    const parents = await animalParentCheck(
+      farmer_id,
+      args.sire_number,
+      args.mother_number
+    );
     const alreadyExists = await Animal.findOne({
       tag_number: args.tag_number,
       farmer_id: farmer_id,
     });
-    if (!alreadyExists) {
-      const newAnimal = new Animal({
-        tag_number: args.tag_number,
-        herd_number: herd_number.herd_number,
-        sire_number: args.sire_number,
-        mother_number: args.mother_number,
-        male_female: args.male_female,
-        breed_type: args.breed_type,
-        date_of_birth: args.date_of_birth,
-        pure_breed: args.pure_breed ?? false,
-        animal_name: args.animal_name ?? null,
-        description: args.description ?? null,
-        farmer_id: farmer_id,
-      });
-      const valid = await newAnimal.save();
-      if (!valid) {
-        return { responseCheck: OPERATION_FAILED };
+    if (parents.sire && parents.mother) {
+      if (!alreadyExists) {
+        const newAnimal = new Animal({
+          tag_number: args.tag_number,
+          herd_number: herd_number.herd_number,
+          sire_number: args.sire_number,
+          mother_number: args.mother_number,
+          male_female: args.male_female,
+          breed_type: args.breed_type,
+          date_of_birth: args.date_of_birth,
+          pure_breed: args.pure_breed ?? false,
+          animal_name: args.animal_name ?? null,
+          description: args.description ?? null,
+          farmer_id: farmer_id,
+        });
+        const valid = await newAnimal.save();
+        if (!valid) {
+          return { responseCheck: OPERATION_FAILED };
+        }
+        await addLastCalvedToDam(
+          args.mother_number,
+          farmer_id,
+          args.date_of_birth
+        );
+        return {
+          responseCheck: OPERATION_SUCCESSFUL,
+          animal: newAnimal,
+        };
       }
-      await addLastCalvedToDam(args.mother_number,farmer_id, args.date_of_birth);
-      return {
-        responseCheck: OPERATION_SUCCESSFUL,
-        animal: newAnimal,
-      };
+      return { responseCheck: ALREADY_EXISTS };
     }
-    return { responseCheck: ALREADY_EXISTS };
+    if (!parents.sire && !parents.mother) {
+      return { responseCheck: INCORRECT_PARENTS };
+    } else if (!parents.sire) {
+      return { responseCheck: INCORRECT_SIRE };
+    } else {
+      return { responseCheck: INCORRECT_MOTHER };
+    }
   } catch (err) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }

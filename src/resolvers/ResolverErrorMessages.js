@@ -13,6 +13,10 @@ const ALREADY_EXISTS = {
 const OPERATION_FAILED = { success: false, message: "Operation Failed." };
 const NO_SUCH_EMAIL = { success: false, message: "Email doesn't Exist." };
 const INCORRECT_PASSWORD = { success: false, message: "Password Incorrect." };
+const INCORRECT_MOTHER = { success: false, message: "Dam cannot be of sex male." };
+const INCORRECT_SIRE = { success: false, message: "Sire cannot be of sex female." };
+const INCORRECT_PARENTS = { success: false, message: "Dam cannot be of sex male. Sire cannot be of sex female." };
+
 module.exports = {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
@@ -20,4 +24,7 @@ module.exports = {
   ALREADY_EXISTS,
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
+  INCORRECT_MOTHER,
+  INCORRECT_SIRE,
+  INCORRECT_PARENTS
 };
