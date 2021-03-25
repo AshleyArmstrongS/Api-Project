@@ -14,6 +14,7 @@ const {
   OPERATION_FAILED,
   NO_SUCH_EMAIL,
   INCORRECT_PASSWORD,
+  PASSWORD_RESET_FAILED,
   INCORRECT_MOTHER,
   INCORRECT_SIRE,
   INCORRECT_PARENTS,
@@ -163,6 +164,28 @@ async function login(parent, args) {
     token: userToken,
     farmer: loggingInFarmer,
   };
+}
+async function passwordResetAndLogin(parent, args){
+  const farmerToBeChanged = await Farmer.findOne({ email: args.email });
+  const valid = await bcrypt.compare(args.password, farmerToBeChanged.password);
+  var success = false
+  if (valid) {
+    const new_password = await bcrypt.hash(args.new_password, 10);
+    success = await Farmer.findByIdAndUpdate({_id: farmerToBeChanged.id}, {password: new_password})
+  } else
+  {
+    return { responseCheck: INCORRECT_PASSWORD };
+  }
+  if(success){
+    const updated = await Farmer.findOne({ email: args.email });
+    const userToken = jwt.sign({ userId: updated.id }, APP_SECRET);
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      token: userToken,
+      farmer: updated,
+    };
+  }
+  return { responseCheck: PASSWORD_RESET_FAILED };
 }
 //Animal Mutations
 async function saveAnimal(parent, args, context) {
@@ -599,6 +622,7 @@ async function saveBreed(parent, args, context) {
 module.exports = {
   signUp,
   login,
+  passwordResetAndLogin,
   saveAnimal,
   deleteAnimal,
   saveGroup,
