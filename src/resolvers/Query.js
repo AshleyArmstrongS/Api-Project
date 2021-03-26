@@ -308,7 +308,7 @@ async function groupByDescription(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const groups = await Group.find({
-      group_name: args.group_name,
+      group_description: args.group_description,
       farmer_id: farmer_id,
     });
     if (!groups) {
@@ -456,7 +456,10 @@ async function administeredMedicationOnDate(parent, args, context) {
 // Breeds
 async function breedName(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  const breed_name = await Breed.find({ breed_name: args.breed_name });
+  var str = args.breed_name;
+  const breed_name = await Breed.find({ 
+    breed_name: {$regex: new RegExp(".*" + str + ".*", "i") }
+  });
   if (!breed_name) {
     returnable = { responseCheck: OPERATION_FAILED };
   } else {
@@ -470,8 +473,11 @@ async function breedName(parent, args, context) {
 async function breedCode(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  var str = args.breed_code;
   if (farmer_id) {
-    const breed_code = await Breed.find({ breed_code: args.breed_code });
+    const breed_code = await Breed.find({ 
+      breed_code: {$regex: new RegExp(".*" + str + ".*", "i") } 
+    });
     if (!breed_code) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
