@@ -352,7 +352,7 @@ async function addAnimalToGroup(parent, args, context) {
   if (!id) {
     return FAILED_AUTHENTICATION;
   }
-  const groupPresent = await animal.findOne({
+  const groupPresent = await Animal.findOne({
     _id: args.id,
     groups_id: args.groups_id,
   });
