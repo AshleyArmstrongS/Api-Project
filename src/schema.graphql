@@ -9,6 +9,7 @@ type Query {
   animalsByName(animal_name: String!): AnimalResponse!
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
+  herdCount: CountResponse!
   animalByProgeny(tag_number: Int!, male_female: Sex!): AnimalsResponse!
   animalBySex(male_female: Sex!): AnimalsResponse!
   animalByBreed(breed_type: String!): AnimalsResponse!
@@ -231,6 +232,10 @@ type BreedResponse {
 type BreedsResponse {
   responseCheck: ResponseCheck!
   breed: [Breed]
+}
+type CountResponse {
+  responseCheck: ResponseCheck!
+  count: Int
 }
 type ResponseCheck {
   success: Boolean!

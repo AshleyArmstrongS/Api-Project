@@ -88,6 +88,19 @@ async function herd(parent, args, context) {
   }
   return returnable;
 }
+async function herdCount(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const count = await Animal.find({ farmer_id: farmer_id }).countDocuments();
+    if (!count) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = { responseCheck: OPERATION_SUCCESSFUL, count };
+    }
+  }
+  return returnable;
+}
 async function animalByBreed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -514,6 +527,7 @@ module.exports = {
   animalsByName,
   animalByTag,
   herd,
+  herdCount,
   animalByBreed,
   animalByPureBreed,
   animalBySex,
