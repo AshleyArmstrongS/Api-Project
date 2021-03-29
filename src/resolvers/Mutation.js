@@ -165,18 +165,20 @@ async function login(parent, args) {
     farmer: loggingInFarmer,
   };
 }
-async function passwordResetAndLogin(parent, args){
+async function passwordResetAndLogin(parent, args) {
   const farmerToBeChanged = await Farmer.findOne({ email: args.email });
   const valid = await bcrypt.compare(args.password, farmerToBeChanged.password);
-  var success = false
+  var success = false;
   if (valid) {
     const new_password = await bcrypt.hash(args.new_password, 10);
-    success = await Farmer.findByIdAndUpdate({_id: farmerToBeChanged.id}, {password: new_password})
-  } else
-  {
+    success = await Farmer.findByIdAndUpdate(
+      { _id: farmerToBeChanged.id },
+      { password: new_password }
+    );
+  } else {
     return { responseCheck: INCORRECT_PASSWORD };
   }
-  if(success){
+  if (success) {
     const updated = await Farmer.findOne({ email: args.email });
     const userToken = jwt.sign({ userId: updated.id }, APP_SECRET);
     return {
@@ -245,11 +247,11 @@ async function createAnimal(args, farmer_id) {
     }
     if (!parents.sire && !parents.mother) {
       return { responseCheck: INCORRECT_PARENTS };
-    } else if (!parents.sire) {
-      return { responseCheck: INCORRECT_SIRE };
-    } else {
-      return { responseCheck: INCORRECT_MOTHER };
     }
+    if (!parents.sire) {
+      return { responseCheck: INCORRECT_SIRE };
+    }
+    return { responseCheck: INCORRECT_MOTHER };
   } catch (err) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
