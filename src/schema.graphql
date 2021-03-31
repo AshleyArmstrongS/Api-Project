@@ -28,6 +28,10 @@ type Query {
   #Medication
   medication(id: ID!): MedicationResponse!
   medications: MedicationsResponse!
+  medicationsLimitOf4: MedicationsResponse!
+  medicationsByType(medicine_type: MedicineType!): MedicationsResponse!
+  medicationsByRemainingQtyLessThan(remaining_quantity: Int!): MedicationsResponse!
+  medicationsByRemainingQtyGreaterThan(remaining_quantity: Int!): MedicationsResponse!
   medicationsExpired: MedicationsResponse!
   medicationsByName(medication_name: String!): MedicationsResponse!
 
