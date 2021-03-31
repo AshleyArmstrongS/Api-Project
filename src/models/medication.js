@@ -5,7 +5,6 @@ const val = require("../models/mongoose_validation");
 
 var MedicationSchema = new Schema(
   {
-    // verify quantity in API as there are three diff quantities
     medication_name: {
       type: String,
       trim: true,
@@ -22,7 +21,7 @@ var MedicationSchema = new Schema(
       type: Number,
       trim: true,
       validate: [val.validateIsNumber, "Enter valid quantity."],
-      required: true, // question if default is 0 does it go to false?!??
+      required: true, 
       default: 0,
     },
     medicine_type: {
