@@ -370,11 +370,11 @@ async function medications(parent, args, context) {
   }
   return returnable;
 }
-async function medicationsLimitOf4(parent, args, context) {
+async function medicationsSortAndLimitTo4(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id }).limit(4);
+    const medications = await Medication.find({ farmer_id: farmer_id }).sort({ remaining_quantity: 1 }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -619,7 +619,7 @@ module.exports = {
   // Medication
   medication,
   medications,
-  medicationsLimitOf4,
+  medicationsSortAndLimitTo4,
   medicationsByType,
   medicationsByRemainingQtyLessThan,
   medicationsByRemainingQtyGreaterThan,
