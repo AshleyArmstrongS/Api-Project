@@ -10,7 +10,7 @@ type Query {
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
   herdCount: CountResponse!
-  animalByProgeny(tag_number: Int!, male_female: Sex!): AnimalsResponse!
+  animalByProgeny(tag_number: Int!): AnimalsResponse!
   animalBySex(male_female: Sex!): AnimalsResponse!
   animalByBreed(breed_type: String!): AnimalsResponse!
   animalByPureBreed(pure_breed: Boolean!): AnimalsResponse!
