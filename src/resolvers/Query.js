@@ -170,8 +170,10 @@ async function animalByProgeny(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    if (args.male_female == "M") {
-      var animals = await Animal.find({
+    var animals;
+    var parentAnimal = await Animal.find({tag_number: args.tag_number, farmer_id: farmer_id,}).select({_id: 0, male_female: 1})
+    if (parentAnimal.male_female === "M") {
+      animals = await Animal.find({
         sire_number: args.tag_number,
         farmer_id: farmer_id,
       });
