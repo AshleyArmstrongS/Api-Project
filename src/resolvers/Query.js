@@ -412,7 +412,7 @@ async function medicationsByRemainingQtyLessThan(parent, args, context) {
     const medications = await Medication.find({ 
       remaining_quantity: { $lte: args.remaining_quantity},
       farmer_id: farmer_id 
-    });
+    }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -431,7 +431,7 @@ async function medicationsByRemainingQtyGreaterThan(parent, args, context) {
     const medications = await Medication.find({ 
       remaining_quantity: { $gte: args.remaining_quantity},
       farmer_id: farmer_id 
-    });
+    }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
