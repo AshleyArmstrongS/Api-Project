@@ -90,7 +90,7 @@ const AnimalSchema = new Schema(
       trim: true,
       validate: [
         val.validateAnimalName,
-        "Please give a tag number that is 5 in length.",
+        "Please use letters only.",
       ],
       default: "",
     },
