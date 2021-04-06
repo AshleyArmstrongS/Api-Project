@@ -67,8 +67,6 @@ async function addMedAdministrator(id, med_administrator) {
     medication_administrators: { $exists: true, $in: med_administrator },
     _id: id,
   });
-  console.log("Hello");
-  console.log(validPresent);
   const valid = await Farmer.findByIdAndUpdate(
     { _id: id },
     { $push: { medication_administrators: med_administrator } }
@@ -498,7 +496,7 @@ async function saveAdminMed(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     if (args.id) {
-      returnable = updateAdminMed(args);
+      returnable = updateAdminMed(args, farmer_id);
     } else {
       returnable = createAdminMed(args, farmer_id);
     }
@@ -513,7 +511,7 @@ async function createAdminMed(args, farmer_id) {
     );
     var message = "Medication not administered";
     if (available) {
-      const newMedAdmin = await new MedicationAdministration({
+      const newMedAdmin = new MedicationAdministration({
         date_of_administration: args.date_of_administration,
         quantity_administered: args.quantity_administered,
         quantity_type: available.quantity_type,
@@ -544,7 +542,7 @@ async function createAdminMed(args, farmer_id) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
-async function updateAdminMed(args) {
+async function updateAdminMed(args, farmer_id) {
   const valid = await MedicationAdministration.findByIdAndUpdate(
     { _id: args.id },
     {
@@ -595,15 +593,20 @@ async function deleteAdministeredMedication(parent, args, context) {
     responseCheck: OPERATION_FAILED,
   };
 }
-async function deleteMedAdministrator(id, med_administrator) {
-  const valid = farmer.findByIdAndUpdate(
-    { _id: id },
-    { $pull: { medication_administrators: med_administrator } }
-  );
-  if (valid) {
-    return true;
+async function deleteMedAdministrator(parent, args, context) {
+  const farmer_id = getUserId(context);
+  if (farmer_id) {
+    const valid = await Farmer.findByIdAndUpdate(
+      { _id: farmer_id },
+      { $pull: { medication_administrators: args.med_administrator } }
+    );
+    if (valid) {
+      const updatedFarmer = await Farmer.findById({_id: farmer_id});
+      return { responseCheck: OPERATION_SUCCESSFUL, farmer: updatedFarmer };
+    }
+    return { responseCheck: OPERATION_FAILED };
   }
-  return false;
+  return { responseCheck: FAILED_AUTHENTICATION };
 }
 async function saveBreed(parent, args, context) {
   const farmer_id = getUserId(context);
