@@ -2,7 +2,7 @@ type Query {
   #API info
   info: String
   #Users Info
-  farmer: farmerResponse!
+  farmer: FarmerResponse!
   farmMedicationAdministrators: [String]!
   #Animal
   animal(id: ID!): AnimalResponse!
@@ -122,9 +122,8 @@ type Mutation {
     quantity_administered: Int
   ): AdminMedResponse!
   deleteMedAdministrator(
-    id: ID!
     med_administrator: String!
-  ): farmerResponse!
+  ): FarmerResponse!
 }
 #OBJECT_TYPES
 type Animal {
@@ -193,7 +192,7 @@ type AuthPayload {
   token: String
   farmer: Farmer
 }
-type farmerResponse {
+type FarmerResponse {
   responseCheck: ResponseCheck!
   farmer: Farmer
 }
