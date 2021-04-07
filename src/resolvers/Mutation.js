@@ -148,57 +148,72 @@ async function signUp(parent, args) {
   }
 }
 async function login(parent, args) {
-  const loggingInFarmer = await Farmer.findOne({ email: args.email });
-  if (!loggingInFarmer) {
-    return { responseCheck: NO_SUCH_EMAIL };
-  }
-  const valid = await bcrypt.compare(args.password, loggingInFarmer.password);
-  if (!valid) {
-    return { responseCheck: INCORRECT_PASSWORD };
-  }
-  const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET);
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    token: userToken,
-    farmer: loggingInFarmer,
-  };
-}
-async function passwordResetAndLogin(parent, args) {
-  const farmerToBeChanged = await Farmer.findOne({ email: args.email });
-  const valid = await bcrypt.compare(args.password, farmerToBeChanged.password);
-  var success = false;
-  if (valid) {
-    const new_password = await bcrypt.hash(args.new_password, 10);
-    success = await Farmer.findByIdAndUpdate(
-      { _id: farmerToBeChanged.id },
-      { password: new_password }
-    );
-  } else {
-    return { responseCheck: INCORRECT_PASSWORD };
-  }
-  if (success) {
-    const updated = await Farmer.findOne({ email: args.email });
-    const userToken = jwt.sign({ userId: updated.id }, APP_SECRET);
+  try {
+    const loggingInFarmer = await Farmer.findOne({ email: args.email });
+    if (!loggingInFarmer) {
+      return { responseCheck: NO_SUCH_EMAIL };
+    }
+    const valid = await bcrypt.compare(args.password, loggingInFarmer.password);
+    if (!valid) {
+      return { responseCheck: INCORRECT_PASSWORD };
+    }
+    const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET);
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       token: userToken,
-      farmer: updated,
+      farmer: loggingInFarmer,
     };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return { responseCheck: PASSWORD_RESET_FAILED };
+}
+async function passwordResetAndLogin(parent, args) {
+  try {
+    const farmerToBeChanged = await Farmer.findOne({ email: args.email });
+    const valid = await bcrypt.compare(
+      args.password,
+      farmerToBeChanged.password
+    );
+    var success = false;
+    if (valid) {
+      const new_password = await bcrypt.hash(args.new_password, 10);
+      success = await Farmer.findByIdAndUpdate(
+        { _id: farmerToBeChanged.id },
+        { password: new_password }
+      );
+    } else {
+      return { responseCheck: INCORRECT_PASSWORD };
+    }
+    if (success) {
+      const updated = await Farmer.findOne({ email: args.email });
+      const userToken = jwt.sign({ userId: updated.id }, APP_SECRET);
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
+        token: userToken,
+        farmer: updated,
+      };
+    }
+    return { responseCheck: PASSWORD_RESET_FAILED };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
+  }
 }
 //Animal Mutations
 async function saveAnimal(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    if (args.id) {
-      returnable = await updateAnimal(args);
-    } else {
-      returnable = await createAnimal(args, farmer_id);
+  try {
+    const farmer_id = getUserId(context);
+    var returnable = { responseCheck: FAILED_AUTHENTICATION };
+    if (farmer_id) {
+      if (args.id) {
+        returnable = await updateAnimal(args);
+      } else {
+        returnable = await createAnimal(args, farmer_id);
+      }
     }
+    return returnable;
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return returnable;
 }
 async function createAnimal(args, farmer_id) {
   try {
@@ -255,54 +270,66 @@ async function createAnimal(args, farmer_id) {
   }
 }
 async function updateAnimal(args) {
-  const valid = await Animal.findByIdAndUpdate(
-    { _id: args.id },
-    {
-      sire_number: args.sire_number,
-      mother_number: args.mother_number,
-      male_female: args.male_female,
-      breed_type: args.breed_type,
-      date_of_birth: args.date_of_birth,
-      pure_breed: args.pure_breed ?? false,
-      animal_name: args.animal_name ?? null,
-      description: args.description ?? null,
+  try {
+    const valid = await Animal.findByIdAndUpdate(
+      { _id: args.id },
+      {
+        sire_number: args.sire_number,
+        mother_number: args.mother_number,
+        male_female: args.male_female,
+        breed_type: args.breed_type,
+        date_of_birth: args.date_of_birth,
+        pure_breed: args.pure_breed ?? false,
+        animal_name: args.animal_name ?? null,
+        description: args.description ?? null,
+      }
+    );
+    if (!valid) {
+      return { responseCheck: OPERATION_FAILED };
     }
-  );
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
+    const editedAnimal = Animal.findOne({ _id: args.id });
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      animal: editedAnimal,
+    };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  const editedAnimal = Animal.findOne({ _id: args.id });
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    animal: editedAnimal,
-  };
 }
 async function deleteAnimal(parent, args, context) {
-  const id = await getUserId(context);
-  if (!id) {
-    return { responseCheck: FAILED_AUTHENTICATION };
+  try {
+    const id = await getUserId(context);
+    if (!id) {
+      return { responseCheck: FAILED_AUTHENTICATION };
+    }
+    const valid = await Animal.findByIdAndDelete(args.id);
+    if (!valid) {
+      return { responseCheck: OPERATION_FAILED };
+    }
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      animal: valid,
+    };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  const valid = await Animal.findByIdAndDelete(args.id);
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
-  }
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    animal: valid,
-  };
 }
 // Group Mutations
 async function saveGroup(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    if (args.id) {
-      returnable = updateGroup(args, farmer_id);
-    } else {
-      returnable = createGroup(args, farmer_id);
+  try {
+    const farmer_id = getUserId(context);
+    var returnable = { responseCheck: FAILED_AUTHENTICATION };
+    if (farmer_id) {
+      if (args.id) {
+        returnable = updateGroup(args, farmer_id);
+      } else {
+        returnable = createGroup(args, farmer_id);
+      }
     }
+    return returnable;
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return returnable;
 }
 async function createGroup(args, farmer_id) {
   try {
@@ -331,35 +358,65 @@ async function createGroup(args, farmer_id) {
   }
 }
 async function updateGroup(args) {
-  const valid = await Group.findByIdAndUpdate(
-    { _id: args.id },
-    {
-      group_name: args.group_name,
-      group_description: args.group_description ?? null,
+  try {
+    const valid = await Group.findByIdAndUpdate(
+      { _id: args.id },
+      {
+        group_name: args.group_name,
+        group_description: args.group_description ?? null,
+      }
+    );
+    if (!valid) {
+      return { responseCheck: OPERATION_FAILED };
     }
-  );
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
+    const editedGroup = Group.findOne({ _id: args.id });
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      group: editedGroup,
+    };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  const editedGroup = Group.findOne({ _id: args.id });
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    group: editedGroup,
-  };
 }
 async function addAnimalToGroup(parent, args, context) {
-  const id = getUserId(context);
-  if (!id) {
-    return FAILED_AUTHENTICATION;
+  try {
+    const id = getUserId(context);
+    if (!id) {
+      return FAILED_AUTHENTICATION;
+    }
+    const groupPresent = await Animal.findOne({
+      _id: args.id,
+      groups_id: args.groups_id,
+    });
+    if (!groupPresent) {
+      const valid = await Animal.findByIdAndUpdate(
+        { _id: args.id },
+        { $push: { groups_id: args.groups_id } }
+      );
+      if (!valid) {
+        return { responseCheck: OPERATION_FAILED };
+      }
+      const editedAnimal = Animal.findOne({ _id: args.id });
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
+        animal: editedAnimal,
+      };
+    } else {
+      return { responseCheck: ALREADY_EXISTS };
+    }
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  const groupPresent = await Animal.findOne({
-    _id: args.id,
-    groups_id: args.groups_id,
-  });
-  if (!groupPresent) {
+}
+async function removeAnimalFromGroup(parent, args, context) {
+  try {
+    const id = getUserId(context);
+    if (!id) {
+      return FAILED_AUTHENTICATION;
+    }
     const valid = await Animal.findByIdAndUpdate(
       { _id: args.id },
-      { $push: { groups_id: args.groups_id } }
+      { $pull: { groups_id: args.groups_id } }
     );
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
@@ -369,63 +426,53 @@ async function addAnimalToGroup(parent, args, context) {
       responseCheck: OPERATION_SUCCESSFUL,
       animal: editedAnimal,
     };
-  } else {
-    return { responseCheck: ALREADY_EXISTS };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-}
-async function removeAnimalFromGroup(parent, args, context) {
-  const id = getUserId(context);
-  if (!id) {
-    return FAILED_AUTHENTICATION;
-  }
-  const valid = await Animal.findByIdAndUpdate(
-    { _id: args.id },
-    { $pull: { groups_id: args.groups_id } }
-  );
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
-  }
-  const editedAnimal = Animal.findOne({ _id: args.id });
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    animal: editedAnimal,
-  };
 }
 async function deleteGroup(parent, args, context) {
-  const farmer_id = getUserId(context);
-  if (!farmer_id) {
-    return FAILED_AUTHENTICATION;
-  }
-  await Animal.updateMany(
-    {
-      groups_id: args.id,
-      farmer_id: farmer_id,
-    },
-    { $pull: { groups_id: args.id } }
-  );
-  const deletedGroup = await Group.findByIdAndDelete(args.id);
-  if (deletedGroup) {
+  try {
+    const farmer_id = getUserId(context);
+    if (!farmer_id) {
+      return FAILED_AUTHENTICATION;
+    }
+    await Animal.updateMany(
+      {
+        groups_id: args.id,
+        farmer_id: farmer_id,
+      },
+      { $pull: { groups_id: args.id } }
+    );
+    const deletedGroup = await Group.findByIdAndDelete(args.id);
+    if (deletedGroup) {
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
+        group: deletedGroup,
+      };
+    }
     return {
-      responseCheck: OPERATION_SUCCESSFUL,
-      group: deletedGroup,
+      responseCheck: OPERATION_FAILED,
     };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return {
-    responseCheck: OPERATION_FAILED,
-  };
 }
 //Medication Mutations
 async function saveMedication(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    if (args.id) {
-      returnable = updateMedication(args);
-    } else {
-      returnable = createMedication(args, farmer_id);
+  try {
+    const farmer_id = getUserId(context);
+    var returnable = { responseCheck: FAILED_AUTHENTICATION };
+    if (farmer_id) {
+      if (args.id) {
+        returnable = updateMedication(args);
+      } else {
+        returnable = createMedication(args, farmer_id);
+      }
     }
+    return returnable;
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return returnable;
 }
 async function createMedication(args, farmer_id) {
   try {
@@ -457,51 +504,59 @@ async function createMedication(args, farmer_id) {
   }
 }
 async function updateMedication(args) {
-  const current_medication = await Medication.findById(args.id).select({
-    _id: 0,
-    remaining_quantity: 1,
-    quantity: 1,
-  });
-  const remaining =
-    current_medication.quantity - current_medication.remaining_quantity;
-  const valid = await Medication.findByIdAndUpdate(
-    { _id: args.id },
-    {
-      medication_name: args.medication_name,
-      supplied_by: args.supplied_by ?? null,
-      quantity: args.quantity,
-      quantity_type: args.quantity_type,
-      medicine_type: args.medicine_type,
-      remaining_quantity: args.quantity - remaining,
-      withdrawal_days_dairy: args.withdrawal_days_dairy ?? null,
-      withdrawal_days_meat: args.withdrawal_days_meat ?? null,
-      batch_number: args.batch_number ?? null,
-      expiry_date: args.expiry_date ?? null,
-      purchase_date: args.purchase_date ?? null,
-      comments: args.comments ?? null,
+  try {
+    const current_medication = await Medication.findById(args.id).select({
+      _id: 0,
+      remaining_quantity: 1,
+      quantity: 1,
+    });
+    const remaining =
+      current_medication.quantity - current_medication.remaining_quantity;
+    const valid = await Medication.findByIdAndUpdate(
+      { _id: args.id },
+      {
+        medication_name: args.medication_name,
+        supplied_by: args.supplied_by ?? null,
+        quantity: args.quantity,
+        quantity_type: args.quantity_type,
+        medicine_type: args.medicine_type,
+        remaining_quantity: args.quantity - remaining,
+        withdrawal_days_dairy: args.withdrawal_days_dairy ?? null,
+        withdrawal_days_meat: args.withdrawal_days_meat ?? null,
+        batch_number: args.batch_number ?? null,
+        expiry_date: args.expiry_date ?? null,
+        purchase_date: args.purchase_date ?? null,
+        comments: args.comments ?? null,
+      }
+    );
+    if (!valid) {
+      return { responseCheck: OPERATION_FAILED };
     }
-  );
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
+    const updatedMedication = await Medication.findOne({ _id: args.id });
+    return {
+      responseCheck: OPERATION_SUCCESSFUL,
+      medication: updatedMedication,
+    };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  const updatedMedication = await Medication.findOne({ _id: args.id });
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    medication: updatedMedication,
-  };
 }
 //MedicationAdministration Mutations
 async function saveAdminMed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    if (args.id) {
-      returnable = updateAdminMed(args, farmer_id);
-    } else {
-      returnable = createAdminMed(args, farmer_id);
+  try {
+    const farmer_id = getUserId(context);
+    var returnable = { responseCheck: FAILED_AUTHENTICATION };
+    if (farmer_id) {
+      if (args.id) {
+        returnable = updateAdminMed(args, farmer_id);
+      } else {
+        returnable = createAdminMed(args, farmer_id);
+      }
     }
+    return returnable;
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return returnable;
 }
 async function createAdminMed(args, farmer_id) {
   try {
@@ -543,85 +598,101 @@ async function createAdminMed(args, farmer_id) {
   }
 }
 async function updateAdminMed(args, farmer_id) {
-  const valid = await MedicationAdministration.findByIdAndUpdate(
-    { _id: args.id },
-    {
-      date_of_administration: args.date_of_administration,
-      quantity_administered: args.quantity_administered,
-      administered_by: args.administered_by,
-      reason_for_administration: args.reason_for_administration ?? null,
+  try {
+    const valid = await MedicationAdministration.findByIdAndUpdate(
+      { _id: args.id },
+      {
+        date_of_administration: args.date_of_administration,
+        quantity_administered: args.quantity_administered,
+        administered_by: args.administered_by,
+        reason_for_administration: args.reason_for_administration ?? null,
+      }
+    );
+    if (!valid) {
+      return { responseCheck: OPERATION_FAILED };
     }
-  );
-  if (!valid) {
-    return { responseCheck: OPERATION_FAILED };
-  }
-  await restoreMedicationQuantity(
-    args.medication_id,
-    valid.quantity_administered
-  );
-  await updateMedicationQuantity(
-    args.medication_id,
-    args.quantity_administered
-  );
-  await addMedAdministrator(farmer_id, args.administered_by);
-  const updatedMedication = await MedicationAdministration.findById(args.id);
-  return {
-    responseCheck: OPERATION_SUCCESSFUL,
-    administeredMedication: updatedMedication,
-  };
-}
-async function deleteAdministeredMedication(parent, args, context) {
-  //restores the medication quantity
-  const id = getUserId(context);
-  if (!id) {
-    return FAILED_AUTHENTICATION;
-  }
-  await restoreMedicationQuantity(
-    args.medication_id,
-    args.quantity_administered
-  );
-  const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(
-    args.id
-  );
-  if (deletedAdminMed) {
+    await restoreMedicationQuantity(
+      args.medication_id,
+      valid.quantity_administered
+    );
+    await updateMedicationQuantity(
+      args.medication_id,
+      args.quantity_administered
+    );
+    await addMedAdministrator(farmer_id, args.administered_by);
+    const updatedMedication = await MedicationAdministration.findById(args.id);
     return {
       responseCheck: OPERATION_SUCCESSFUL,
-      administeredMedication: deletedAdminMed,
+      administeredMedication: updatedMedication,
     };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return {
-    responseCheck: OPERATION_FAILED,
-  };
+}
+async function deleteAdministeredMedication(parent, args, context) {
+  try {
+    //restores the medication quantity
+    const id = getUserId(context);
+    if (!id) {
+      return FAILED_AUTHENTICATION;
+    }
+    await restoreMedicationQuantity(
+      args.medication_id,
+      args.quantity_administered
+    );
+    const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(
+      args.id
+    );
+    if (deletedAdminMed) {
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
+        administeredMedication: deletedAdminMed,
+      };
+    }
+    return {
+      responseCheck: OPERATION_FAILED,
+    };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
+  }
 }
 async function deleteMedAdministrator(parent, args, context) {
-  const farmer_id = getUserId(context);
-  if (farmer_id) {
-    const valid = await Farmer.findByIdAndUpdate(
-      { _id: farmer_id },
-      { $pull: { medication_administrators: args.med_administrator } }
-    );
-    if (valid) {
-      const updatedFarmer = await Farmer.findById({_id: farmer_id});
-      return { responseCheck: OPERATION_SUCCESSFUL, farmer: updatedFarmer };
+  try {
+    const farmer_id = getUserId(context);
+    if (farmer_id) {
+      const valid = await Farmer.findByIdAndUpdate(
+        { _id: farmer_id },
+        { $pull: { medication_administrators: args.med_administrator } }
+      );
+      if (valid) {
+        const updatedFarmer = await Farmer.findById({ _id: farmer_id });
+        return { responseCheck: OPERATION_SUCCESSFUL, farmer: updatedFarmer };
+      }
+      return { responseCheck: OPERATION_FAILED };
     }
-    return { responseCheck: OPERATION_FAILED };
+    return { responseCheck: FAILED_AUTHENTICATION };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return { responseCheck: FAILED_AUTHENTICATION };
 }
 async function saveBreed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const valid = await breed.save({
-      breed_name: args.breed_name,
-      breed_code: args.breed_code,
-    });
-    if (valid) {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, breed: valid };
+  try {
+    const farmer_id = getUserId(context);
+    var returnable = { responseCheck: FAILED_AUTHENTICATION };
+    if (farmer_id) {
+      const valid = await breed.save({
+        breed_name: args.breed_name,
+        breed_code: args.breed_code,
+      });
+      if (valid) {
+        returnable = { responseCheck: OPERATION_SUCCESSFUL, breed: valid };
+      }
+      returnable = { responseCheck: OPERATION_FAILED };
     }
-    returnable = { responseCheck: OPERATION_FAILED };
+    return returnable;
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-  return returnable;
 }
 
 module.exports = {
