@@ -19,6 +19,7 @@ type Query {
   animalsBornBefore(date_of_birth: Date!): AnimalsResponse!
   animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
   animalsByCrossBreed(breed_type: String!): AnimalsResponse!
+  animalInAnyGroup: AnimalsResponse!
   animalsInGroup(groups_id: String): AnimalsResponse!
   animalsInGroupCount(groups_id: String): CountResponse!
   #Breed

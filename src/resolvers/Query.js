@@ -259,6 +259,22 @@ async function animalsBornBetween(parent, args, context) {
   }
   return returnable;
 }
+async function animalInAnyGroup(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const animals = await Animal.find({
+      groups_id: {$exists: true, $not: {$size: 0} },
+      farmer_id: farmer_id,
+    });
+    if (!animals) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
+    }
+  }
+  return returnable;
+}
 async function animalsInGroup(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -646,6 +662,7 @@ module.exports = {
   animalsBornBefore,
   animalsBornBetween,
   animalsByCrossBreed,
+  animalInAnyGroup,
   animalsInGroup,
   animalsInGroupCount,
   // Group
