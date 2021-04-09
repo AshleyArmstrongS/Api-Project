@@ -38,6 +38,7 @@ type Query {
   #AdministeredMedication
   administeredMedication(id: ID): AdminMedResponse!
   administeredMedications: AdminMedsResponse!
+  administeredMedicationsByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationOnDate(
     date_of_administration: Date!
   ): AdminMedsResponse!
@@ -61,7 +62,11 @@ type Mutation {
     farm_address: String
   ): AuthPayload!
   login(email: String!, password: String!): AuthPayload!
-  passwordResetAndLogin(email: String!, password: String!, new_password: String): AuthPayload!
+  passwordResetAndLogin(
+    email: String!
+    password: String!
+    new_password: String
+  ): AuthPayload!
   #Animal
   saveAnimal(
     id: ID
@@ -86,11 +91,7 @@ type Mutation {
   ): GroupResponse!
   deleteGroup(id: ID!): GroupResponse!
   #Breed
-  saveBreed(
-    id: ID
-    breed_name: String!
-    breed_code: String!
-  ): BreedResponse!
+  saveBreed(id: ID, breed_name: String!, breed_code: String!): BreedResponse!
   #Medication
   saveMedication(
     id: ID
@@ -121,9 +122,7 @@ type Mutation {
     medication_id: ID
     quantity_administered: Int
   ): AdminMedResponse!
-  deleteMedAdministrator(
-    med_administrator: String!
-  ): FarmerResponse!
+  deleteMedAdministrator(med_administrator: String!): FarmerResponse!
 }
 #OBJECT_TYPES
 type Animal {

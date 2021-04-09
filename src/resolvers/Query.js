@@ -541,11 +541,30 @@ async function administeredMedicationOnDate(parent, args, context) {
   }
   return returnable;
 }
+async function administeredMedicationsByAnimal(parent, args, context){
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const administeredMedications = await AdministeredMedication.find({
+      animal_id: args.animal_id,
+      farmer_id: farmer_id,
+    });
+    if (!administeredMedications) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        administeredMedications: administeredMedications,
+      };
+    }
+  }
+  return returnable;
+}
 // Breeds
 async function breedName(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   var str = args.breed_name;
-  const breed_name = await Breed.find({ 
+  const breed_name = await Breed.find({
     breed_name: {$regex: new RegExp(".*" + str + ".*", "i") }
   });
   if (!breed_name) {
@@ -563,8 +582,8 @@ async function breedCode(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   var str = args.breed_code;
   if (farmer_id) {
-    const breed_code = await Breed.find({ 
-      breed_code: {$regex: new RegExp(".*" + str + ".*", "i") } 
+    const breed_code = await Breed.find({
+      breed_code: {$regex: new RegExp(".*" + str + ".*", "i") }
     });
     if (!breed_code) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -631,6 +650,7 @@ module.exports = {
   administeredMedication,
   administeredMedications,
   administeredMedicationOnDate,
+  administeredMedicationsByAnimal,
 
   // Breed
   breed,
