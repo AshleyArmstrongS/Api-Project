@@ -18,6 +18,14 @@ const GroupSchema = new Schema(
       type: String,
       default: "",
     },
+    group_size: {
+      type: Number,
+      min: 0,
+      max: 99999,
+      integer: true,
+      trim: true,
+      default: 0,
+    },
     farmer_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Farmer",

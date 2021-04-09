@@ -20,6 +20,7 @@ const {
   INCORRECT_PARENTS,
 } = require("./ResolverErrorMessages");
 const breed = require("../models/breed");
+const { findByIdAndUpdate } = require("../models/animals");
 
 //Internal functions
 function farmerHerdNo(id) {
@@ -342,6 +343,7 @@ async function createGroup(args, farmer_id) {
         group_name: args.group_name,
         group_description: args.group_description ?? null,
         farmer_id: farmer_id,
+        group_size: 0,
       });
       const valid = await newGroup.save();
       if (!valid) {
@@ -396,6 +398,7 @@ async function addAnimalToGroup(parent, args, context) {
       if (!valid) {
         return { responseCheck: OPERATION_FAILED };
       }
+      await Group.findByIdAndUpdate({ _id: args.groups_id }, {$inc: { group_size: +1 }});
       const editedAnimal = Animal.findOne({ _id: args.id });
       return {
         responseCheck: OPERATION_SUCCESSFUL,
@@ -421,6 +424,7 @@ async function removeAnimalFromGroup(parent, args, context) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
+    await Group.findByIdAndUpdate({ _id: args.groups_id }, {$inc:{ group_size: -1 }});
     const editedAnimal = Animal.findOne({ _id: args.id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,

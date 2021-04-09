@@ -178,6 +178,7 @@ type Farmer {
 type Group {
   id: ID
   group_name: String
+  group_size: Int
   group_description: String
 }
 type Breed {
