@@ -457,7 +457,6 @@ async function administeredMedicationsByAnimal(parent, args, context){
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    console.log(args.animal_id + " hellp "+ farmer_id)
     const administeredMedications = await AdministeredMedication.find({
       animal_id: args.animal_id,
       farmer_id: farmer_id,
