@@ -275,6 +275,22 @@ async function animalsInGroup(parent, args, context) {
   }
   return returnable;
 }
+async function animalsInGroupCount(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const count = await Animal.find({
+      groups_id: args.groups_id,
+      farmer_id: farmer_id,
+    }).countDocuments();
+    if (!count) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = { responseCheck: OPERATION_SUCCESSFUL, count };
+    }
+  }
+  return returnable;
+}
 //Group
 async function group(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -334,7 +350,6 @@ async function groupByDescription(parent, args, context) {
   }
   return returnable;
 }
-
 //Medication
 async function medication(parent, args, context) {
   const farmer_id = getUserId(context);
@@ -632,6 +647,7 @@ module.exports = {
   animalsBornBetween,
   animalsByCrossBreed,
   animalsInGroup,
+  animalsInGroupCount,
   // Group
   group,
   groups,
