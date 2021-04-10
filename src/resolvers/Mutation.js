@@ -398,7 +398,10 @@ async function addAnimalToGroup(parent, args, context) {
       if (!valid) {
         return { responseCheck: OPERATION_FAILED };
       }
-      await Group.findByIdAndUpdate({ _id: args.groups_id }, {$inc: { group_size: +1 }});
+      await Group.findByIdAndUpdate(
+        { _id: args.groups_id },
+        { $inc: { group_size: +1 } }
+      );
       const editedAnimal = Animal.findOne({ _id: args.id });
       return {
         responseCheck: OPERATION_SUCCESSFUL,
@@ -424,7 +427,10 @@ async function removeAnimalFromGroup(parent, args, context) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    await Group.findByIdAndUpdate({ _id: args.groups_id }, {$inc:{ group_size: -1 }});
+    await Group.findByIdAndUpdate(
+      { _id: args.groups_id },
+      { $inc: { group_size: -1 } }
+    );
     const editedAnimal = Animal.findOne({ _id: args.id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,

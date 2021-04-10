@@ -423,9 +423,9 @@ async function medicationsByType(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
+    const medications = await Medication.find({
       medicine_type: args.medicine_type,
-      farmer_id: farmer_id 
+      farmer_id: farmer_id
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -442,9 +442,9 @@ async function medicationsByRemainingQtyLessThan(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
+    const medications = await Medication.find({
       remaining_quantity: { $lte: args.remaining_quantity},
-      farmer_id: farmer_id 
+      farmer_id: farmer_id
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -461,9 +461,9 @@ async function medicationsByRemainingQtyGreaterThan(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
+    const medications = await Medication.find({
       remaining_quantity: { $gte: args.remaining_quantity},
-      farmer_id: farmer_id 
+      farmer_id: farmer_id
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
