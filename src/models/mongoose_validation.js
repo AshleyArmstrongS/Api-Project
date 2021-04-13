@@ -21,7 +21,7 @@ const validateHerdNumber = herd_number => {
   return re.test(herd_number)
 }
 const validateAnimalName = animal_name => {
-  const re = /^[a-zA-Z]+( [a-zA-Z]+)*$/
+  const re = /^$|[a-zA-Z]+( [a-zA-Z]+)*$/
   return re.test(animal_name)
 }
 const validateBreedName = name => {
