@@ -20,7 +20,6 @@ const {
   INCORRECT_PARENTS,
 } = require("./ResolverErrorMessages");
 const breed = require("../models/breed");
-const { findByIdAndUpdate } = require("../models/animals");
 
 //Internal functions
 function farmerHerdNo(id) {
