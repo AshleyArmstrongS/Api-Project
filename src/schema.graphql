@@ -32,8 +32,12 @@ type Query {
   medications: MedicationsResponse!
   medicationsSortAndLimitTo4: MedicationsResponse!
   medicationsByType(medicine_type: MedicineType!): MedicationsResponse!
-  medicationsByRemainingQtyLessThan(remaining_quantity: Int!): MedicationsResponse!
-  medicationsByRemainingQtyGreaterThan(remaining_quantity: Int!): MedicationsResponse!
+  medicationsByRemainingQtyLessThan(
+    remaining_quantity: Int!
+  ): MedicationsResponse!
+  medicationsByRemainingQtyGreaterThan(
+    remaining_quantity: Int!
+  ): MedicationsResponse!
   medicationsExpired: MedicationsResponse!
   medicationsByName(medication_name: String!): MedicationsResponse!
 
@@ -165,6 +169,8 @@ type AdministeredMedication {
   administered_by: String
   reason_for_administration: String
   animal_id: ID
+  tag_number: Int
+  medication_name: String
   medication_id: ID
 }
 type Farmer {

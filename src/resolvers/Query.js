@@ -171,7 +171,10 @@ async function animalByProgeny(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     var animals;
-    var parentAnimal = await Animal.find({tag_number: args.tag_number, farmer_id: farmer_id,}).select({_id: 0, male_female: 1})
+    var parentAnimal = await Animal.find({
+      tag_number: args.tag_number,
+      farmer_id: farmer_id,
+    }).select({ _id: 0, male_female: 1 });
     if (parentAnimal.male_female === "M") {
       animals = await Animal.find({
         sire_number: args.tag_number,
@@ -264,7 +267,7 @@ async function animalInAnyGroup(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const animals = await Animal.find({
-      groups_id: {$exists: true, $not: {$size: 0} },
+      groups_id: { $exists: true, $not: { $size: 0 } },
       farmer_id: farmer_id,
     });
     if (!animals) {
@@ -407,7 +410,9 @@ async function medicationsSortAndLimitTo4(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id }).sort({ remaining_quantity: 1 }).limit(4);
+    const medications = await Medication.find({ farmer_id: farmer_id })
+      .sort({ remaining_quantity: 1 })
+      .limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -423,9 +428,9 @@ async function medicationsByType(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
+    const medications = await Medication.find({
       medicine_type: args.medicine_type,
-      farmer_id: farmer_id 
+      farmer_id: farmer_id,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -442,9 +447,9 @@ async function medicationsByRemainingQtyLessThan(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
-      remaining_quantity: { $lte: args.remaining_quantity},
-      farmer_id: farmer_id 
+    const medications = await Medication.find({
+      remaining_quantity: { $lte: args.remaining_quantity },
+      farmer_id: farmer_id,
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -461,9 +466,9 @@ async function medicationsByRemainingQtyGreaterThan(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ 
-      remaining_quantity: { $gte: args.remaining_quantity},
-      farmer_id: farmer_id 
+    const medications = await Medication.find({
+      remaining_quantity: { $gte: args.remaining_quantity },
+      farmer_id: farmer_id,
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -539,9 +544,23 @@ async function administeredMedications(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const administeredMedications = await AdministeredMedication.find({
+    var administeredMedications = await AdministeredMedication.find({
       farmer_id: farmer_id,
     });
+    for(var i =0; i < administeredMedications.length; i++){
+      var animal =  await Animal.findOne({ _id: administeredMedications[i].animal_id, farmer_id: farmer_id });
+      var medication =  await Medication.findOne({ _id: administeredMedications[i].medication_id, farmer_id: farmer_id });
+      if(animal){
+      administeredMedications[i].tag_number = animal.tag_number
+      }else {
+        administeredMedications[i].tag_number = 00000
+      }
+      if(medication){
+      administeredMedications[i].medication_name = medication.medication_name
+      }else {
+        administeredMedications[i].medication_name = "Medicine Not available"
+      }
+    };
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -572,7 +591,7 @@ async function administeredMedicationOnDate(parent, args, context) {
   }
   return returnable;
 }
-async function administeredMedicationsByAnimal(parent, args, context){
+async function administeredMedicationsByAnimal(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
@@ -596,7 +615,7 @@ async function breedName(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   var str = args.breed_name;
   const breed_name = await Breed.find({
-    breed_name: {$regex: new RegExp(".*" + str + ".*", "i") }
+    breed_name: { $regex: new RegExp(".*" + str + ".*", "i") },
   });
   if (!breed_name) {
     returnable = { responseCheck: OPERATION_FAILED };
@@ -614,7 +633,7 @@ async function breedCode(parent, args, context) {
   var str = args.breed_code;
   if (farmer_id) {
     const breed_code = await Breed.find({
-      breed_code: {$regex: new RegExp(".*" + str + ".*", "i") }
+      breed_code: { $regex: new RegExp(".*" + str + ".*", "i") },
     });
     if (!breed_code) {
       returnable = { responseCheck: OPERATION_FAILED };
