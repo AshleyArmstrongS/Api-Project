@@ -20,6 +20,7 @@ const {
   INCORRECT_PARENTS,
 } = require("./ResolverErrorMessages");
 const breed = require("../models/breed");
+const { administeredMedication } = require("./Query");
 
 //Internal functions
 function farmerHerdNo(id) {
@@ -303,11 +304,13 @@ async function deleteAnimal(parent, args, context) {
     if (!id) {
       return { responseCheck: FAILED_AUTHENTICATION };
     }
-    const valid = await Animal.findByIdAndUpdate({ _id: args._id },
+    const valid = await Animal.findByIdAndUpdate(
+      { _id: args._id },
       {
         removed: true,
         groups_id: [null],
-      });
+      }
+    );
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
@@ -917,6 +920,40 @@ async function populateAdminMeds(parent, args, context) {
     return "there was an error";
   }
 }
+async function populateAll(parent, args, context) {
+  await populateAnimals(parent, args, context);
+  await populateMedications(parent, args, context);
+  await populateAdminMeds(parent, args, context);
+}
+async function deleteAllFarmerInfo(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    if (farmer_id) {
+      const animals = await Animal.find({ farmer_id: farmer_id });
+      const medications = await Medication.find({ farmer_id: farmer_id });
+      const AdminMeds = await MedicationAdministration.find({
+        farmer_id: farmer_id,
+      });
+      const groups = await Group.find({ farmer_id: farmer_id });
+      for (var i = 0; i < animals.length; i++) {
+        await Animal.findByIdAndDelete(animals[i]._id);
+      }
+      for (var i = 0; i < medications.length; i++) {
+        await Medication.findByIdAndDelete(medications[i]._id);
+      }
+      for (var i = 0; i < groups.length; i++) {
+        await Group.findByIdAndDelete(groups[i]._id);
+      }
+      for (var i = 0; i < AdminMeds.length; i++) {
+        await MedicationAdministration.findByIdAndDelete(AdminMeds[i]._id);
+      }
+    }
+    return "'What did it cost?'-you. 'Everything'-me";
+  } catch (err) {
+    console.log(err);
+    return "there was an error";
+  }
+}
 module.exports = {
   signUp,
   login,
@@ -924,6 +961,8 @@ module.exports = {
   populateAnimals,
   populateMedications,
   populateAdminMeds,
+  populateAll,
+  deleteAllFarmerInfo,
   saveAnimal,
   deleteAnimal,
   saveGroup,
