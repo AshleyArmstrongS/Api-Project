@@ -103,7 +103,7 @@ async function herdCount(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const count = await Animal.find({ farmer_id: farmer_id }).countDocuments();
+    const count = await Animal.find({ farmer_id: farmer_id, removed: { $ne: true },}).countDocuments();
     if (!count) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {

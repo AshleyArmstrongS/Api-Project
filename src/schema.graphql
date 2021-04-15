@@ -84,8 +84,8 @@ type Mutation {
     _id: ID
     tag_number: Int!
     sire_number: Int!
-    mother_number: Int!
-    date_of_birth: Date!
+    mother_number: Int
+    date_of_birth: Date
     male_female: Sex!
     breed_type: String!
     pure_breed: Boolean
