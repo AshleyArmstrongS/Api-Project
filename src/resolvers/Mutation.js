@@ -306,6 +306,7 @@ async function deleteAnimal(parent, args, context) {
     const valid = await Animal.findByIdAndUpdate({ _id: args._id },
       {
         removed: true,
+        groups_id: [null],
       });
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
