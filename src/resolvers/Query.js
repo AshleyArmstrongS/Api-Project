@@ -557,7 +557,7 @@ async function administeredMedications(parent, args, context) {
       }
       if(medication){
       administeredMedications[i].medication_name = medication.medication_name
-      administeredMedications[i].medication_name = medication.medicine_type
+      administeredMedications[i].medicine_type = medication.medicine_type
       }else {
         administeredMedications[i].medication_name = "Medicine Not available"
       }
