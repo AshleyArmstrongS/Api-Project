@@ -157,7 +157,7 @@ async function login(parent, args) {
     if (!valid) {
       return { responseCheck: INCORRECT_PASSWORD };
     }
-    const userToken = jwt.sign({ userId: loggingInFarmer.id }, APP_SECRET);
+    const userToken = jwt.sign({ userId: loggingInFarmer._id }, APP_SECRET);
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       token: userToken,
@@ -178,7 +178,7 @@ async function passwordResetAndLogin(parent, args) {
     if (valid) {
       const new_password = await bcrypt.hash(args.new_password, 10);
       success = await Farmer.findByIdAndUpdate(
-        { _id: farmerToBeChanged.id },
+        { _id: farmerToBeChanged._id },
         { password: new_password }
       );
     } else {
@@ -186,7 +186,7 @@ async function passwordResetAndLogin(parent, args) {
     }
     if (success) {
       const updated = await Farmer.findOne({ email: args.email });
-      const userToken = jwt.sign({ userId: updated.id }, APP_SECRET);
+      const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
       return {
         responseCheck: OPERATION_SUCCESSFUL,
         token: userToken,
@@ -204,7 +204,7 @@ async function saveAnimal(parent, args, context) {
     const farmer_id = getUserId(context);
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
     if (farmer_id) {
-      if (args.id) {
+      if (args._id) {
         returnable = await updateAnimal(args);
       } else {
         returnable = await createAnimal(args, farmer_id);
@@ -232,6 +232,7 @@ async function createAnimal(args, farmer_id) {
         const newAnimal = new Animal({
           tag_number: args.tag_number,
           herd_number: herd_number.herd_number,
+          removed: false,
           sire_number: args.sire_number,
           mother_number: args.mother_number,
           male_female: args.male_female,
@@ -272,7 +273,7 @@ async function createAnimal(args, farmer_id) {
 async function updateAnimal(args) {
   try {
     const valid = await Animal.findByIdAndUpdate(
-      { _id: args.id },
+      { _id: args._id },
       {
         sire_number: args.sire_number,
         mother_number: args.mother_number,
@@ -287,7 +288,7 @@ async function updateAnimal(args) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    const editedAnimal = Animal.findOne({ _id: args.id });
+    const editedAnimal = Animal.findOne({ _id: args._id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       animal: editedAnimal,
@@ -302,7 +303,10 @@ async function deleteAnimal(parent, args, context) {
     if (!id) {
       return { responseCheck: FAILED_AUTHENTICATION };
     }
-    const valid = await Animal.findByIdAndDelete(args.id);
+    const valid = await Animal.findByIdAndUpdate({ _id: args._id },
+      {
+        removed: true,
+      });
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
@@ -320,7 +324,7 @@ async function saveGroup(parent, args, context) {
     const farmer_id = getUserId(context);
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
     if (farmer_id) {
-      if (args.id) {
+      if (args._id) {
         returnable = updateGroup(args, farmer_id);
       } else {
         returnable = createGroup(args, farmer_id);
@@ -361,7 +365,7 @@ async function createGroup(args, farmer_id) {
 async function updateGroup(args) {
   try {
     const valid = await Group.findByIdAndUpdate(
-      { _id: args.id },
+      { _id: args._id },
       {
         group_name: args.group_name,
         group_description: args.group_description ?? null,
@@ -370,7 +374,7 @@ async function updateGroup(args) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    const editedGroup = Group.findOne({ _id: args.id });
+    const editedGroup = Group.findOne({ _id: args._id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       group: editedGroup,
@@ -386,12 +390,12 @@ async function addAnimalToGroup(parent, args, context) {
       return FAILED_AUTHENTICATION;
     }
     const groupPresent = await Animal.findOne({
-      _id: args.id,
+      _id: args._id,
       groups_id: args.groups_id,
     });
     if (!groupPresent) {
       const valid = await Animal.findByIdAndUpdate(
-        { _id: args.id },
+        { _id: args._id },
         { $push: { groups_id: args.groups_id } }
       );
       if (!valid) {
@@ -401,7 +405,7 @@ async function addAnimalToGroup(parent, args, context) {
         { _id: args.groups_id },
         { $inc: { group_size: +1 } }
       );
-      const editedAnimal = Animal.findOne({ _id: args.id });
+      const editedAnimal = Animal.findOne({ _id: args._id });
       return {
         responseCheck: OPERATION_SUCCESSFUL,
         animal: editedAnimal,
@@ -420,7 +424,7 @@ async function removeAnimalFromGroup(parent, args, context) {
       return FAILED_AUTHENTICATION;
     }
     const valid = await Animal.findByIdAndUpdate(
-      { _id: args.id },
+      { _id: args._id },
       { $pull: { groups_id: args.groups_id } }
     );
     if (!valid) {
@@ -430,7 +434,7 @@ async function removeAnimalFromGroup(parent, args, context) {
       { _id: args.groups_id },
       { $inc: { group_size: -1 } }
     );
-    const editedAnimal = Animal.findOne({ _id: args.id });
+    const editedAnimal = Animal.findOne({ _id: args._id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       animal: editedAnimal,
@@ -447,12 +451,12 @@ async function deleteGroup(parent, args, context) {
     }
     await Animal.updateMany(
       {
-        groups_id: args.id,
+        groups_id: args._id,
         farmer_id: farmer_id,
       },
-      { $pull: { groups_id: args.id } }
+      { $pull: { groups_id: args._id } }
     );
-    const deletedGroup = await Group.findByIdAndDelete(args.id);
+    const deletedGroup = await Group.findByIdAndDelete(args._id);
     if (deletedGroup) {
       return {
         responseCheck: OPERATION_SUCCESSFUL,
@@ -472,7 +476,7 @@ async function saveMedication(parent, args, context) {
     const farmer_id = getUserId(context);
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
     if (farmer_id) {
-      if (args.id) {
+      if (args._id) {
         returnable = updateMedication(args);
       } else {
         returnable = createMedication(args, farmer_id);
@@ -514,7 +518,7 @@ async function createMedication(args, farmer_id) {
 }
 async function updateMedication(args) {
   try {
-    const current_medication = await Medication.findById(args.id).select({
+    const current_medication = await Medication.findById(args._id).select({
       _id: 0,
       remaining_quantity: 1,
       quantity: 1,
@@ -522,7 +526,7 @@ async function updateMedication(args) {
     const remaining =
       current_medication.quantity - current_medication.remaining_quantity;
     const valid = await Medication.findByIdAndUpdate(
-      { _id: args.id },
+      { _id: args._id },
       {
         medication_name: args.medication_name,
         supplied_by: args.supplied_by ?? null,
@@ -541,7 +545,7 @@ async function updateMedication(args) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    const updatedMedication = await Medication.findOne({ _id: args.id });
+    const updatedMedication = await Medication.findOne({ _id: args._id });
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       medication: updatedMedication,
@@ -556,7 +560,7 @@ async function saveAdminMed(parent, args, context) {
     const farmer_id = getUserId(context);
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
     if (farmer_id) {
-      if (args.id) {
+      if (args._id) {
         returnable = updateAdminMed(args, farmer_id);
       } else {
         returnable = createAdminMed(args, farmer_id);
@@ -609,7 +613,7 @@ async function createAdminMed(args, farmer_id) {
 async function updateAdminMed(args, farmer_id) {
   try {
     const valid = await MedicationAdministration.findByIdAndUpdate(
-      { _id: args.id },
+      { _id: args._id },
       {
         date_of_administration: args.date_of_administration,
         quantity_administered: args.quantity_administered,
@@ -650,7 +654,7 @@ async function deleteAdministeredMedication(parent, args, context) {
       args.quantity_administered
     );
     const deletedAdminMed = await MedicationAdministration.findByIdAndDelete(
-      args.id
+      args._id
     );
     if (deletedAdminMed) {
       return {
@@ -702,9 +706,6 @@ async function saveBreed(parent, args, context) {
   } catch (err) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
-}
-function isOdd(num) {
-  return num % 2;
 }
 async function populateAnimals(parent, args, context) {
   try {

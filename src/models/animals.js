@@ -30,6 +30,10 @@ const AnimalSchema = new Schema(
       required: true,
       unique: true,
     },
+    removed:{
+      type: Boolean,
+      required:true,
+    },
     sire_number: {
       type: Number,
       min: 10000,

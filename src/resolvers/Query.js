@@ -35,7 +35,7 @@ async function animal(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const animal = await Animal.findOne({ _id: args.id, farmer_id: farmer_id });
+    const animal = await Animal.findOne({ _id: args._id, farmer_id: farmer_id, removed: {$ne : true}});
     if (!animal) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -81,7 +81,7 @@ async function herd(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const animals = await Animal.find({ farmer_id: farmer_id });
+    const animals = await Animal.find({ farmer_id: farmer_id, removed: {$ne : true}});
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -317,7 +317,7 @@ async function group(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const group = await Group.findOne({ _id: args.id, farmer_id: farmer_id });
+    const group = await Group.findOne({ _id: args._id, farmer_id: farmer_id });
     if (!group) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -377,7 +377,7 @@ async function medication(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const medication = await Medication.findOne({
-      _id: args.id,
+      _id: args._id,
       farmer_id: farmer_id,
     });
     if (!medication) {
@@ -528,7 +528,7 @@ async function administeredMedication(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const administeredMedication = await AdministeredMedication.findOne({
-      _id: args.id,
+      _id: args._id,
       farmer_id: farmer_id,
     });
     if (!administeredMedication) {
@@ -687,7 +687,7 @@ async function breed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const breed_code = await Breed.findById({ _id: args.id });
+    const breed_code = await Breed.findById({ _id: args._id });
     if (!breed_code) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
