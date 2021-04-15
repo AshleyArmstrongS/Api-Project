@@ -703,11 +703,225 @@ async function saveBreed(parent, args, context) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
+function isOdd(num) {
+  return num % 2;
+}
+async function populateAnimals(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    var mf;
+    var pure_breed;
+    var name;
+    var bt;
+    var description;
+    var dob;
+    var x = 1;
+    for (var i = 100; i <= args.pop + 100; i++) {
+      if (x === 1) {
+        mf = "M";
+        pure_breed = true;
+        bt = "CH";
+        dob = "2020-09-09";
+        name = "nameOne";
+        description = "animal desc one";
+        x = 2;
+      } else if (x === 2) {
+        mf = "F";
+        bt = "LM";
+        dob = "2020-10-10";
+        name = "nameTwo";
+        description = "animal desc two";
+        pure_breed = true;
+        x = 3;
+      } else if (x === 3) {
+        mf = "M";
+        bt = "CHX";
+        dob = "2020-11-11";
+        name = "nameThree";
+        description = "animal desc three";
+        pure_breed = false;
+        x = 4;
+      } else if (x === 4) {
+        mf = "F";
+        dob = "2020-11-11";
+        description = "animal desc four";
+        name = "nameFour";
+        bt = "LMX";
+        pure_breed = false;
+        x = 5;
+      } else {
+        mf = "M";
+        dob = "2021-01-01";
+        description = "animal desc five";
+        bt = "HFX";
+        name = "nameFive";
+        pure_breed = false;
+        x = 1;
+      }
+      var Animalargs = new Animal({
+        tag_number: 80000 + i,
+        sire_number: 70000 + i,
+        mother_number: 50000 + i,
+        male_female: mf,
+        breed_type: bt,
+        date_of_birth: dob,
+        pure_breed: pure_breed,
+        animal_name: name,
+        description: description,
+        farmer_id: farmer_id,
+      });
+      console.log(Animalargs);
+      var an = await createAnimal(Animalargs, farmer_id);
+      console.log(an);
+    }
+    return "Animals added";
+  } catch (err) {
+    console.log(err);
+    return "there was an error";
+  }
+}
+async function populateMedications(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    var x = 1;
+    var supplier = "";
+    var qty_type;
+    var med_type;
+    var withdrawal_meat;
+    var withdrawal_dairy;
+    var batch_no;
+    var date_exp;
+    var date_pur;
+    var comments;
+    var name;
+    for (var i = 1; i <= args.pop + 1; i++) {
+      if (x === 1) {
+        name = "nameOne";
+        supplier = "supplierOne";
+        qty_type = "MG";
+        med_type = "VACCINATION";
+        withdrawal_meat = 2;
+        withdrawal_dairy = 90;
+        date_exp = "2021-02-19";
+        date_pur = "2020-12-19";
+        comments = "some comments " + i + "comment type 1";
 
+        x = 2;
+      } else if (x === 2) {
+        name = "nameTwo";
+        supplier = "supplierTwo";
+        qty_type = "ML";
+        med_type = "ANTIBIOTIC";
+        withdrawal_meat = 10;
+        withdrawal_dairy = 13;
+        date_exp = "2021-02-30";
+        date_pur = "2021-01-01";
+        comments = "some comments " + i + "comment type 2";
+        x = 3;
+      } else if (x === 3) {
+        name = "nameThree";
+        supplier = "supplierThree";
+        qty_type = "COUNT";
+        med_type = "VACCINATION";
+        withdrawal_meat = 22;
+        withdrawal_dairy = 34;
+        date_exp = "2021-04-04";
+        date_pur = "2018-02-09";
+        comments = "some comments " + i + "comment type 3";
+        x = 4;
+      } else {
+        name = "nameFour";
+        supplier = "supplierFour";
+        qty_type = "UNASSIGNED";
+        med_type = "DOSE";
+        withdrawal_meat = 40;
+        withdrawal_dairy = 8;
+        date_exp = "2021-11-08";
+        date_pur = "2020-02-09";
+        comments = "some comments " + i + "comment type 4";
+        x = 1;
+      }
+      batch_no = "bch" + i;
+      const newMedication = new Medication({
+        medication_name: name,
+        supplied_by: supplier,
+        quantity: i,
+        quantity_type: qty_type,
+        remaining_quantity: i,
+        medicine_type: med_type,
+        withdrawal_days_meat: withdrawal_meat,
+        withdrawal_days_dairy: withdrawal_dairy,
+        batch_number: batch_no,
+        expiry_date: date_exp,
+        purchase_date: date_pur,
+        comments: comments,
+        farmer_id: farmer_id,
+      });
+      console.log(newMedication);
+      var med = await createMedication(newMedication, farmer_id);
+      console.log(med);
+    }
+    return "meds added";
+  } catch (err) {
+    console.log(err);
+    return "there was an error";
+  }
+}
+async function populateAdminMeds(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    const animals = await Animal.find({ farmer_id: farmer_id });
+    const medications = await Medication.find({ farmer_id: farmer_id });
+    var x = 1;
+    var doa;
+    var administered_by;
+    var reason_for_admin;
+    for (var i = 0; i <= args.pop; i++) {
+      if (x === 1) {
+        doa = "2021-02-02";
+        administered_by = "userOne";
+        reason_for_admin = "test reason One";
+        x = 2;
+      } else if (x === 2) {
+        doa = "2021-04-05";
+        administered_by = "userTwo";
+        reason_for_admin = "test reason Two";
+        x = 3;
+      } else if (x === 3) {
+        doa = "2021-03-06";
+        administered_by = "userThree";
+        reason_for_admin = "test reason Three";
+        x = 4;
+      } else {
+        x = 1;
+      }
+      var newMedAdmin = new MedicationAdministration({
+        date_of_administration: doa,
+        quantity_administered: 4,
+        quantity_type: medications[i].quantity_type,
+        administered_by: administered_by,
+        reason_for_administration: reason_for_admin,
+        animal_id: animals[i]._id,
+        medication_id: medications[i]._id,
+        farmer_id: farmer_id,
+      });
+      console.log(newMedAdmin);
+      var adminMeds = await createAdminMed(newMedAdmin, farmer_id);
+      console.log(adminMeds);
+    }
+    return "AdminMeds added";
+  } catch (err) {
+    console.log(err);
+    return "there was an error";
+  }
+}
 module.exports = {
   signUp,
   login,
   passwordResetAndLogin,
+  populateAnimals,
+  populateMedications,
+  populateAdminMeds,
   saveAnimal,
   deleteAnimal,
   saveGroup,
