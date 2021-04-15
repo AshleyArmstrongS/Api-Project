@@ -40,6 +40,7 @@ type Query {
   ): MedicationsResponse!
   medicationsExpired: MedicationsResponse!
   medicationsByName(medication_name: String!): MedicationsResponse!
+  medicationsLastThreeUsed: MedicationsResponse!
 
   #AdministeredMedication
   administeredMedication(id: ID): AdminMedResponse!

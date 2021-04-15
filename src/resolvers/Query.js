@@ -573,6 +573,31 @@ async function administeredMedications(parent, args, context) {
   }
   return returnable;
 }
+async function medicationsLastThreeUsed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const administeredMedications = await AdministeredMedication.find({ farmer_id: farmer_id })
+      .sort({ date_of_administration: 1 })
+      .limit(3);
+    var medications = [3]
+    for (var i = 0; i < administeredMedications.length; i++) {
+      medications[i] = await Medication.findOne({
+        _id: administeredMedications[i].medication_id,
+        farmer_id: farmer_id,
+      });
+    }
+    if (!medications) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        medications: medications,
+      };
+    }
+  }
+  return returnable;
+}
 async function administeredMedicationOnDate(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -704,7 +729,7 @@ module.exports = {
   administeredMedications,
   administeredMedicationOnDate,
   administeredMedicationsByAnimal,
-
+  medicationsLastThreeUsed,
   // Breed
   breed,
   breedName,
