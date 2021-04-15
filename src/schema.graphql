@@ -61,6 +61,8 @@ type Mutation {
   populateAnimals(pop: Int): String
    populateMedications(pop: Int): String
    populateAdminMeds(pop: Int): String
+   populateAll(pop:Int):String
+   deleteAllFarmerInfo(areYouSure: String): String
   #SignUp/Login
   signUp(
     email: String!
