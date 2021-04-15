@@ -721,39 +721,39 @@ async function populateAnimals(parent, args, context) {
         mf = "M";
         pure_breed = true;
         bt = "CH";
-        dob = "2020-09-09"
+        dob = "2020-09-09";
         name = "nameOne";
-        description = "animal desc one"
+        description = "animal desc one";
         x = 2;
       } else if (x === 2) {
         mf = "F";
         bt = "LM";
-        dob = "2020-10-10"
+        dob = "2020-10-10";
         name = "nameTwo";
-        description = "animal desc two"
+        description = "animal desc two";
         pure_breed = true;
         x = 3;
       } else if (x === 3) {
         mf = "M";
         bt = "CHX";
-        dob =  "2020-11-11"
+        dob = "2020-11-11";
         name = "nameThree";
-        description = "animal desc three"
+        description = "animal desc three";
         pure_breed = false;
         x = 4;
       } else if (x === 4) {
         mf = "F";
-        dob = "2020-11-11"
-        description = "animal desc four"
+        dob = "2020-11-11";
+        description = "animal desc four";
         name = "nameFour";
         bt = "LMX";
         pure_breed = false;
         x = 5;
       } else {
         mf = "M";
-        dob = "2021-01-01"
-        description = "animal desc five"
-        bt = "HFX"
+        dob = "2021-01-01";
+        description = "animal desc five";
+        bt = "HFX";
         name = "nameFive";
         pure_breed = false;
         x = 1;
@@ -776,7 +776,7 @@ async function populateAnimals(parent, args, context) {
     }
     return "Animals added";
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return "there was an error";
   }
 }
@@ -863,7 +863,7 @@ async function populateMedications(parent, args, context) {
     }
     return "meds added";
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return "there was an error";
   }
 }
@@ -872,29 +872,28 @@ async function populateAdminMeds(parent, args, context) {
     const farmer_id = getUserId(context);
     const animals = await Animal.find({ farmer_id: farmer_id });
     const medications = await Medication.find({ farmer_id: farmer_id });
-    var x = 1
-    var doa
-    var administered_by
-    var reason_for_admin
+    var x = 1;
+    var doa;
+    var administered_by;
+    var reason_for_admin;
     for (var i = 0; i <= args.pop; i++) {
-      if(x === 1){
-        doa = "2021-02-02"
-        administered_by = "userOne"
-        reason_for_admin = "test reason One"
-        x = 2
-      }else if (x === 2){
-        doa = "2021-04-05"
-        administered_by = "userTwo"
-        reason_for_admin = "test reason Two"
-        x = 3
-      } else if (x === 3){
-        doa = "2021-03-06"
-        administered_by = "userThree"
-        reason_for_admin = "test reason Three"
-        x = 4
-      }else {
-
-        x = 1
+      if (x === 1) {
+        doa = "2021-02-02";
+        administered_by = "userOne";
+        reason_for_admin = "test reason One";
+        x = 2;
+      } else if (x === 2) {
+        doa = "2021-04-05";
+        administered_by = "userTwo";
+        reason_for_admin = "test reason Two";
+        x = 3;
+      } else if (x === 3) {
+        doa = "2021-03-06";
+        administered_by = "userThree";
+        reason_for_admin = "test reason Three";
+        x = 4;
+      } else {
+        x = 1;
       }
       var newMedAdmin = new MedicationAdministration({
         date_of_administration: doa,
@@ -906,15 +905,15 @@ async function populateAdminMeds(parent, args, context) {
         medication_id: medications[i]._id,
         farmer_id: farmer_id,
       });
-      console.log(newMedAdmin)
-      var adminMeds = await createAdminMed(newMedAdmin, farmer_id)
-      console.log(adminMeds)
+      console.log(newMedAdmin);
+      var adminMeds = await createAdminMed(newMedAdmin, farmer_id);
+      console.log(adminMeds);
     }
-  return "AdminMeds added";
-} catch (err) {
-  console.log(err)
-  return "there was an error";
-}
+    return "AdminMeds added";
+  } catch (err) {
+    console.log(err);
+    return "there was an error";
+  }
 }
 module.exports = {
   signUp,
