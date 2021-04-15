@@ -58,6 +58,9 @@ type Query {
 }
 
 type Mutation {
+  populateAnimals(pop: Int): String
+   populateMedications(pop: Int): String
+   populateAdminMeds(pop: Int): String
   #SignUp/Login
   signUp(
     email: String!
