@@ -170,6 +170,7 @@ type AdministeredMedication {
   reason_for_administration: String
   animal_id: ID
   tag_number: Int
+  medicine_type: MedicineType
   medication_name: String
   medication_id: ID
 }
