@@ -5,7 +5,7 @@ type Query {
   farmer: FarmerResponse!
   farmMedicationAdministrators: [String]!
   #Animal
-  animal(id: ID!): AnimalResponse!
+  animal(_id: ID!): AnimalResponse!
   animalsByName(animal_name: String!): AnimalResponse!
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
@@ -23,12 +23,12 @@ type Query {
   animalsInGroup(groups_id: String): AnimalsResponse!
   animalsInGroupCount(groups_id: String): CountResponse!
   #Breed
-  breed(id: ID!): BreedResponse!
+  breed(_id: ID!): BreedResponse!
   breedName(breed_name: String!): BreedsResponse!
   breedCode(breed_code: String!): BreedsResponse!
 
   #Medication
-  medication(id: ID!): MedicationResponse!
+  medication(_id: ID!): MedicationResponse!
   medications: MedicationsResponse!
   medicationsSortAndLimitTo4: MedicationsResponse!
   medicationsByType(medicine_type: MedicineType!): MedicationsResponse!
@@ -41,9 +41,9 @@ type Query {
   medicationsExpired: MedicationsResponse!
   medicationsByName(medication_name: String!): MedicationsResponse!
   medicationsLastThreeUsed: MedicationsResponse!
-
+  join: AdminMedsResponse!
   #AdministeredMedication
-  administeredMedication(id: ID): AdminMedResponse!
+  administeredMedication(_id: ID): AdminMedResponse!
   administeredMedications: AdminMedsResponse!
   administeredMedicationsByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationOnDate(
@@ -52,7 +52,7 @@ type Query {
 
   #Group
   groups: GroupsResponse!
-  group(id: ID!): GroupResponse!
+  group(_id: ID!): GroupResponse!
   groupByName(group_name: String!): GroupsResponse!
   groupByDescription(group_description: String!): GroupsResponse!
 }
@@ -76,7 +76,7 @@ type Mutation {
   ): AuthPayload!
   #Animal
   saveAnimal(
-    id: ID
+    _id: ID
     tag_number: Int!
     sire_number: Int!
     mother_number: Int!
@@ -87,21 +87,21 @@ type Mutation {
     animal_name: String
     description: String
   ): AnimalResponse!
-  deleteAnimal(id: ID!): AnimalResponse!
-  addAnimalToGroup(id: ID!, groups_id: ID!): AnimalResponse!
-  removeAnimalFromGroup(id: ID!, groups_id: ID!): AnimalResponse!
+  deleteAnimal(_id: ID!): AnimalResponse!
+  addAnimalToGroup(_id: ID!, groups_id: ID!): AnimalResponse!
+  removeAnimalFromGroup(_id: ID!, groups_id: ID!): AnimalResponse!
   #Group
   saveGroup(
-    id: ID
+    _id: ID
     group_name: String!
     group_description: String!
   ): GroupResponse!
-  deleteGroup(id: ID!): GroupResponse!
+  deleteGroup(_id: ID!): GroupResponse!
   #Breed
-  saveBreed(id: ID, breed_name: String!, breed_code: String!): BreedResponse!
+  saveBreed(_id: ID, breed_name: String!, breed_code: String!): BreedResponse!
   #Medication
   saveMedication(
-    id: ID
+    _id: ID
     medication_name: String!
     batch_number: String
     quantity: Int!
@@ -116,7 +116,7 @@ type Mutation {
   ): MedicationResponse!
   #AdminMed
   saveAdminMed(
-    id: ID
+    _id: ID
     date_of_administration: Date!
     quantity_administered: Int!
     administered_by: String!
@@ -125,7 +125,7 @@ type Mutation {
     medication_id: ID
   ): AdminMedResponse!
   deleteAdministeredMedication(
-    id: ID
+    _id: ID
     medication_id: ID
     quantity_administered: Int
   ): AdminMedResponse!
@@ -133,7 +133,7 @@ type Mutation {
 }
 #OBJECT_TYPES
 type Animal {
-  id: ID
+  _id: ID
   tag_number: Int
   herd_number: String
   sire_number: Int
@@ -148,7 +148,7 @@ type Animal {
   date_of_birth: Date
 }
 type Medication {
-  id: ID
+  _id: ID
   medication_name: String
   supplied_by: String
   quantity: Int
@@ -163,20 +163,21 @@ type Medication {
   comments: String
 }
 type AdministeredMedication {
-  id: ID
+  _id: ID
   date_of_administration: Date
   quantity_administered: Int
   quantity_type: QuantityType
   administered_by: String
   reason_for_administration: String
   animal_id: ID
-  tag_number: Int
   medicine_type: MedicineType
   medication_name: String
   medication_id: ID
+  medication:[Medication]
+  animal:[Animal]
 }
 type Farmer {
-  id: ID
+  _id: ID
   first_name: String
   second_name: String
   farm_type: FarmType
@@ -186,13 +187,13 @@ type Farmer {
   herd_number: String
 }
 type Group {
-  id: ID
+  _id: ID
   group_name: String
   group_size: Int
   group_description: String
 }
 type Breed {
-  id: ID
+  _id: ID
   breed_name: String
   breed_code: String
 }

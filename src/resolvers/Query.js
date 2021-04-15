@@ -5,6 +5,8 @@ const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");
 const Breed = require("../models/breed");
 const { getUserId } = require("../utils");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
@@ -544,24 +546,31 @@ async function administeredMedications(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    var administeredMedications = await AdministeredMedication.find({
-      farmer_id: farmer_id,
-    });
-    for(var i =0; i < administeredMedications.length; i++){
-      var animal =  await Animal.findOne({ _id: administeredMedications[i].animal_id, farmer_id: farmer_id });
-      var medication =  await Medication.findOne({ _id: administeredMedications[i].medication_id, farmer_id: farmer_id });
-      if(animal){
-      administeredMedications[i].tag_number = animal.tag_number
-      }else {
-        administeredMedications[i].tag_number = 00000
+    const administeredMedications = await AdministeredMedication.aggregate(
+      [
+        { $match: { farmer_id: ObjectId(farmer_id)} },
+        {
+          $lookup: {
+            from: "medication",
+            localField: "medication_id",
+            foreignField: "_id",
+            as: "medication",
+          },
+        },
+        {
+          $lookup: {
+            from: "animals",
+            localField: "animal_id",
+            foreignField: "_id",
+            as: "animal",
+          },
+        },
+      ],function (err, res) {
+        if (err) {
+          return { responseCheck: OPERATION_FAILED + " " + err.toString() };
+        }
       }
-      if(medication){
-      administeredMedications[i].medication_name = medication.medication_name
-      administeredMedications[i].medicine_type = medication.medicine_type
-      }else {
-        administeredMedications[i].medication_name = "Medicine Not available"
-      }
-    };
+    );
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -577,10 +586,12 @@ async function medicationsLastThreeUsed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const administeredMedications = await AdministeredMedication.find({ farmer_id: farmer_id })
+    const administeredMedications = await AdministeredMedication.find({
+      farmer_id: farmer_id,
+    })
       .sort({ date_of_administration: 1 })
       .limit(3);
-    var medications = [3]
+    var medications = [3];
     for (var i = 0; i < administeredMedications.length; i++) {
       medications[i] = await Medication.findOne({
         _id: administeredMedications[i].medication_id,
@@ -688,7 +699,6 @@ async function breed(parent, args, context) {
   }
   return returnable;
 }
-
 module.exports = {
   info,
   farmer,
