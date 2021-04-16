@@ -471,7 +471,7 @@ async function medications(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id });
+    const medications = await Medication.find({ farmer_id: farmer_id }).sort( {purchase_date:-1 } );
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
