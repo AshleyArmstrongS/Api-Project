@@ -785,9 +785,7 @@ async function populateAnimals(parent, args, context) {
         description: description,
         farmer_id: farmer_id,
       });
-      console.log(Animalargs);
-      var an = await createAnimal(Animalargs, farmer_id);
-      console.log(an);
+      await createAnimal(Animalargs, farmer_id);
     }
     return "Animals added";
   } catch (err) {
@@ -872,9 +870,7 @@ async function populateMedications(parent, args, context) {
         comments: comments,
         farmer_id: farmer_id,
       });
-      console.log(newMedication);
-      var med = await createMedication(newMedication, farmer_id);
-      console.log(med);
+      await createMedication(newMedication, farmer_id);
     }
     return "meds added";
   } catch (err) {
@@ -920,9 +916,7 @@ async function populateAdminMeds(parent, args, context) {
         medication_id: medications[i]._id,
         farmer_id: farmer_id,
       });
-      console.log(newMedAdmin);
-      var adminMeds = await createAdminMed(newMedAdmin, farmer_id);
-      console.log(adminMeds);
+      await createAdminMed(newMedAdmin, farmer_id);
     }
     return "AdminMeds added";
   } catch (err) {
@@ -931,9 +925,15 @@ async function populateAdminMeds(parent, args, context) {
   }
 }
 async function populateAll(parent, args, context) {
+  try{
   await populateAnimals(parent, args, context);
   await populateMedications(parent, args, context);
   await populateAdminMeds(parent, args, context);
+  } catch(err)
+  {
+    return "Something went wrong"
+  }
+  return "Finished Populating"
 }
 async function deleteAllFarmerInfo(parent, args, context) {
   try {
