@@ -6,6 +6,7 @@ type Query {
   farmMedicationAdministrators: [String]!
   #Animal
   animal(_id: ID!): AnimalResponse!
+  animalWithLastMedication(_id: ID!): AdminMedsResponse!
   animalsByName(animal_name: String!): AnimalResponse!
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
