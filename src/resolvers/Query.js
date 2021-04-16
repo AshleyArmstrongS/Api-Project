@@ -647,7 +647,6 @@ async function administeredMedications(parent, args, context) {
         }
       }
     );
-    console.log(administeredMedications)
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
