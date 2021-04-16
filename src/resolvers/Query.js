@@ -48,6 +48,55 @@ async function animal(parent, args, context) {
   }
   return returnable;
 }
+async function animalWithLastMedication(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const animalAndAdminMed = await AdministeredMedication.aggregate(
+      [
+        {
+          $match: {
+            farmer_id: ObjectId(farmer_id),
+            animal_id: ObjectId(args._id),
+          },
+        },
+        {
+          $lookup: {
+            from: "medication",
+            localField: "medication_id",
+            foreignField: "_id",
+            as: "medication",
+          },
+        },
+        {
+          $lookup: {
+            from: "animals",
+            localField: "animal_id",
+            foreignField: "_id",
+            as: "animal",
+          },
+        },
+      ],
+      function (err, res) {
+        if (err) {
+          return { responseCheck: OPERATION_FAILED + " " + err.toString() };
+        }
+      }
+    )
+      .sort({ date_of_administration: 1 })
+      .limit(1);
+    console.log(animalAndAdminMed);
+    if (!animalAndAdminMed) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        administeredMedications: animalAndAdminMed,
+      };
+    }
+  }
+  return returnable;
+}
 async function animalsByName(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -55,7 +104,7 @@ async function animalsByName(parent, args, context) {
     const animal = await Animal.findOne({
       animal_name: { $regex: new RegExp(".*" + args.animal_name + ".*", "i") },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animal) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -72,7 +121,7 @@ async function animalByTag(parent, args, context) {
     const animal = await Animal.findOne({
       tag_number: args.tag_number,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animal) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -103,7 +152,10 @@ async function herdCount(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const count = await Animal.find({ farmer_id: farmer_id, removed: { $ne: true },}).countDocuments();
+    const count = await Animal.find({
+      farmer_id: farmer_id,
+      removed: { $ne: true },
+    }).countDocuments();
     if (!count) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -119,7 +171,7 @@ async function animalByBreed(parent, args, context) {
     const animals = await Animal.find({
       breed_type: args.breed_type,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -137,7 +189,7 @@ async function animalsByCrossBreed(parent, args, context) {
     const animals = await Animal.find({
       breed_type: { $regex: new RegExp(".*" + animalBreedType + ".*?X", "i") },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -154,7 +206,7 @@ async function animalByPureBreed(parent, args, context) {
     const animals = await Animal.find({
       pure_breed: args.pure_breed,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -171,7 +223,7 @@ async function animalBySex(parent, args, context) {
     const animals = await Animal.find({
       male_female: args.male_female,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -194,13 +246,14 @@ async function animalByProgeny(parent, args, context) {
       animals = await Animal.find({
         sire_number: args.tag_number,
         farmer_id: farmer_id,
-        removed: {$ne : true},v
+        removed: { $ne: true },
+        v,
       });
     } else {
       animals = await Animal.find({
         mother_number: args.tag_number,
         farmer_id: farmer_id,
-        removed: {$ne : true},
+        removed: { $ne: true },
       });
     }
     if (!animals) {
@@ -219,7 +272,7 @@ async function animalsBornOn(parent, args, context) {
     const animals = await Animal.find({
       date_of_birth: new Date(args.date_of_birth),
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -236,7 +289,7 @@ async function animalsBornAfter(parent, args, context) {
     const animals = await Animal.find({
       date_of_birth: { $gte: new Date(args.date_of_birth) },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -253,7 +306,7 @@ async function animalsBornBefore(parent, args, context) {
     const animals = await Animal.find({
       date_of_birth: { $lte: new Date(args.date_of_birth) },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -273,7 +326,7 @@ async function animalsBornBetween(parent, args, context) {
         $lte: new Date(args.before),
       },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -290,7 +343,7 @@ async function animalInAnyGroup(parent, args, context) {
     const animals = await Animal.find({
       groups_id: { $exists: true, $not: { $size: 0 } },
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -307,7 +360,7 @@ async function animalsInGroup(parent, args, context) {
     const animals = await Animal.find({
       groups_id: args.groups_id,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -324,7 +377,7 @@ async function animalsInGroupCount(parent, args, context) {
     const count = await Animal.find({
       groups_id: args.groups_id,
       farmer_id: farmer_id,
-      removed: {$ne : true},
+      removed: { $ne: true },
     }).countDocuments();
     if (!count) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -727,6 +780,7 @@ module.exports = {
   farmer,
   // Animal
   animal,
+  animalWithLastMedication,
   animalsByName,
   animalByTag,
   herd,
