@@ -210,6 +210,7 @@ async function saveAnimal(parent, args, context) {
         const animal = await Animal.findOne({
           farmer_id: farmer_id,
           tag_number: args.tag_number,
+          removed: true,
         }).select({_id:1});
         if (animal) {
           args._id = animal._id;
