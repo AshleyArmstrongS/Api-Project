@@ -207,7 +207,16 @@ async function saveAnimal(parent, args, context) {
       if (args._id) {
         returnable = await updateAnimal(args);
       } else {
+        const animal = await Animal.findOne({
+          farmer_id: farmer_id,
+          tag_number: args.tag_number,
+        }).select({_id:1});
+        if (animal) {
+          args._id = animal._id;
+          returnable = await updateAnimal(args);
+        }else{
         returnable = await createAnimal(args, farmer_id);
+        }
       }
     }
     return returnable;
@@ -279,6 +288,7 @@ async function updateAnimal(args) {
         mother_number: args.mother_number,
         male_female: args.male_female,
         breed_type: args.breed_type,
+        removed: false,
         date_of_birth: args.date_of_birth,
         pure_breed: args.pure_breed ?? false,
         animal_name: args.animal_name ?? null,
