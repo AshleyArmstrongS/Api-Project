@@ -52,7 +52,7 @@ async function animalWithLastMedication(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const animalAndAdminMed = await AdministeredMedication.aggregate(
+    var animalAndAdminMed = await AdministeredMedication.aggregate(
       [
         {
           $match: {
@@ -86,15 +86,18 @@ async function animalWithLastMedication(parent, args, context) {
       .sort({ date_of_administration: 1 })
       .limit(1);
     console.log(animalAndAdminMed);
-    if (!animalAndAdminMed) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
+    try {
+      if (!animalAndAdminMed[0].animal[0]) {
+        console.log("h");
+      }
+    }catch(err){
+      animalAndAdminMed = null
+    }
       returnable = {
         responseCheck: OPERATION_SUCCESSFUL,
         administeredMedications: animalAndAdminMed,
       };
     }
-  }
   return returnable;
 }
 async function animalsByName(parent, args, context) {
