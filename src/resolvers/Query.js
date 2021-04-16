@@ -85,19 +85,18 @@ async function animalWithLastMedication(parent, args, context) {
     )
       .sort({ date_of_administration: 1 })
       .limit(1);
-    console.log(animalAndAdminMed);
     try {
       if (!animalAndAdminMed[0].animal[0]) {
-        console.log("h");
+        console.log("How did I get here?");
       }
-    }catch(err){
-      animalAndAdminMed = null
+    } catch (err) {
+      animalAndAdminMed = null;
     }
-      returnable = {
-        responseCheck: OPERATION_SUCCESSFUL,
-        administeredMedications: animalAndAdminMed,
-      };
-    }
+    returnable = {
+      responseCheck: OPERATION_SUCCESSFUL,
+      administeredMedications: animalAndAdminMed,
+    };
+  }
   return returnable;
 }
 async function animalsByName(parent, args, context) {
@@ -649,7 +648,7 @@ async function administeredMedications(parent, args, context) {
           return { responseCheck: OPERATION_FAILED + " " + err.toString() };
         }
       }
-    );
+    ).sort({ date_of_administration: 1 });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
