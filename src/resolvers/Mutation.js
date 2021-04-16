@@ -82,7 +82,7 @@ async function addLastCalvedToDam(dam_no, farmer_id, date) {
     farmer_id: farmer_id,
   }).select({ _id: 1 });
   if (dam_id) {
-    await Animal.findByIdAndUpdate({ _id: dam_id.id }, { last_calved: date });
+    await Animal.findByIdAndUpdate({ _id: dam_id._id }, { last_calved: date });
   }
 }
 async function animalParentCheck(farmer_id, sire_number, mother_number) {
@@ -205,18 +205,18 @@ async function saveAnimal(parent, args, context) {
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
     if (farmer_id) {
       if (args._id) {
-        returnable = await updateAnimal(args);
+        returnable = await updateAnimal(args, farmer_id);
       } else {
         const animal = await Animal.findOne({
           farmer_id: farmer_id,
           tag_number: args.tag_number,
           removed: true,
-        }).select({_id:1});
+        }).select({ _id: 1 });
         if (animal) {
           args._id = animal._id;
-          returnable = await updateAnimal(args);
-        }else{
-        returnable = await createAnimal(args, farmer_id);
+          returnable = await updateAnimal(args, farmer_id);
+        } else {
+          returnable = await createAnimal(args, farmer_id);
         }
       }
     }
@@ -280,26 +280,33 @@ async function createAnimal(args, farmer_id) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
-async function updateAnimal(args) {
+async function updateAnimal(args, farmer_id) {
   try {
+    const animalToEdit = await Animal.findById(args._id);
     const valid = await Animal.findByIdAndUpdate(
       { _id: args._id },
       {
-        sire_number: args.sire_number,
-        mother_number: args.mother_number,
-        male_female: args.male_female,
-        breed_type: args.breed_type,
+        sire_number: args.sire_number ?? animalToEdit.sire_number,
+        mother_number: args.mother_number ?? animalToEdit.mother_number,
+        male_female: args.male_female ?? animalToEdit.male_female,
+        breed_type: args.breed_type ?? animalToEdit.breed_type,
         removed: false,
-        date_of_birth: args.date_of_birth,
-        pure_breed: args.pure_breed ?? false,
-        animal_name: args.animal_name ?? null,
-        description: args.description ?? null,
+        date_of_birth: args.date_of_birth ?? animalToEdit.date_of_birth,
+        pure_breed: args.pure_breed ?? animalToEdit.pure_breed ?? false,
+        animal_name: args.animal_name ?? animalToEdit.animal_name ?? null,
+        description: args.description ?? animalToEdit.description ?? null,
       }
     );
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    const editedAnimal = Animal.findOne({ _id: args._id });
+    const editedAnimal = await Animal.findOne({ _id: args._id });
+    ed;
+    await addLastCalvedToDam(
+      editedAnimal.mother_number,
+      farmer_id,
+      editedAnimal.date_of_birth
+    );
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       animal: editedAnimal,
@@ -378,11 +385,13 @@ async function createGroup(args, farmer_id) {
 }
 async function updateGroup(args) {
   try {
+    const groupToUpdate = await Group.findById(args._id);
     const valid = await Group.findByIdAndUpdate(
       { _id: args._id },
       {
-        group_name: args.group_name,
-        group_description: args.group_description ?? null,
+        group_name: args.group_name ?? groupToUpdate.group_name,
+        group_description:
+          args.group_description ?? groupToUpdate.description ?? null,
       }
     );
     if (!valid) {
@@ -532,28 +541,33 @@ async function createMedication(args, farmer_id) {
 }
 async function updateMedication(args) {
   try {
-    const current_medication = await Medication.findById(args._id).select({
-      _id: 0,
-      remaining_quantity: 1,
-      quantity: 1,
-    });
+    const current_medication = await Medication.findById(args._id);
     const remaining =
       current_medication.quantity - current_medication.remaining_quantity;
     const valid = await Medication.findByIdAndUpdate(
       { _id: args._id },
       {
         medication_name: args.medication_name,
-        supplied_by: args.supplied_by ?? null,
-        quantity: args.quantity,
-        quantity_type: args.quantity_type,
-        medicine_type: args.medicine_type,
-        remaining_quantity: args.quantity - remaining,
-        withdrawal_days_dairy: args.withdrawal_days_dairy ?? null,
-        withdrawal_days_meat: args.withdrawal_days_meat ?? null,
-        batch_number: args.batch_number ?? null,
-        expiry_date: args.expiry_date ?? null,
-        purchase_date: args.purchase_date ?? null,
-        comments: args.comments ?? null,
+        supplied_by: args.supplied_by ?? current_medication.supplied_by ?? null,
+        quantity: args.quantity ?? current_medication.quantity,
+        quantity_type: args.quantity_type ?? current_medication.quantity_type,
+        medicine_type: args.medicine_type ?? current_medication.medicine_type,
+        remaining_quantity:
+          args.quantity - remaining ?? current_medication.remaining_quantity,
+        withdrawal_days_dairy:
+          args.withdrawal_days_dairy ??
+          current_medication.withdrawal_days_dairy ??
+          null,
+        withdrawal_days_meat:
+          args.withdrawal_days_meat ??
+          current_medication.withdrawal_days_meat ??
+          null,
+        batch_number:
+          args.batch_number ?? current_medication.batch_number ?? null,
+        expiry_date: args.expiry_date ?? current_medication.expiry_date ?? null,
+        purchase_date:
+          args.purchase_date ?? current_medication.purchase_date ?? null,
+        comments: args.comments ?? current_medication.comments ?? null,
       }
     );
     if (!valid) {
@@ -626,13 +640,14 @@ async function createAdminMed(args, farmer_id) {
 }
 async function updateAdminMed(args, farmer_id) {
   try {
+    const adminMedToUpdate = MedicationAdministration.findById(args._id);
     const valid = await MedicationAdministration.findByIdAndUpdate(
       { _id: args._id },
       {
-        date_of_administration: args.date_of_administration,
-        quantity_administered: args.quantity_administered,
-        administered_by: args.administered_by,
-        reason_for_administration: args.reason_for_administration ?? null,
+        date_of_administration: args.date_of_administration ?? adminMedToUpdate.date_of_administration,
+        quantity_administered: args.quantity_administered ?? adminMedToUpdate.quantity_administered,
+        administered_by: args.administered_by ?? adminMedToUpdate.administered_by,
+        reason_for_administration: args.reason_for_administration ?? adminMedToUpdate.reason_for_admin ?? null,
       }
     );
     if (!valid) {
@@ -925,15 +940,14 @@ async function populateAdminMeds(parent, args, context) {
   }
 }
 async function populateAll(parent, args, context) {
-  try{
-  await populateAnimals(parent, args, context);
-  await populateMedications(parent, args, context);
-  await populateAdminMeds(parent, args, context);
-  } catch(err)
-  {
-    return "Something went wrong"
+  try {
+    await populateAnimals(parent, args, context);
+    await populateMedications(parent, args, context);
+    await populateAdminMeds(parent, args, context);
+  } catch (err) {
+    return "Something went wrong";
   }
-  return "Finished Populating"
+  return "Finished Populating";
 }
 async function deleteAllFarmerInfo(parent, args, context) {
   try {
