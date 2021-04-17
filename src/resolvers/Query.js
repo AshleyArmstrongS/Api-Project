@@ -469,12 +469,13 @@ async function medication(parent, args, context) {
   return returnable;
 }
 //Medications
-async function medications(parent, args, context) {
+async function medicationsOld(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const medications = await Medication.find({ farmer_id: farmer_id }).sort({
       purchase_date: -1,
+      remaining_quantity: -1,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -482,6 +483,55 @@ async function medications(parent, args, context) {
       returnable = {
         responseCheck: OPERATION_SUCCESSFUL,
         medications: medications,
+      };
+    }
+  }
+  return returnable;
+}
+async function medications(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const medications = await Medication.aggregate([
+      { $match: { farmer_id: ObjectId(farmer_id) } },
+      {
+        $project: {
+          _id: 1,
+          medication_name: 1,
+          supplied_by: 1,
+          quantity: 1,
+          medicine_type: 1,
+          quantity_type: 1,
+          withdrawal_days_meat: 1,
+          withdrawal_days_dairy: 1,
+          remaining_quantity: 1,
+          batch_number: 1,
+          expiry_date: 1,
+          purchase_date: 1,
+          comments: 1,
+          sort: {
+            $cond: {
+              if: {
+                $eq: ["$remaining_quantity", 0],
+              },
+              then: "$remaining_quantity",
+              else: "$purchase_date",
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          sort: 1,
+        },
+      },
+    ]);
+    if (!medications) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        medications: medications.reverse(),
       };
     }
   }
@@ -809,6 +859,7 @@ module.exports = {
   // Medication
   medication,
   medications,
+  medicationsOld,
   medicationsSortAndLimitTo4,
   medicationsByType,
   medicationsByRemainingQtyLessThan,
