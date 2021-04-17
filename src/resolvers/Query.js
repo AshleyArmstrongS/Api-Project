@@ -722,8 +722,8 @@ async function medicationsLastThreeUsed(parent, args, context) {
       .select({ date_of_administration: 1, _id: 1, medication_id: 1 })
       .sort({ date_of_administration: -1, _id: -1 })
       .limit(3);
-    if (administeredMedications.length != 0) {
       var medications = [3];
+    if (administeredMedications.length != 0) {
       for (var i = 0; i < administeredMedications.length; i++) {
         medications[i] = await Medication.findOne({
           _id: administeredMedications[i].medication_id,
