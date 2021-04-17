@@ -469,12 +469,13 @@ async function medication(parent, args, context) {
   return returnable;
 }
 //Medications
-async function medications(parent, args, context) {
+async function medicationsOld(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const medications = await Medication.find({ farmer_id: farmer_id }).sort({
       purchase_date: -1,
+      remaining_quantity: -1,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -482,6 +483,44 @@ async function medications(parent, args, context) {
       returnable = {
         responseCheck: OPERATION_SUCCESSFUL,
         medications: medications,
+      };
+    }
+  }
+  return returnable;
+}
+async function medications(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const medications = await Medication.aggregate([
+      {
+        $project: {
+          purchase_date: 1,
+          remaining_quantity: 1,
+          sort: {
+            $cond: {
+              if: {
+                $eq: ["$remaining_quantity", 0],
+              },
+              then: "$remaining_quantity",
+              else: "$purchase_date",
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          sort: 1,
+        },
+      },
+    ]);
+    console.log(medications)
+    if (!medications) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        medications: medications.reverse(),
       };
     }
   }
@@ -809,6 +848,7 @@ module.exports = {
   // Medication
   medication,
   medications,
+  medicationsOld,
   medicationsSortAndLimitTo4,
   medicationsByType,
   medicationsByRemainingQtyLessThan,

@@ -31,6 +31,7 @@ type Query {
   #Medication
   medication(_id: ID!): MedicationResponse!
   medications: MedicationsResponse!
+  medicationsOld: MedicationsResponse!
   medicationsSortAndLimitTo4: MedicationsResponse!
   medicationsByType(medicine_type: MedicineType!): MedicationsResponse!
   medicationsByRemainingQtyLessThan(
