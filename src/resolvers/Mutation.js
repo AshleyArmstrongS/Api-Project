@@ -644,10 +644,17 @@ async function updateAdminMed(args, farmer_id) {
     const valid = await MedicationAdministration.findByIdAndUpdate(
       { _id: args._id },
       {
-        date_of_administration: args.date_of_administration ?? adminMedToUpdate.date_of_administration,
-        quantity_administered: args.quantity_administered ?? adminMedToUpdate.quantity_administered,
-        administered_by: args.administered_by ?? adminMedToUpdate.administered_by,
-        reason_for_administration: args.reason_for_administration ?? adminMedToUpdate.reason_for_admin ?? null,
+        date_of_administration:
+          args.date_of_administration ??
+          adminMedToUpdate.date_of_administration,
+        quantity_administered:
+          args.quantity_administered ?? adminMedToUpdate.quantity_administered,
+        administered_by:
+          args.administered_by ?? adminMedToUpdate.administered_by,
+        reason_for_administration:
+          args.reason_for_administration ??
+          adminMedToUpdate.reason_for_admin ??
+          null,
       }
     );
     if (!valid) {
