@@ -716,19 +716,26 @@ async function medicationsLastThreeUsed(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const administeredMedications = await AdministeredMedication.find({
-      farmer_id: farmer_id,
-    })
-      .select({ date_of_administration: 1, _id: 1, medication_id: 1 })
+    const administeredMedications = await AdministeredMedication.aggregate([
+      { $match: { farmer_id: ObjectId(farmer_id) } },
+      {
+        $group: { _id: "$medication_id" },
+      },
+      {
+        $lookup: {
+          from: "medication",
+          localField: "_id",
+          foreignField: "_id",
+          as: "medication",
+        },
+      },
+    ])
       .sort({ date_of_administration: -1, _id: -1 })
       .limit(3);
-      var medications = [3];
+    var medications = [];
     if (administeredMedications.length != 0) {
-      for (var i = 0; i < administeredMedications.length; i++) {
-        medications[i] = await Medication.findOne({
-          _id: administeredMedications[i].medication_id,
-          farmer_id: farmer_id,
-        });
+      for(var i = 0; i < administeredMedications.length; i++){
+        medications[i] = administeredMedications[i].medication[0];
       }
     } else {
       medications = await Medication.find({ farmer_id: farmer_id })
