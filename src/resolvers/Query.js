@@ -493,10 +493,22 @@ async function medications(parent, args, context) {
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     const medications = await Medication.aggregate([
+      { $match: { farmer_id: ObjectId(farmer_id) } },
       {
         $project: {
-          purchase_date: 1,
+          _id: 1,
+          medication_name: 1,
+          supplied_by: 1,
+          quantity: 1,
+          medicine_type: 1,
+          quantity_type: 1,
+          withdrawal_days_meat: 1,
+          withdrawal_days_dairy: 1,
           remaining_quantity: 1,
+          batch_number: 1,
+          expiry_date: 1,
+          purchase_date: 1,
+          comments: 1,
           sort: {
             $cond: {
               if: {
@@ -514,7 +526,6 @@ async function medications(parent, args, context) {
         },
       },
     ]);
-    console.log(medications)
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
