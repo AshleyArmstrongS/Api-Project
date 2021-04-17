@@ -45,7 +45,7 @@ var validateEmail = function (email) {
   return re.test(email);
 };
 const validateGroupName = (name) => {
-  const re = /^[a-zA-Z ]{2,30}$/;
+  const re = /^[a-zA-Z0-9 ]{2,30}$/;
   return re.test(name);
 };
 const validateIsNumber = (number) => {

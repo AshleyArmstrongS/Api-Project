@@ -141,7 +141,7 @@ async function herd(parent, args, context) {
     const animals = await Animal.find({
       farmer_id: farmer_id,
       removed: { $ne: true },
-    });
+    }).sort({ id: -1 });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -473,7 +473,9 @@ async function medications(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id }).sort( {purchase_date:-1 } );
+    const medications = await Medication.find({ farmer_id: farmer_id }).sort({
+      purchase_date: -1,
+    });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -648,7 +650,7 @@ async function administeredMedications(parent, args, context) {
           return { responseCheck: OPERATION_FAILED + " " + err.toString() };
         }
       }
-    ).sort({ date_of_administration: 1 });
+    ).sort({ date_of_administration: -1 });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
