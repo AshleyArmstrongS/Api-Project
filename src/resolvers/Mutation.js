@@ -67,14 +67,17 @@ async function addMedAdministrator(id, med_administrator) {
     medication_administrators: { $exists: true, $in: med_administrator },
     _id: id,
   });
-  const valid = await Farmer.findByIdAndUpdate(
-    { _id: id },
-    { $push: { medication_administrators: med_administrator } }
-  );
-  if (valid || validPresent) {
+  if (!validPresent) {
+    const valid = await Farmer.findByIdAndUpdate(
+      { _id: id },
+      { $push: { medication_administrators: med_administrator } }
+    );
+    if (!valid) {
+      return false;
+    }
     return true;
   }
-  return false;
+  return true;
 }
 async function addLastCalvedToDam(dam_no, farmer_id, date) {
   const dam_id = await Animal.findOne({
@@ -185,7 +188,9 @@ async function passwordResetAndLogin(parent, args) {
       return { responseCheck: INCORRECT_PASSWORD };
     }
     if (success) {
-      const updated = await Farmer.findOne({ email: args.email }).select({password:0});
+      const updated = await Farmer.findOne({ email: args.email }).select({
+        password: 0,
+      });
       const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
       return {
         responseCheck: OPERATION_SUCCESSFUL,
