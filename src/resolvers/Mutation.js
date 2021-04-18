@@ -335,7 +335,6 @@ async function updateAnimal(args, farmer_id) {
       return { responseCheck: OPERATION_FAILED };
     }
     const editedAnimal = await Animal.findOne({ _id: args._id });
-    ed;
     await addLastCalvedToDam(
       editedAnimal.mother_number,
       farmer_id,
