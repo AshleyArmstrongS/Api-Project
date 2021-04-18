@@ -81,6 +81,12 @@ type Mutation {
     password: String!
     new_password: String
   ): AuthPayload!
+  farmerUpdate(
+    first_name: String
+    second_name: String
+    farm_type: FarmType
+    farm_address: String
+  ): FarmerResponse!
   #Animal
   saveAnimal(
     _id: ID

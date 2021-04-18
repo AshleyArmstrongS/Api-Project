@@ -198,6 +198,35 @@ async function passwordResetAndLogin(parent, args) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
+async function farmerUpdate(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    const farmerToBeChanged = await Farmer.findById(farmer_id).select({
+      password: 0,
+    });
+    const success = await Farmer.findByIdAndUpdate(
+      { _id: farmerToBeChanged._id },
+      {
+        first_name: args.first_name ?? farmerToBeChanged.first_name,
+        second_name: args.second_name ?? farmerToBeChanged.second_name,
+        farm_address: args.farm_address ?? farmerToBeChanged.farm_address,
+        farm_type: args.farm_type ?? farmerToBeChanged.farm_type,
+      }
+    );
+    if (success) {
+      const updated = await Farmer.findById(farmer_id).select({
+        password: 0,
+      });
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
+        farmer: updated,
+      };
+    }
+    return { responseCheck: PASSWORD_RESET_FAILED };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
+  }
+}
 //Animal Mutations
 async function saveAnimal(parent, args, context) {
   try {
@@ -989,6 +1018,7 @@ module.exports = {
   signUp,
   login,
   passwordResetAndLogin,
+  farmerUpdate,
   populateAnimals,
   populateMedications,
   populateAdminMeds,
