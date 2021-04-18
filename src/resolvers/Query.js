@@ -83,7 +83,7 @@ async function animalWithLastMedication(parent, args, context) {
         }
       }
     )
-      .sort({ date_of_administration: -1, _id: -1 })
+      .sort({ date_of_administration: -1, _id: 1 })
       .limit(1);
     try {
       if (!animalAndAdminMed[0].animal[0]) {
@@ -141,7 +141,7 @@ async function herd(parent, args, context) {
     const animals = await Animal.find({
       farmer_id: farmer_id,
       removed: { $ne: true },
-    }).sort({ id: -1 });
+    }).sort({ id: 1 });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -730,7 +730,7 @@ async function medicationsLastThreeUsed(parent, args, context) {
         },
       },
     ])
-      .sort({ date_of_administration: -1, _id: -1 })
+      .sort({ date_of_administration: -1, _id: 1 })
       .limit(3);
     var medications = [];
     if (administeredMedications.length != 0) {
