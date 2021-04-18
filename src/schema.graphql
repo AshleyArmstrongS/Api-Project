@@ -184,7 +184,6 @@ type AdministeredMedication {
   animal:[Animal]
 }
 type Farmer {
-  _id: ID
   first_name: String
   second_name: String
   farm_type: FarmType
