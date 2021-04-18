@@ -198,7 +198,7 @@ async function passwordResetAndLogin(parent, args) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
-async function farmerUpdate(parent, args, context) {
+async function updateDate(parent, args, context) {
   try {
     const farmer_id = getUserId(context);
     const farmerToBeChanged = await Farmer.findById(farmer_id).select({
@@ -1018,7 +1018,7 @@ module.exports = {
   signUp,
   login,
   passwordResetAndLogin,
-  farmerUpdate,
+  updateDate,
   populateAnimals,
   populateMedications,
   populateAdminMeds,

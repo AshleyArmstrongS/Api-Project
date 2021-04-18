@@ -81,7 +81,7 @@ type Mutation {
     password: String!
     new_password: String!
   ): AuthPayload!
-  farmerUpdate(
+  updateDate(
     first_name: String
     second_name: String
     farm_type: FarmType
