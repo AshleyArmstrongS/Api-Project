@@ -79,17 +79,23 @@ type Mutation {
   passwordResetAndLogin(
     email: String!
     password: String!
-    new_password: String
+    new_password: String!
   ): AuthPayload!
+  updateFarmer(
+    first_name: String
+    second_name: String
+    farm_type: FarmType
+    farm_address: String
+  ): FarmerResponse!
   #Animal
   saveAnimal(
     _id: ID
-    tag_number: Int!
-    sire_number: Int!
+    tag_number: Int
+    sire_number: Int
     mother_number: Int
     date_of_birth: Date
-    male_female: Sex!
-    breed_type: String!
+    male_female: Sex
+    breed_type: String
     pure_breed: Boolean
     animal_name: String
     description: String
@@ -100,20 +106,20 @@ type Mutation {
   #Group
   saveGroup(
     _id: ID
-    group_name: String!
-    group_description: String!
+    group_name: String
+    group_description: String
   ): GroupResponse!
   deleteGroup(_id: ID!): GroupResponse!
   #Breed
-  saveBreed(_id: ID, breed_name: String!, breed_code: String!): BreedResponse!
+  saveBreed(_id: ID, breed_name: String, breed_code: String): BreedResponse!
   #Medication
   saveMedication(
     _id: ID
-    medication_name: String!
+    medication_name: String
     batch_number: String
-    quantity: Int!
-    quantity_type: QuantityType!
-    medicine_type: MedicineType!
+    quantity: Int
+    quantity_type: QuantityType
+    medicine_type: MedicineType
     supplied_by: String
     expiry_date: Date
     purchase_date: Date
@@ -124,9 +130,9 @@ type Mutation {
   #AdminMed
   saveAdminMed(
     _id: ID
-    date_of_administration: Date!
-    quantity_administered: Int!
-    administered_by: String!
+    date_of_administration: Date
+    quantity_administered: Int
+    administered_by: String
     reason_for_administration: String
     animal_id: ID
     medication_id: ID
@@ -184,7 +190,6 @@ type AdministeredMedication {
   animal:[Animal]
 }
 type Farmer {
-  _id: ID
   first_name: String
   second_name: String
   farm_type: FarmType

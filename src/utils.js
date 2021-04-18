@@ -8,10 +8,9 @@ function getUserId(context) {
       const { userId } = jwt.verify(token, APP_SECRET);
       return userId;
     } catch {
-      return false;
+      return new Error("Not authenticated");
     }
   }
-  return new Error("Not authenticated");
 }
 module.exports = {
   getUserId,

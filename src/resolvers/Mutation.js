@@ -67,14 +67,17 @@ async function addMedAdministrator(id, med_administrator) {
     medication_administrators: { $exists: true, $in: med_administrator },
     _id: id,
   });
-  const valid = await Farmer.findByIdAndUpdate(
-    { _id: id },
-    { $push: { medication_administrators: med_administrator } }
-  );
-  if (valid || validPresent) {
+  if (!validPresent) {
+    const valid = await Farmer.findByIdAndUpdate(
+      { _id: id },
+      { $push: { medication_administrators: med_administrator } }
+    );
+    if (!valid) {
+      return false;
+    }
     return true;
   }
-  return false;
+  return true;
 }
 async function addLastCalvedToDam(dam_no, farmer_id, date) {
   const dam_id = await Animal.findOne({
@@ -185,11 +188,42 @@ async function passwordResetAndLogin(parent, args) {
       return { responseCheck: INCORRECT_PASSWORD };
     }
     if (success) {
-      const updated = await Farmer.findOne({ email: args.email });
+      const updated = await Farmer.findOne({ email: args.email }).select({
+        password: 0,
+      });
       const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
       return {
         responseCheck: OPERATION_SUCCESSFUL,
         token: userToken,
+        farmer: updated,
+      };
+    }
+    return { responseCheck: PASSWORD_RESET_FAILED };
+  } catch (err) {
+    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
+  }
+}
+async function updateFarmer(parent, args, context) {
+  try {
+    const farmer_id = getUserId(context);
+    const farmerToBeChanged = await Farmer.findById(farmer_id).select({
+      password: 0,
+    });
+    const success = await Farmer.findByIdAndUpdate(
+      { _id: farmerToBeChanged._id },
+      {
+        first_name: args.first_name ?? farmerToBeChanged.first_name,
+        second_name: args.second_name ?? farmerToBeChanged.second_name,
+        farm_address: args.farm_address ?? farmerToBeChanged.farm_address,
+        farm_type: args.farm_type ?? farmerToBeChanged.farm_type,
+      }
+    );
+    if (success) {
+      const updated = await Farmer.findById(farmer_id).select({
+        password: 0,
+      });
+      return {
+        responseCheck: OPERATION_SUCCESSFUL,
         farmer: updated,
       };
     }
@@ -989,6 +1023,7 @@ module.exports = {
   signUp,
   login,
   passwordResetAndLogin,
+  updateFarmer,
   populateAnimals,
   populateMedications,
   populateAdminMeds,
