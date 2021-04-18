@@ -185,7 +185,7 @@ async function passwordResetAndLogin(parent, args) {
       return { responseCheck: INCORRECT_PASSWORD };
     }
     if (success) {
-      const updated = await Farmer.findOne({ email: args.email });
+      const updated = await Farmer.findOne({ email: args.email }).select({password:0});
       const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
       return {
         responseCheck: OPERATION_SUCCESSFUL,
