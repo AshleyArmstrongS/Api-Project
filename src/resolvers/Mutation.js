@@ -137,7 +137,7 @@ async function signUp(parent, args) {
     if (!valid) {
       return { responseCheck: OPERATION_FAILED };
     }
-    const userToken = jwt.sign({ newFarmer: newFarmer._id }, APP_SECRET);
+    const userToken = jwt.sign({ userId: newFarmer._id }, APP_SECRET);
     return {
       responseCheck: OPERATION_SUCCESSFUL,
       token: userToken,
