@@ -11,7 +11,7 @@ function getUserId(context) {
       return false;
     }
   }
-  throw new Error("Not authenticated");
+  return new Error("Not authenticated");
 }
 module.exports = {
   getUserId,
