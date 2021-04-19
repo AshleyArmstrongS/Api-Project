@@ -443,7 +443,7 @@ async function addAnimalToGroup(parent, args, context) {
   try {
     const id = getUserId(context);
     if (!id) {
-      return FAILED_AUTHENTICATION;
+      return { responseCheck: FAILED_AUTHENTICATION};
     }
     const groupPresent = await Animal.findOne({
       _id: args._id,
