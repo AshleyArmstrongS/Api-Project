@@ -128,6 +128,7 @@ type Mutation {
     comments: String
   ): MedicationResponse!
   #AdminMed
+  dates(date:Date):String
   saveAdminMed(
     _id: ID
     date_of_administration: Date
@@ -178,6 +179,8 @@ type Medication {
 type AdministeredMedication {
   _id: ID
   date_of_administration: Date
+  withdrawal_end_meat: Date
+  withdrawal_end_dairy: Date
   quantity_administered: Int
   quantity_type: QuantityType
   administered_by: String

@@ -21,7 +21,7 @@ var MedicationSchema = new Schema(
       type: Number,
       trim: true,
       validate: [val.validateIsNumber, "Enter valid quantity."],
-      required: true, 
+      required: true,
       default: 0,
     },
     medicine_type: {

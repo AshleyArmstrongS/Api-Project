@@ -35,12 +35,19 @@ async function checkMedicationAvailability(id, quantity_used) {
   const available = await Medication.findById(id).select({
     remaining_quantity: 1,
     quantity_type: 1,
+    withdrawal_days_meat:1,
+    withdrawal_days_dairy:1,
     _id: 0,
   });
   if (available.remaining_quantity >= quantity_used) {
     return available;
   }
   return false;
+}
+function addDays(date, days) {
+  const copy = new Date(Number(date))
+  copy.setDate(date.getDate() + days)
+  return copy
 }
 async function updateMedicationQuantity(id, quantity_used) {
   const valid = await Medication.findByIdAndUpdate(
@@ -640,10 +647,16 @@ async function createAdminMed(args, farmer_id) {
     );
     var message = "Medication not administered";
     if (available) {
+      var meat = new Date(args.date_of_administration)
+      meat = addDays(meat, available.withdrawal_days_meat)
+      var dairy = new Date(args.date_of_administration)
+      dairy = addDays(dairy, available.withdrawal_days_dairy)
       const newMedAdmin = new MedicationAdministration({
         date_of_administration: args.date_of_administration,
         quantity_administered: args.quantity_administered,
         quantity_type: available.quantity_type,
+        withdrawal_end_meat: meat,
+        withdrawal_end_dairy: dairy,
         administered_by: args.administered_by,
         reason_for_administration: args.reason_for_administration ?? null,
         animal_id: args.animal_id,
@@ -665,7 +678,7 @@ async function createAdminMed(args, farmer_id) {
     } else {
       message = "Medication quantity is to low";
     }
-    const responseCheck = { status: false, message: message };
+    const responseCheck = { success: false, message: message };
     return { responseCheck: responseCheck };
   } catch (err) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
@@ -710,6 +723,10 @@ async function updateAdminMed(args, farmer_id) {
   } catch (err) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
+}
+function dates(parent, args, context){
+  console.log(args.date)
+  console.log(args.date+1)
 }
 async function deleteAdministeredMedication(parent, args, context) {
   try {
@@ -1021,6 +1038,7 @@ async function deleteAllFarmerInfo(parent, args, context) {
 module.exports = {
   signUp,
   login,
+  dates,
   passwordResetAndLogin,
   updateFarmer,
   populateAnimals,
