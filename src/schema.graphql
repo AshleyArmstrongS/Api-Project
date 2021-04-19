@@ -21,8 +21,8 @@ type Query {
   animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
   animalsByCrossBreed(breed_type: String!): AnimalsResponse!
   animalInAnyGroup: AnimalsResponse!
-  animalsInGroup(groups_id: String): AnimalsResponse!
-  animalsInGroupCount(groups_id: String): CountResponse!
+  animalsInGroup(groups_id: ID): AnimalsResponse!
+  animalsInGroupCount(groups_id: ID): CountResponse!
   #Breed
   breed(_id: ID!): BreedResponse!
   breedName(breed_name: String!): BreedsResponse!
