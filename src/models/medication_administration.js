@@ -30,6 +30,14 @@ var AdministeredMedicationSchema = new Schema(
       required: true,
       default: "", // should we use the farmer's name here?!??
     },
+    withdrawal_end_meat:{
+      type: Date,
+      default: Date.now,
+    },
+    withdrawal_end_dairy:{
+      type: Date,
+      default: Date.now,
+    },
     reason_for_administration: {
       type: String,
       default: "",
