@@ -47,6 +47,8 @@ type Query {
   #AdministeredMedication
   administeredMedication(_id: ID): AdminMedResponse!
   administeredMedications: AdminMedsResponse!
+  administeredMedicationsActiveWithdrawalByMedication(medication_id: ID): AdminMedsResponse!
+    administeredMedicationsActiveWithdrawalByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationsByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationOnDate(
     date_of_administration: Date!
