@@ -671,6 +671,128 @@ async function administeredMedication(parent, args, context) {
   }
   return returnable;
 }
+async function administeredMedicationsActiveWithdrawalByMedication(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    var today = new Date();
+    const date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+    var administeredMedication = await AdministeredMedication.aggregate(
+      [
+        {
+          $match: {
+            $or: [
+              { withdrawal_end_meat: { $gt: today } },
+              { withdrawal_end_dairy: { $gt: today } },
+            ],
+            farmer_id: ObjectId(farmer_id),
+            medication_id: ObjectId(args.medication_id),
+          },
+        },
+        {
+          $lookup: {
+            from: "medication",
+            localField: "medication_id",
+            foreignField: "_id",
+            as: "medication",
+          },
+        },
+        {
+          $lookup: {
+            from: "animals",
+            localField: "animal_id",
+            foreignField: "_id",
+            as: "animal",
+          },
+        },
+      ],
+      function (err, res) {
+        if (err) {
+          return { responseCheck: OPERATION_FAILED + " " + err.toString() };
+        }
+      }
+    ).sort({ date_of_administration: -1, _id: 1 });
+    console.log(administeredMedication)
+    try {
+      if (!administeredMedication) {
+        console.log("How did I get here?");
+      }
+    } catch (err) {
+      animalAndAdminMed = null;
+    }
+    returnable = {
+      responseCheck: OPERATION_SUCCESSFUL,
+      administeredMedications: administeredMedication,
+    };
+  }
+  return returnable;
+}
+async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    var today = new Date();
+    const date =
+      today.getFullYear() +
+      "-" +
+      (today.getMonth() + 1) +
+      "-" +
+      today.getDate();
+    var administeredMedication = await AdministeredMedication.aggregate(
+      [
+        {
+          $match: {
+            $or: [
+              { withdrawal_end_meat: { $gt: today } },
+              { withdrawal_end_dairy: { $gt: today } },
+            ],
+            farmer_id: ObjectId(farmer_id),
+            animal_id: ObjectId(args.animal_id),
+          },
+        },
+        {
+          $lookup: {
+            from: "medication",
+            localField: "medication_id",
+            foreignField: "_id",
+            as: "medication",
+          },
+        },
+        {
+          $lookup: {
+            from: "animals",
+            localField: "animal_id",
+            foreignField: "_id",
+            as: "animal",
+          },
+        },
+      ],
+      function (err, res) {
+        if (err) {
+          return { responseCheck: OPERATION_FAILED + " " + err.toString() };
+        }
+      }
+    ).sort({ date_of_administration: -1, _id: 1 });
+    console.log(administeredMedication)
+    try {
+      if (!administeredMedication) {
+        console.log("How did I get here?");
+      }
+    } catch (err) {
+      animalAndAdminMed = null;
+    }
+    returnable = {
+      responseCheck: OPERATION_SUCCESSFUL,
+      administeredMedications: administeredMedication,
+    };
+  }
+  return returnable;
+}
 async function administeredMedications(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -734,7 +856,7 @@ async function medicationsLastThreeUsed(parent, args, context) {
       .limit(3);
     var medications = [];
     if (administeredMedications.length != 0) {
-      for(var i = 0; i < administeredMedications.length; i++){
+      for (var i = 0; i < administeredMedications.length; i++) {
         medications[i] = administeredMedications[i].medication[0];
       }
     } else {
@@ -882,6 +1004,8 @@ module.exports = {
   medicationsByName,
   // AdministeredMedication
   administeredMedication,
+  administeredMedicationsActiveWithdrawalByMedication,
+  administeredMedicationsActiveWithdrawalByAnimal,
   administeredMedications,
   administeredMedicationOnDate,
   administeredMedicationsByAnimal,
