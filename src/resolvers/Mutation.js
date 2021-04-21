@@ -724,10 +724,6 @@ async function updateAdminMed(args, farmer_id) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
-function dates(parent, args, context){
-  console.log(args.date)
-  console.log(args.date+1)
-}
 async function deleteAdministeredMedication(parent, args, context) {
   try {
     //restores the medication quantity
@@ -1038,7 +1034,6 @@ async function deleteAllFarmerInfo(parent, args, context) {
 module.exports = {
   signUp,
   login,
-  dates,
   passwordResetAndLogin,
   updateFarmer,
   populateAnimals,
