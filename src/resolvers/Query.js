@@ -537,6 +537,47 @@ async function medications(parent, args, context) {
   }
   return returnable;
 }
+async function medicationsLastThreeUsed(parent, args, context) {
+  const farmer_id = getUserId(context);
+  var returnable = { responseCheck: FAILED_AUTHENTICATION };
+  if (farmer_id) {
+    const administeredMedications = await AdministeredMedication.aggregate([
+      { $match: { farmer_id: ObjectId(farmer_id) } },
+      {
+        $group: { _id: "$medication_id" },
+      },
+      {
+        $lookup: {
+          from: "medication",
+          localField: "_id",
+          foreignField: "_id",
+          as: "medication",
+        },
+      },
+    ])
+      .sort({ date_of_administration: -1, _id: 1 })
+      .limit(3);
+    var medications = [];
+    if (administeredMedications.length != 0) {
+      for (var i = 0; i < administeredMedications.length; i++) {
+        medications[i] = administeredMedications[i].medication[0];
+      }
+    } else {
+      medications = await Medication.find({ farmer_id: farmer_id })
+        .sort({ purchase_date: -1 })
+        .limit(3);
+    }
+    if (!medications) {
+      returnable = { responseCheck: OPERATION_FAILED };
+    } else {
+      returnable = {
+        responseCheck: OPERATION_SUCCESSFUL,
+        medications: medications,
+      };
+    }
+  }
+  return returnable;
+}
 async function medicationsSortAndLimitTo4(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -737,7 +778,6 @@ async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, con
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
     var today = new Date();
-    const date =
       today.getFullYear() +
       "-" +
       (today.getMonth() + 1) +
@@ -829,47 +869,6 @@ async function administeredMedications(parent, args, context) {
       returnable = {
         responseCheck: OPERATION_SUCCESSFUL,
         administeredMedications: administeredMedications,
-      };
-    }
-  }
-  return returnable;
-}
-async function medicationsLastThreeUsed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const administeredMedications = await AdministeredMedication.aggregate([
-      { $match: { farmer_id: ObjectId(farmer_id) } },
-      {
-        $group: { _id: "$medication_id" },
-      },
-      {
-        $lookup: {
-          from: "medication",
-          localField: "_id",
-          foreignField: "_id",
-          as: "medication",
-        },
-      },
-    ])
-      .sort({ date_of_administration: -1, _id: 1 })
-      .limit(3);
-    var medications = [];
-    if (administeredMedications.length != 0) {
-      for (var i = 0; i < administeredMedications.length; i++) {
-        medications[i] = administeredMedications[i].medication[0];
-      }
-    } else {
-      medications = await Medication.find({ farmer_id: farmer_id })
-        .sort({ purchase_date: -1 })
-        .limit(3);
-    }
-    if (!medications) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = {
-        responseCheck: OPERATION_SUCCESSFUL,
-        medications: medications,
       };
     }
   }
