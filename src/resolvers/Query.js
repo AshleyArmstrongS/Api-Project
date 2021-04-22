@@ -862,7 +862,7 @@ async function administeredMedications(parent, args, context) {
           return { responseCheck: OPERATION_FAILED + " " + err.toString() };
         }
       }
-    ).sort({ date_of_administration: -1 });
+    ).sort({ date_of_administration: -1, _id: 1 });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
