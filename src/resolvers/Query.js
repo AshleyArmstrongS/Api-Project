@@ -758,7 +758,6 @@ async function administeredMedicationsActiveWithdrawalByMedication(parent, args,
         }
       }
     ).sort({ date_of_administration: -1, _id: 1 });
-    console.log(administeredMedication)
     try {
       if (!administeredMedication) {
         console.log("How did I get here?");
@@ -818,7 +817,6 @@ async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, con
         }
       }
     ).sort({ date_of_administration: -1, _id: 1 });
-    console.log(administeredMedication)
     try {
       if (!administeredMedication) {
         console.log("How did I get here?");
