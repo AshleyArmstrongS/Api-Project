@@ -26,9 +26,9 @@ const GroupSchema = new Schema(
       trim: true,
       default: 0,
     },
-    farmer_id: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmer",
+      ref: "user",
       required: true,
     },
   },

@@ -28,7 +28,7 @@ var AdministeredMedicationSchema = new Schema(
       trim: true,
       validate: [val.validateIsString, "Please enter a valid name."],
       required: true,
-      default: "", // should we use the farmer's name here?!??
+      default: "", // should we use the user's name here?!??
     },
     withdrawal_end_meat:{
       type: Date,
@@ -50,9 +50,9 @@ var AdministeredMedicationSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Medication",
     },
-    farmer_id: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmer",
+      ref: "user",
     },
   },
   { collection: "MedAdmins" }

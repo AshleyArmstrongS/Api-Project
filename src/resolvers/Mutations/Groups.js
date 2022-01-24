@@ -9,13 +9,13 @@ const {
   } = require("../ResolverErrorMessages");
 async function saveGroup(parent, args, context) {
     try {
-      const farmer_id = getUserId(context);
+      const user_id = getUserId(context);
       var returnable = { responseCheck: FAILED_AUTHENTICATION };
-      if (farmer_id) {
+      if (user_id) {
         if (args._id) {
-          returnable = updateGroup(args, farmer_id);
+          returnable = updateGroup(args, user_id);
         } else {
-          returnable = createGroup(args, farmer_id);
+          returnable = createGroup(args, user_id);
         }
       }
       return returnable;
@@ -23,17 +23,17 @@ async function saveGroup(parent, args, context) {
       return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
     }
   }
-  async function createGroup(args, farmer_id) {
+  async function createGroup(args, user_id) {
     try {
       const alreadyExists = await Group.findOne({
         group_name: args.group_name,
-        farmer_id: farmer_id,
+        user_id: user_id,
       });
       if (!alreadyExists) {
         const newGroup = new Group({
           group_name: args.group_name,
           group_description: args.group_description ?? null,
-          farmer_id: farmer_id,
+          user_id: user_id,
           group_size: 0,
         });
         const valid = await newGroup.save();
@@ -135,14 +135,14 @@ async function saveGroup(parent, args, context) {
   }
   async function deleteGroup(parent, args, context) {
     try {
-      const farmer_id = getUserId(context);
-      if (!farmer_id) {
+      const user_id = getUserId(context);
+      if (!user_id) {
         return FAILED_AUTHENTICATION;
       }
       await Animal.updateMany(
         {
           groups_id: args._id,
-          farmer_id: farmer_id,
+          user_id: user_id,
         },
         { $pull: { groups_id: args._id } }
       );

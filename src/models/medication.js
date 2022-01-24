@@ -78,9 +78,9 @@ var MedicationSchema = new Schema(
       type: String,
       default: "",
     },
-    farmer_id: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmer",
+      ref: "user",
     },
   },
   { collection: "medication" }
