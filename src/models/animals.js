@@ -103,9 +103,9 @@ const AnimalSchema = new Schema(
       trim: true,
       default: "",
     },
-    farmer_id: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Farmer",
+      ref: "User",
       required: true,
     },
     groups_id: {

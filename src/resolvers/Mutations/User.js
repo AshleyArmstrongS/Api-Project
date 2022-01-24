@@ -46,6 +46,7 @@ const {
   }
   async function login(parent, args) {
     try {
+      console.log(args)
       const loggingInUser = await User.findOne({ email: args.email });
       if (!loggingInUser) {
         return { responseCheck: NO_SUCH_EMAIL };
@@ -66,30 +67,30 @@ const {
   }
   async function passwordResetAndLogin(parent, args) {
     try {
-      const farmerToBeChanged = await Farmer.findOne({ email: args.email });
+      const userToBeChanged = await User.findOne({ email: args.email });
       const valid = await bcrypt.compare(
         args.password,
-        farmerToBeChanged.password
+        userToBeChanged.password
       );
       var success = false;
       if (valid) {
         const new_password = await bcrypt.hash(args.new_password, 10);
-        success = await Farmer.findByIdAndUpdate(
-          { _id: farmerToBeChanged._id },
+        success = await User.findByIdAndUpdate(
+          { _id: userToBeChanged._id },
           { password: new_password }
         );
       } else {
         return { responseCheck: INCORRECT_PASSWORD };
       }
       if (success) {
-        const updated = await Farmer.findOne({ email: args.email }).select({
+        const updated = await User.findOne({ email: args.email }).select({
           password: 0,
         });
         const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
         return {
           responseCheck: OPERATION_SUCCESSFUL,
           token: userToken,
-          farmer: updated,
+          user: updated,
         };
       }
       return { responseCheck: PASSWORD_RESET_FAILED };
@@ -99,26 +100,26 @@ const {
   }
   async function updateUser(parent, args, context) {
     try {
-      const farmer_id = getUserId(context);
-      const farmerToBeChanged = await Farmer.findById(farmer_id).select({
+      const user_id = getUserId(context);
+      const userToBeChanged = await User.findById(user_id).select({
         password: 0,
       });
-      const success = await Farmer.findByIdAndUpdate(
-        { _id: farmerToBeChanged._id },
+      const success = await User.findByIdAndUpdate(
+        { _id: userToBeChanged._id },
         {
-          first_name: args.first_name ?? farmerToBeChanged.first_name,
-          second_name: args.second_name ?? farmerToBeChanged.second_name,
-          farm_address: args.farm_address ?? farmerToBeChanged.farm_address,
-          farm_type: args.farm_type ?? farmerToBeChanged.farm_type,
+          first_name: args.first_name ?? userToBeChanged.first_name,
+          second_name: args.second_name ?? userToBeChanged.second_name,
+          farm_address: args.farm_address ?? userToBeChanged.farm_address,
+          farm_type: args.farm_type ?? userToBeChanged.farm_type,
         }
       );
       if (success) {
-        const updated = await Farmer.findById(farmer_id).select({
+        const updated = await User.findById(user_id).select({
           password: 0,
         });
         return {
           responseCheck: OPERATION_SUCCESSFUL,
-          farmer: updated,
+          user: updated,
         };
       }
       return { responseCheck: PASSWORD_RESET_FAILED };
