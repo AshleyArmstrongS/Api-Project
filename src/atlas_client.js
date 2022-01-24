@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const { atlasURI, atlasOptions } = require("./Config");
+const { atlasURI, atlasSettings } = require("./Config");
 
 mongoose
-  .connect(atlasURI, atlasOptions)
+  .connect(atlasURI, atlasSettings)
   .then(() => {
     console.log("MongoDB Connected…");
   })
