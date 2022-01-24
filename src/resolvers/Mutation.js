@@ -1,12 +1,12 @@
-//Login/SignUp
+//User
 const {signUp, login, updateUser, passwordResetAndLogin, } = require("./Mutations/User");
-//Animal Mutations
+//Animals
 const {deleteAnimal, saveAnimal,} = require("./Mutations/Animals");
-// Group Mutations
+// Groups
 const {saveGroup, deleteGroup, addAnimalToGroup, removeAnimalFromGroup} = require("./Mutations/Groups")
-//Medication Mutations
+//Medication
 const {saveMedication,} = require("./Mutations/Medication")
-//MedicationAdministration Mutations
+//MedicationAdministration
 const {saveAdminMed, deleteAdministeredMedication, deleteMedAdministrator,} = require("./Mutations/AdminMed")
 
 module.exports = {
