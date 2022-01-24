@@ -1,4 +1,5 @@
 const Animal = require("../../models/animals");
+const { getUserId } = require("../utils");
 async function animal(parent, args, context) {
     const user_id = getUserId(context);
     var returnable = { responseCheck: FAILED_AUTHENTICATION };
