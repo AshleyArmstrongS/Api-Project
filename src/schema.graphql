@@ -7,26 +7,14 @@ type Query {
   #Animal
   animal(_id: ID!): AnimalResponse!
   animalWithLastMedication(_id: ID!): AdminMedsResponse!
-  animalsByName(animal_name: String!): AnimalResponse!
   animalByTag(tag_number: Int!): AnimalResponse!
   herd: AnimalsResponse!
   herdCount: CountResponse!
   animalByProgeny(tag_number: Int!): AnimalsResponse!
   animalBySex(male_female: Sex!): AnimalsResponse!
-  animalByBreed(breed_type: String!): AnimalsResponse!
-  animalByPureBreed(pure_breed: Boolean!): AnimalsResponse!
-  animalsBornOn(date_of_birth: Date!): AnimalsResponse!
-  animalsBornAfter(date_of_birth: Date!): AnimalsResponse!
-  animalsBornBefore(date_of_birth: Date!): AnimalsResponse!
-  animalsBornBetween(after: Date!, before: Date!): AnimalsResponse!
-  animalsByCrossBreed(breed_type: String!): AnimalsResponse!
   animalInAnyGroup: AnimalsResponse!
   animalsInGroup(groups_id: ID): AnimalsResponse!
   animalsInGroupCount(groups_id: ID): CountResponse!
-  #Breed
-  breed(_id: ID!): BreedResponse!
-  breedName(breed_name: String!): BreedsResponse!
-  breedCode(breed_code: String!): BreedsResponse!
 
   #Medication
   medication(_id: ID!): MedicationResponse!
@@ -48,7 +36,7 @@ type Query {
   administeredMedication(_id: ID): AdminMedResponse!
   administeredMedications: AdminMedsResponse!
   administeredMedicationsActiveWithdrawalByMedication(medication_id: ID): AdminMedsResponse!
-    administeredMedicationsActiveWithdrawalByAnimal(animal_id: ID): AdminMedsResponse!
+  administeredMedicationsActiveWithdrawalByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationsByAnimal(animal_id: ID): AdminMedsResponse!
   administeredMedicationOnDate(
     date_of_administration: Date!
@@ -107,8 +95,6 @@ type Mutation {
     group_description: String
   ): GroupResponse!
   deleteGroup(_id: ID!): GroupResponse!
-  #Breed
-  saveBreed(_id: ID, breed_name: String, breed_code: String): BreedResponse!
   #Medication
   saveMedication(
     _id: ID
@@ -204,11 +190,6 @@ type Group {
   group_size: Int
   group_description: String
 }
-type Breed {
-  _id: ID
-  breed_name: String
-  breed_code: String
-}
 #RESPONSE_TYPES
 type AuthPayload {
   responseCheck: ResponseCheck!
@@ -250,14 +231,6 @@ type AdminMedResponse {
 type AdminMedsResponse {
   responseCheck: ResponseCheck!
   administeredMedications: [AdministeredMedication]
-}
-type BreedResponse {
-  responseCheck: ResponseCheck!
-  breed: Breed
-}
-type BreedsResponse {
-  responseCheck: ResponseCheck!
-  breed: [Breed]
 }
 type CountResponse {
   responseCheck: ResponseCheck!

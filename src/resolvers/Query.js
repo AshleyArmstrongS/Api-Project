@@ -3,7 +3,6 @@ const Farmer = require("../models/farmer");
 const Group = require("../models/group");
 const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");
-const Breed = require("../models/breed");
 const { getUserId } = require("../utils");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
@@ -99,23 +98,6 @@ async function animalWithLastMedication(parent, args, context) {
   }
   return returnable;
 }
-async function animalsByName(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animal = await Animal.findOne({
-      animal_name: { $regex: new RegExp(".*" + args.animal_name + ".*", "i") },
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animal) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animal: animal };
-    }
-  }
-  return returnable;
-}
 async function animalByTag(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -166,58 +148,6 @@ async function herdCount(parent, args, context) {
   }
   return returnable;
 }
-async function animalByBreed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      breed_type: args.breed_type,
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-async function animalsByCrossBreed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    var animalBreedType = args.breed_type.split("X").join("");
-    const animals = await Animal.find({
-      breed_type: { $regex: new RegExp(".*" + animalBreedType + ".*?X", "i") },
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-async function animalByPureBreed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      pure_breed: args.pure_breed,
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
 async function animalBySex(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
@@ -258,78 +188,6 @@ async function animalByProgeny(parent, args, context) {
         removed: { $ne: true },
       });
     }
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-// Animal
-async function animalsBornOn(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      date_of_birth: new Date(args.date_of_birth),
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-async function animalsBornAfter(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      date_of_birth: { $gte: new Date(args.date_of_birth) },
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-async function animalsBornBefore(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      date_of_birth: { $lte: new Date(args.date_of_birth) },
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
-    if (!animals) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, animals: animals };
-    }
-  }
-  return returnable;
-}
-async function animalsBornBetween(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const animals = await Animal.find({
-      date_of_birth: {
-        $gte: new Date(args.after),
-        $lte: new Date(args.before),
-      },
-      farmer_id: farmer_id,
-      removed: { $ne: true },
-    });
     if (!animals) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -422,22 +280,6 @@ async function groupByName(parent, args, context) {
   if (farmer_id) {
     const groups = await Group.find({
       group_name: args.group_name,
-      farmer_id: farmer_id,
-    });
-    if (!groups) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, groups: groups };
-    }
-  }
-  return returnable;
-}
-async function groupByDescription(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const groups = await Group.find({
-      group_description: args.group_description,
       farmer_id: farmer_id,
     });
     if (!groups) {
@@ -910,77 +752,17 @@ async function administeredMedicationsByAnimal(parent, args, context) {
   }
   return returnable;
 }
-// Breeds
-async function breedName(parent, args, context) {
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  var str = args.breed_name;
-  const breed_name = await Breed.find({
-    breed_name: { $regex: new RegExp(".*" + str + ".*", "i") },
-  });
-  if (!breed_name) {
-    returnable = { responseCheck: OPERATION_FAILED };
-  } else {
-    returnable = {
-      responseCheck: OPERATION_SUCCESSFUL,
-      breed: breed_name,
-    };
-  }
-  return returnable;
-}
-async function breedCode(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  var str = args.breed_code;
-  if (farmer_id) {
-    const breed_code = await Breed.find({
-      breed_code: { $regex: new RegExp(".*" + str + ".*", "i") },
-    });
-    if (!breed_code) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = {
-        responseCheck: OPERATION_SUCCESSFUL,
-        breed: breed_code,
-      };
-    }
-  }
-  return returnable;
-}
-async function breed(parent, args, context) {
-  const farmer_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const breed_code = await Breed.findById({ _id: args._id });
-    if (!breed_code) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = {
-        responseCheck: OPERATION_SUCCESSFUL,
-        breed: breed_code,
-      };
-    }
-  }
-  return returnable;
-}
 module.exports = {
   info,
   farmer,
   // Animal
   animal,
   animalWithLastMedication,
-  animalsByName,
   animalByTag,
   herd,
   herdCount,
-  animalByBreed,
-  animalByPureBreed,
   animalBySex,
   animalByProgeny,
-  animalsBornOn,
-  animalsBornAfter,
-  animalsBornBefore,
-  animalsBornBetween,
-  animalsByCrossBreed,
   animalInAnyGroup,
   animalsInGroup,
   animalsInGroupCount,
@@ -988,7 +770,6 @@ module.exports = {
   group,
   groups,
   groupByName,
-  groupByDescription,
   // Medication
   medication,
   medications,
@@ -1007,8 +788,4 @@ module.exports = {
   administeredMedicationOnDate,
   administeredMedicationsByAnimal,
   medicationsLastThreeUsed,
-  // Breed
-  breed,
-  breedName,
-  breedCode,
 };

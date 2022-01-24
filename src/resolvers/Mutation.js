@@ -19,7 +19,6 @@ const {
   INCORRECT_SIRE,
   INCORRECT_PARENTS,
 } = require("./ResolverErrorMessages");
-const breed = require("../models/breed");
 
 //Internal functions
 function farmerHerdNo(id) {
@@ -770,25 +769,7 @@ async function deleteMedAdministrator(parent, args, context) {
     return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
   }
 }
-async function saveBreed(parent, args, context) {
-  try {
-    const farmer_id = getUserId(context);
-    var returnable = { responseCheck: FAILED_AUTHENTICATION };
-    if (farmer_id) {
-      const valid = await breed.save({
-        breed_name: args.breed_name,
-        breed_code: args.breed_code,
-      });
-      if (valid) {
-        returnable = { responseCheck: OPERATION_SUCCESSFUL, breed: valid };
-      }
-      returnable = { responseCheck: OPERATION_FAILED };
-    }
-    return returnable;
-  } catch (err) {
-    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
-  }
-}
+
 module.exports = {
   signUp,
   login,
@@ -804,5 +785,4 @@ module.exports = {
   saveAdminMed,
   deleteAdministeredMedication,
   deleteMedAdministrator,
-  saveBreed,
 };
