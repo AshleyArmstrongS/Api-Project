@@ -1,7 +1,7 @@
 //Holds the APP_SECRET DB name and other information that may change between development and production
 const APP_SECRET = "secret"; //Used for generating the JWT and authenticating users
 const atlasURI = "mongodb+srv://username:password@cluster0.ikcii.mongodb.net/database?retryWrites=true&w=majority";//Connection to the mongodb database hosted on atlas
-  const atlasOptions = {
+  const apiSettings = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,

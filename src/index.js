@@ -1,7 +1,7 @@
 const { GraphQLServer } = require("graphql-yoga");
 const Query = require("./resolvers/Query");
 const Mutation = require("./resolvers/Mutation");
-const { apiOptions } = require("./Config");
+const { apiSettings } = require("./Config");
 require("./atlas_client");
 
 const resolvers = {
@@ -18,6 +18,6 @@ const server = new GraphQLServer({
   },
 });
 
-server.start(apiOptions, ({ port }) =>
+server.start(apiSettings, ({ port }) =>
   console.log(`Server is running on http://localhost:${port}`)
 );
