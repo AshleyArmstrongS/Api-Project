@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { getUserId, errorConstructor } = require("../../utils");
 const { APP_SECRET } = require("../../Config");
-const User = require("../../models/farmer");
+const User = require("../../models/user");
 const {
   OPERATION_SUCCESSFUL,
   ALREADY_EXISTS,

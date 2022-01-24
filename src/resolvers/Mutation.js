@@ -1,10 +1,9 @@
 const { getUserId } = require("../utils");
 const Animal = require("../models/animals");
-const Farmer = require("../models/farmer");
+const Farmer = require("../models/user");
 const Medication = require("../models/medication");
 const Group = require("../models/group");
 const MedicationAdministration = require("../models/medication_administration");
-const { APP_SECRET } = require("../Config");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,

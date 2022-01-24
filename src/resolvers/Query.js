@@ -1,5 +1,5 @@
 const Animal = require("../models/animals");
-const Farmer = require("../models/farmer");
+const Farmer = require("../models/user");
 const Group = require("../models/group");
 const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");

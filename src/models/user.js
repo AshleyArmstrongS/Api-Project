@@ -3,7 +3,7 @@ mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 const val = require("../models/mongoose_validation");
 
-const FarmerSchema = new Schema(
+const UserSchema = new Schema(
   {
     first_name: {
       type: String,
@@ -65,7 +65,7 @@ const FarmerSchema = new Schema(
       unique: true,
     },
   },
-  { collection: "farmers" }
+  { collection: "users" }
 );
 
-module.exports = mongoose.model("Farmer", FarmerSchema);
+module.exports = mongoose.model("User", UserSchema);
