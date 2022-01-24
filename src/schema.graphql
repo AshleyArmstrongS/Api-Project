@@ -2,7 +2,7 @@ type Query {
   #API info
   info: String
   #Users Info
-  farmer: FarmerResponse!
+  user: UserResponse!
   farmMedicationAdministrators: [String]!
   #Animal
   animal(_id: ID!): AnimalResponse!
@@ -66,12 +66,12 @@ type Mutation {
     password: String!
     new_password: String!
   ): AuthPayload!
-  updateFarmer(
+  updateUser(
     first_name: String
     second_name: String
     farm_type: FarmType
     farm_address: String
-  ): FarmerResponse!
+  ): UserResponse!
   #Animal
   saveAnimal(
     _id: ID
@@ -126,7 +126,7 @@ type Mutation {
     medication_id: ID
     quantity_administered: Int
   ): AdminMedResponse!
-  deleteMedAdministrator(med_administrator: String!): FarmerResponse!
+  deleteMedAdministrator(med_administrator: String!): UserResponse!
 }
 #OBJECT_TYPES
 type Animal {
@@ -175,7 +175,7 @@ type AdministeredMedication {
   medication:[Medication]
   animal:[Animal]
 }
-type Farmer {
+type User {
   first_name: String
   second_name: String
   farm_type: FarmType
@@ -194,11 +194,11 @@ type Group {
 type AuthPayload {
   responseCheck: ResponseCheck!
   token: String
-  farmer: Farmer
+  user: User
 }
-type FarmerResponse {
+type UserResponse {
   responseCheck: ResponseCheck!
-  farmer: Farmer
+  user: User
 }
 type AnimalResponse {
   responseCheck: ResponseCheck!

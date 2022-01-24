@@ -1,5 +1,3 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { getUserId } = require("../utils");
 const Animal = require("../models/animals");
 const Farmer = require("../models/farmer");
@@ -12,9 +10,6 @@ const {
   OPERATION_SUCCESSFUL,
   ALREADY_EXISTS,
   OPERATION_FAILED,
-  NO_SUCH_EMAIL,
-  INCORRECT_PASSWORD,
-  PASSWORD_RESET_FAILED,
   INCORRECT_MOTHER,
   INCORRECT_SIRE,
   INCORRECT_PARENTS,
@@ -24,18 +19,13 @@ const {
 function farmerHerdNo(id) {
   return Farmer.findById(id).select({ herd_number: 1, _id: 0 });
 }
-function errorConstructor(RESOLVER_ERROR, schema_error) {
-  const message =
-    RESOLVER_ERROR.message +
-    schema_error.toString().replace("ValidationError: ", " ");
-  return { success: RESOLVER_ERROR.success, message: message };
-}
+
 async function checkMedicationAvailability(id, quantity_used) {
   const available = await Medication.findById(id).select({
     remaining_quantity: 1,
     quantity_type: 1,
-    withdrawal_days_meat:1,
-    withdrawal_days_dairy:1,
+    withdrawal_days_meat: 1,
+    withdrawal_days_dairy: 1,
     _id: 0,
   });
   if (available.remaining_quantity >= quantity_used) {
@@ -44,9 +34,9 @@ async function checkMedicationAvailability(id, quantity_used) {
   return false;
 }
 function addDays(date, days) {
-  const copy = new Date(Number(date))
-  copy.setDate(date.getDate() + days)
-  return copy
+  const copy = new Date(Number(date));
+  copy.setDate(date.getDate() + days);
+  return copy;
 }
 async function updateMedicationQuantity(id, quantity_used) {
   const valid = await Medication.findByIdAndUpdate(
@@ -124,120 +114,9 @@ async function animalParentCheck(farmer_id, sire_number, mother_number) {
   return { sire: sire, mother: mother };
 }
 //Login/SignUp
-async function signUp(parent, args) {
-  try {
-    const alreadyExists = await Farmer.findOne({ email: args.email });
-    if (alreadyExists) {
-      return { responseCheck: ALREADY_EXISTS };
-    }
-    const password = await bcrypt.hash(args.password, 10);
-    const med_administrator = args.first_name + " " + args.second_name;
-    const newFarmer = new Farmer({
-      first_name: args.first_name,
-      second_name: args.second_name,
-      farm_type: args.farm_type,
-      farm_address: args.farm_address ?? null,
-      password: password,
-      medication_administrators: med_administrator,
-      email: args.email,
-      herd_number: args.herd_number,
-    });
-    const valid = await newFarmer.save();
-    if (!valid) {
-      return { responseCheck: OPERATION_FAILED };
-    }
-    const userToken = jwt.sign({ userId: newFarmer._id }, APP_SECRET);
-    return {
-      responseCheck: OPERATION_SUCCESSFUL,
-      token: userToken,
-      farmer: newFarmer,
-    };
-  } catch (err) {
-    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
-  }
-}
-async function login(parent, args) {
-  try {
-    const loggingInFarmer = await Farmer.findOne({ email: args.email });
-    if (!loggingInFarmer) {
-      return { responseCheck: NO_SUCH_EMAIL };
-    }
-    const valid = await bcrypt.compare(args.password, loggingInFarmer.password);
-    if (!valid) {
-      return { responseCheck: INCORRECT_PASSWORD };
-    }
-    const userToken = jwt.sign({ userId: loggingInFarmer._id }, APP_SECRET);
-    return {
-      responseCheck: OPERATION_SUCCESSFUL,
-      token: userToken,
-      farmer: loggingInFarmer,
-    };
-  } catch (err) {
-    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
-  }
-}
-async function passwordResetAndLogin(parent, args) {
-  try {
-    const farmerToBeChanged = await Farmer.findOne({ email: args.email });
-    const valid = await bcrypt.compare(
-      args.password,
-      farmerToBeChanged.password
-    );
-    var success = false;
-    if (valid) {
-      const new_password = await bcrypt.hash(args.new_password, 10);
-      success = await Farmer.findByIdAndUpdate(
-        { _id: farmerToBeChanged._id },
-        { password: new_password }
-      );
-    } else {
-      return { responseCheck: INCORRECT_PASSWORD };
-    }
-    if (success) {
-      const updated = await Farmer.findOne({ email: args.email }).select({
-        password: 0,
-      });
-      const userToken = jwt.sign({ userId: updated._id }, APP_SECRET);
-      return {
-        responseCheck: OPERATION_SUCCESSFUL,
-        token: userToken,
-        farmer: updated,
-      };
-    }
-    return { responseCheck: PASSWORD_RESET_FAILED };
-  } catch (err) {
-    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
-  }
-}
-async function updateFarmer(parent, args, context) {
-  try {
-    const farmer_id = getUserId(context);
-    const farmerToBeChanged = await Farmer.findById(farmer_id).select({
-      password: 0,
-    });
-    const success = await Farmer.findByIdAndUpdate(
-      { _id: farmerToBeChanged._id },
-      {
-        first_name: args.first_name ?? farmerToBeChanged.first_name,
-        second_name: args.second_name ?? farmerToBeChanged.second_name,
-        farm_address: args.farm_address ?? farmerToBeChanged.farm_address,
-        farm_type: args.farm_type ?? farmerToBeChanged.farm_type,
-      }
-    );
-    if (success) {
-      const updated = await Farmer.findById(farmer_id).select({
-        password: 0,
-      });
-      return {
-        responseCheck: OPERATION_SUCCESSFUL,
-        farmer: updated,
-      };
-    }
-    return { responseCheck: PASSWORD_RESET_FAILED };
-  } catch (err) {
-    return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
-  }
-}
+
+const {signUp, login, updateUser, passwordResetAndLogin, } = require("./Mutations/User");
+
 //Animal Mutations
 async function saveAnimal(parent, args, context) {
   try {
@@ -449,7 +328,7 @@ async function addAnimalToGroup(parent, args, context) {
   try {
     const id = getUserId(context);
     if (!id) {
-      return { responseCheck: FAILED_AUTHENTICATION};
+      return { responseCheck: FAILED_AUTHENTICATION };
     }
     const groupPresent = await Animal.findOne({
       _id: args._id,
@@ -646,10 +525,10 @@ async function createAdminMed(args, farmer_id) {
     );
     var message = "Medication not administered";
     if (available) {
-      var meat = new Date(args.date_of_administration)
-      meat = addDays(meat, available.withdrawal_days_meat)
-      var dairy = new Date(args.date_of_administration)
-      dairy = addDays(dairy, available.withdrawal_days_dairy)
+      var meat = new Date(args.date_of_administration);
+      meat = addDays(meat, available.withdrawal_days_meat);
+      var dairy = new Date(args.date_of_administration);
+      dairy = addDays(dairy, available.withdrawal_days_dairy);
       const newMedAdmin = new MedicationAdministration({
         date_of_administration: args.date_of_administration,
         quantity_administered: args.quantity_administered,
@@ -774,7 +653,7 @@ module.exports = {
   signUp,
   login,
   passwordResetAndLogin,
-  updateFarmer,
+  updateUser,
   saveAnimal,
   deleteAnimal,
   saveGroup,

@@ -16,7 +16,7 @@ function info() {
   return "This is the OptiFarm API";
 }
 //User
-async function farmer(parent, args, context) {
+async function user(parent, args, context) {
   const farmer_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
   if (farmer_id) {
@@ -754,7 +754,7 @@ async function administeredMedicationsByAnimal(parent, args, context) {
 }
 module.exports = {
   info,
-  farmer,
+  user,
   // Animal
   animal,
   animalWithLastMedication,

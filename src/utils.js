@@ -12,6 +12,15 @@ function getUserId(context) {
     }
   }
 }
+
+function errorConstructor(RESOLVER_ERROR, schema_error) {
+  const message =
+    RESOLVER_ERROR.message +
+    schema_error.toString().replace("ValidationError: ", " ");
+  return { success: RESOLVER_ERROR.success, message: message };
+}
+
 module.exports = {
   getUserId,
+  errorConstructor,
 };
