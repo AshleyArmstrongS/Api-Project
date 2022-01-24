@@ -93,3 +93,7 @@ async function saveMedication(parent, args, context) {
       return { responseCheck: errorConstructor(OPERATION_FAILED, err) };
     }
   }
+
+  module.exports = {
+    saveMedication,
+};

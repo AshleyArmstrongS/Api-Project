@@ -75,7 +75,7 @@ const {deleteAnimal, saveAnimal,} = require("./Mutations/Animals");
 // Group Mutations
 const {saveGroup, deleteGroup, addAnimalToGroup, removeAnimalFromGroup} = require("./Mutations/Groups")
 //Medication Mutations
-
+const {saveMedication,} = require("./Mutations/Medication")
 //MedicationAdministration Mutations
 async function saveAdminMed(parent, args, context) {
   try {
