@@ -1,5 +1,4 @@
-const User = require("../models/user");
-const Group = require("../models/group");
+
 const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");
 const { getUserId } = require("../utils");
@@ -15,48 +14,7 @@ const {info, user, } = require("./Queries/User")
 //Animal
 const {  animal, animalWithLastMedication, animalByTag, herd, herdCount, animalBySex, animalByProgeny, animalInAnyGroup, animalsInGroup, animalsInGroupCount,} = require("./Queries/Animals")
 //Group
-async function group(parent, args, context) {
-  const user_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (user_id) {
-    const group = await Group.findOne({ _id: args._id, user_id: user_id });
-    if (!group) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, group: group };
-    }
-  }
-  return returnable;
-}
-async function groups(parent, args, context) {
-  const user_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (user_id) {
-    const groups = await Group.find({ user_id: user_id });
-    if (!groups) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, groups: groups };
-    }
-  }
-  return returnable;
-}
-async function groupByName(parent, args, context) {
-  const user_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (user_id) {
-    const groups = await Group.find({
-      group_name: args.group_name,
-      user_id: user_id,
-    });
-    if (!groups) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, groups: groups };
-    }
-  }
-  return returnable;
-}
+const { group,groups,groupByName,} = require("./Queries/Groups")
 //Medication
 async function medication(parent, args, context) {
   const user_id = getUserId(context);

@@ -1,4 +1,4 @@
-
+const User = require("../../models/user");
 //API info
 function info() {
     return "This is the OptiFarm API";
