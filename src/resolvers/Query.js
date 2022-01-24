@@ -1,9 +1,3 @@
-const mongoose = require("mongoose");
-const {
-  FAILED_AUTHENTICATION,
-  OPERATION_SUCCESSFUL,
-  OPERATION_FAILED,
-} = require("./ResolverErrorMessages");
 //User
 const { info, user } = require("./Queries/User");
 //Animal
