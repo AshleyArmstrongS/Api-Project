@@ -131,4 +131,4 @@ const {
     login,
     passwordResetAndLogin,
     updateUser,
-  }
+  };
