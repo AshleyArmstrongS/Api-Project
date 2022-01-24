@@ -10,26 +10,10 @@ const {
   OPERATION_SUCCESSFUL,
   OPERATION_FAILED,
 } = require("./ResolverErrorMessages");
-//API info
-function info() {
-  return "This is the OptiFarm API";
-}
 //User
-async function user(parent, args, context) {
-  const user_id = getUserId(context);
-  var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (user_id) {
-    const user = await User.findById(user_id);
-    if (!user) {
-      returnable = { responseCheck: OPERATION_FAILED };
-    } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, user: user };
-    }
-  }
-  return returnable;
-}
+const {info, user, } = require("./Queries/User")
 //Animal
-const {} = require("./Queries/Animals")
+const {  animal, animalWithLastMedication, animalByTag, herd, herdCount, animalBySex, animalByProgeny, animalInAnyGroup, animalsInGroup, animalsInGroupCount,} = require("./Queries/Animals")
 //Group
 async function group(parent, args, context) {
   const user_id = getUserId(context);
