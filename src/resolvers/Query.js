@@ -1,5 +1,5 @@
 const Animal = require("../models/animals");
-const Farmer = require("../models/user");
+const User = require("../models/user");
 const Group = require("../models/group");
 const Medication = require("../models/medication");
 const AdministeredMedication = require("../models/medication_administration");
@@ -17,26 +17,26 @@ function info() {
 }
 //User
 async function user(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const farmer = await Farmer.findById(farmer_id);
-    if (!farmer) {
+  if (user_id) {
+    const user = await User.findById(user_id);
+    if (!user) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
-      returnable = { responseCheck: OPERATION_SUCCESSFUL, farmer: farmer };
+      returnable = { responseCheck: OPERATION_SUCCESSFUL, user: user };
     }
   }
   return returnable;
 }
 //Animal
 async function animal(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animal = await Animal.findOne({
       _id: args._id,
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     });
     if (!animal) {
@@ -48,14 +48,14 @@ async function animal(parent, args, context) {
   return returnable;
 }
 async function animalWithLastMedication(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     var animalAndAdminMed = await AdministeredMedication.aggregate(
       [
         {
           $match: {
-            farmer_id: ObjectId(farmer_id),
+            user_id: ObjectId(user_id),
             animal_id: ObjectId(args._id),
           },
         },
@@ -99,12 +99,12 @@ async function animalWithLastMedication(parent, args, context) {
   return returnable;
 }
 async function animalByTag(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animal = await Animal.findOne({
       tag_number: args.tag_number,
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     });
     if (!animal) {
@@ -117,11 +117,11 @@ async function animalByTag(parent, args, context) {
 }
 //Animals
 async function herd(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animals = await Animal.find({
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     }).sort({ id: 1 });
     if (!animals) {
@@ -133,11 +133,11 @@ async function herd(parent, args, context) {
   return returnable;
 }
 async function herdCount(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const count = await Animal.find({
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     }).countDocuments();
     if (!count) {
@@ -149,12 +149,12 @@ async function herdCount(parent, args, context) {
   return returnable;
 }
 async function animalBySex(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animals = await Animal.find({
       male_female: args.male_female,
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     });
     if (!animals) {
@@ -166,25 +166,25 @@ async function animalBySex(parent, args, context) {
   return returnable;
 }
 async function animalByProgeny(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     var animals;
     var parentAnimal = await Animal.find({
       tag_number: args.tag_number,
-      farmer_id: farmer_id,
+      user_id: user_id,
     }).select({ _id: 0, male_female: 1 });
     if (parentAnimal.male_female === "M") {
       animals = await Animal.find({
         sire_number: args.tag_number,
-        farmer_id: farmer_id,
+        user_id: user_id,
         removed: { $ne: true },
         v,
       });
     } else {
       animals = await Animal.find({
         mother_number: args.tag_number,
-        farmer_id: farmer_id,
+        user_id: user_id,
         removed: { $ne: true },
       });
     }
@@ -197,12 +197,12 @@ async function animalByProgeny(parent, args, context) {
   return returnable;
 }
 async function animalInAnyGroup(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animals = await Animal.find({
       groups_id: { $exists: true, $not: { $size: 0 } },
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     });
     if (!animals) {
@@ -214,12 +214,12 @@ async function animalInAnyGroup(parent, args, context) {
   return returnable;
 }
 async function animalsInGroup(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const animals = await Animal.find({
       groups_id: args.groups_id,
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     });
     if (!animals) {
@@ -231,12 +231,12 @@ async function animalsInGroup(parent, args, context) {
   return returnable;
 }
 async function animalsInGroupCount(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const count = await Animal.find({
       groups_id: args.groups_id,
-      farmer_id: farmer_id,
+      user_id: user_id,
       removed: { $ne: true },
     }).countDocuments();
     if (!count) {
@@ -249,10 +249,10 @@ async function animalsInGroupCount(parent, args, context) {
 }
 //Group
 async function group(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const group = await Group.findOne({ _id: args._id, farmer_id: farmer_id });
+  if (user_id) {
+    const group = await Group.findOne({ _id: args._id, user_id: user_id });
     if (!group) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -262,10 +262,10 @@ async function group(parent, args, context) {
   return returnable;
 }
 async function groups(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const groups = await Group.find({ farmer_id: farmer_id });
+  if (user_id) {
+    const groups = await Group.find({ user_id: user_id });
     if (!groups) {
       returnable = { responseCheck: OPERATION_FAILED };
     } else {
@@ -275,12 +275,12 @@ async function groups(parent, args, context) {
   return returnable;
 }
 async function groupByName(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const groups = await Group.find({
       group_name: args.group_name,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!groups) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -292,12 +292,12 @@ async function groupByName(parent, args, context) {
 }
 //Medication
 async function medication(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medication = await Medication.findOne({
       _id: args._id,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!medication) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -312,10 +312,10 @@ async function medication(parent, args, context) {
 }
 //Medications
 async function medicationsOld(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id }).sort({
+  if (user_id) {
+    const medications = await Medication.find({ user_id: user_id }).sort({
       purchase_date: -1,
       remaining_quantity: -1,
     });
@@ -331,11 +331,11 @@ async function medicationsOld(parent, args, context) {
   return returnable;
 }
 async function medications(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medications = await Medication.aggregate([
-      { $match: { farmer_id: ObjectId(farmer_id) } },
+      { $match: { user_id: ObjectId(user_id) } },
       {
         $project: {
           _id: 1,
@@ -380,11 +380,11 @@ async function medications(parent, args, context) {
   return returnable;
 }
 async function medicationsLastThreeUsed(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const administeredMedications = await AdministeredMedication.aggregate([
-      { $match: { farmer_id: ObjectId(farmer_id) } },
+      { $match: { user_id: ObjectId(user_id) } },
       {
         $group: { _id: "$medication_id" },
       },
@@ -405,7 +405,7 @@ async function medicationsLastThreeUsed(parent, args, context) {
         medications[i] = administeredMedications[i].medication[0];
       }
     } else {
-      medications = await Medication.find({ farmer_id: farmer_id })
+      medications = await Medication.find({ user_id: user_id })
         .sort({ purchase_date: -1, _id: -1 })
         .limit(3);
     }
@@ -421,10 +421,10 @@ async function medicationsLastThreeUsed(parent, args, context) {
   return returnable;
 }
 async function medicationsSortAndLimitTo4(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
-    const medications = await Medication.find({ farmer_id: farmer_id })
+  if (user_id) {
+    const medications = await Medication.find({ user_id: user_id })
       .sort({ remaining_quantity: 1 })
       .limit(4);
     if (!medications) {
@@ -439,12 +439,12 @@ async function medicationsSortAndLimitTo4(parent, args, context) {
   return returnable;
 }
 async function medicationsByType(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medications = await Medication.find({
       medicine_type: args.medicine_type,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -458,12 +458,12 @@ async function medicationsByType(parent, args, context) {
   return returnable;
 }
 async function medicationsByRemainingQtyLessThan(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medications = await Medication.find({
       remaining_quantity: { $lte: args.remaining_quantity },
-      farmer_id: farmer_id,
+      user_id: user_id,
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -477,12 +477,12 @@ async function medicationsByRemainingQtyLessThan(parent, args, context) {
   return returnable;
 }
 async function medicationsByRemainingQtyGreaterThan(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medications = await Medication.find({
       remaining_quantity: { $gte: args.remaining_quantity },
-      farmer_id: farmer_id,
+      user_id: user_id,
     }).limit(4);
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -496,12 +496,12 @@ async function medicationsByRemainingQtyGreaterThan(parent, args, context) {
   return returnable;
 }
 async function medicationsExpired(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const medications = await Medication.find({
       expiry_date: { $lt: Date.now() },
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -515,13 +515,13 @@ async function medicationsExpired(parent, args, context) {
   return returnable;
 }
 async function medicationsByName(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     var str = args.medication_name;
     const medications = await Medication.find({
       medication_name: { $regex: new RegExp(".*" + str + ".*", "i") },
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!medications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -536,12 +536,12 @@ async function medicationsByName(parent, args, context) {
 }
 // Medical_Administration
 async function administeredMedication(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const administeredMedication = await AdministeredMedication.findOne({
       _id: args._id,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!administeredMedication) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -555,9 +555,9 @@ async function administeredMedication(parent, args, context) {
   return returnable;
 }
 async function administeredMedicationsActiveWithdrawalByMedication(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     var today = new Date();
     const date =
       today.getFullYear() +
@@ -573,7 +573,7 @@ async function administeredMedicationsActiveWithdrawalByMedication(parent, args,
               { withdrawal_end_meat: { $gt: today } },
               { withdrawal_end_dairy: { $gt: today } },
             ],
-            farmer_id: ObjectId(farmer_id),
+            user_id: ObjectId(user_id),
             medication_id: ObjectId(args.medication_id),
           },
         },
@@ -615,9 +615,9 @@ async function administeredMedicationsActiveWithdrawalByMedication(parent, args,
   return returnable;
 }
 async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     var today = new Date();
       today.getFullYear() +
       "-" +
@@ -632,7 +632,7 @@ async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, con
               { withdrawal_end_meat: { $gt: today } },
               { withdrawal_end_dairy: { $gt: today } },
             ],
-            farmer_id: ObjectId(farmer_id),
+            user_id: ObjectId(user_id),
             animal_id: ObjectId(args.animal_id),
           },
         },
@@ -674,12 +674,12 @@ async function administeredMedicationsActiveWithdrawalByAnimal(parent, args, con
   return returnable;
 }
 async function administeredMedications(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const administeredMedications = await AdministeredMedication.aggregate(
       [
-        { $match: { farmer_id: ObjectId(farmer_id) } },
+        { $match: { user_id: ObjectId(user_id) } },
         {
           $lookup: {
             from: "medication",
@@ -715,12 +715,12 @@ async function administeredMedications(parent, args, context) {
   return returnable;
 }
 async function administeredMedicationOnDate(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const administeredMedications = await AdministeredMedication.find({
       date_of_administration: args.date_of_administration,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
@@ -734,12 +734,12 @@ async function administeredMedicationOnDate(parent, args, context) {
   return returnable;
 }
 async function administeredMedicationsByAnimal(parent, args, context) {
-  const farmer_id = getUserId(context);
+  const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
-  if (farmer_id) {
+  if (user_id) {
     const administeredMedications = await AdministeredMedication.find({
       animal_id: args.animal_id,
-      farmer_id: farmer_id,
+      user_id: user_id,
     });
     if (!administeredMedications) {
       returnable = { responseCheck: OPERATION_FAILED };
