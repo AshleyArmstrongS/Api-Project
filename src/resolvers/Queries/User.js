@@ -1,10 +1,10 @@
 const User = require("../../models/user");
-const { getUserId } = require("../utils");
+const { getUserId } = require("../../utils");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
   OPERATION_FAILED,
-} = require("./ResolverErrorMessages");
+} = require("../ResolverErrorMessages");
 //API info
 function info() {
   return "This is the OptiFarm API";

@@ -1,10 +1,10 @@
 const Group = require("../../models/group");
-const { getUserId } = require("../utils");
+const { getUserId } = require("../../utils");
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
   OPERATION_FAILED,
-} = require("./ResolverErrorMessages");
+} = require("../ResolverErrorMessages");
 async function group(parent, args, context) {
   const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };

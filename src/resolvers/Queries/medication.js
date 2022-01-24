@@ -1,12 +1,13 @@
-const Medication = require("../models/medication");
-const AdministeredMedication = require("../models/medication_administration");
-const { getUserId } = require("../utils");
+const Medication = require("../../models/medication");
+const AdministeredMedication = require("../../models/medication_administration");
+const { getUserId } = require("../../utils");
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const {
   FAILED_AUTHENTICATION,
   OPERATION_SUCCESSFUL,
   OPERATION_FAILED,
-} = require("./ResolverErrorMessages");
+} = require("../ResolverErrorMessages");
 async function medication(parent, args, context) {
   const user_id = getUserId(context);
   var returnable = { responseCheck: FAILED_AUTHENTICATION };
