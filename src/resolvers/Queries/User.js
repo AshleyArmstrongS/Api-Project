@@ -7,7 +7,7 @@ const {
 } = require("../ResolverErrorMessages");
 //API info
 function info() {
-  return "This is the OptiFarm API";
+  return "Hello there";
 }
 //User
 async function user(parent, args, context) {
